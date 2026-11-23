@@ -2108,7 +2108,6 @@
     // Título de la pestaña y sus subpestañas (no en Hoy ni dentro del detalle de un error).
     if (!enDetalle()) {
       if (vista !== "hoy" && vista !== "revisar") marco.appendChild(el("div", { clase: "titulo-wrap" }, [el("h1", { clase: "titulo-tab", texto: MODULOS.filter(function (m) { return m[0] === vista; })[0][1] })]));
-      if (vista === "revisar" && param !== "capturas") marco.appendChild(el("button", { type: "button", clase: "buscador", id: "buscador", onclick: abrirBusqueda }, [icono("buscar"), "Buscar # de caso o conductor"]));
       if (SUBS[vista]) {
         var sa = subActual();
         marco.appendChild(el("div", { clase: "subtabs", role: "group", "aria-label": "Secciones de " + vista }, SUBS[vista].map(function (x) {
