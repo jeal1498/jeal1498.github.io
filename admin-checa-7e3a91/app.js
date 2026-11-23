@@ -1165,7 +1165,7 @@
     function soltar() { if (estado.url) { URL.revokeObjectURL(estado.url); estado.url = null; } estado.blob = null; estado.sug = null; estado.pidiendo = false; }
 
     async function cargarCola() {
-      var d = await llamar("admin_capturas_pendientes", { p_nivel: revNivel, p_limite: capturaObjetivo ? 50 : 10 });
+      var d = await llamarVer("admin_capturas_pendientes", { p_nivel: revNivel, p_limite: capturaObjetivo ? 50 : 10, p_version: verG || null, p_app: null });
       if (!d) return false;
       estado.pend = d.pendientes || {}; estado.rev = d.revisadas || {}; estado.items = d.items || [];
       if (capturaObjItem) { var oi = capturaObjItem; capturaObjItem = null; estado.items = estado.items.filter(function (x) { return x.id !== oi.id; }); estado.items.unshift(oi); }
@@ -1316,7 +1316,7 @@
 
   // Cuántas capturas esperan revisión (solo lectura; si falla, simplemente no se muestra).
   async function pendientesRev() {
-    try { var r = await cli.rpc("admin_capturas_pendientes", { p_nivel: "rojo", p_limite: 1 }), d = r && r.data; if (!d || d.error) return null;
+    try { var r = await cli.rpc("admin_capturas_pendientes", { p_nivel: "rojo", p_limite: 1, p_version: verG || null, p_app: null }), d = r && r.data; if (!d || d.error) return null;
       var suma = function (o) { return Object.keys(o || {}).reduce(function (t, k) { return t + (Number(o[k]) || 0); }, 0); };
       return { pend: suma(d.pendientes), rev: suma(d.revisadas) }; } catch (x) { return null; }
   }
