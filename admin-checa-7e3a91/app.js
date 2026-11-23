@@ -323,7 +323,9 @@
   }
   async function inicio(c) {
     skeleton(c);
-    var r = rango(), d = await llamar("admin_salud", { desde: r.desde, hasta: r.hasta });
+    var r = rango();
+    var pUrg = contarUrgentes(), pRsm = llamarVer("admin_revisar_resumen", { p_version: verG || null, p_app: null }), pHch = llamar("admin_hechas_hoy"), pKc = llamar("admin_costos", { desde: r.desde, hasta: r.hasta });
+    var d = await llamar("admin_salud", { desde: r.desde, hasta: r.hasta });
     c.textContent = "";
     if (!d) return;
     var inc = d.atencion.length, n = d.componentes.length;
@@ -392,8 +394,8 @@
         el("div", { clase: "alerta-acc" }, [el("button", { type: "button", clase: acc ? "" : "si", texto: acc ? "Ver detalle" : dest[1], onclick: function () { ir(dest[0]); } }), acc])]);
     }
     // 3 · Tu meta de hoy (100 revisiones) y en qué orden hacerlas. Los casos de hoy se reparten: verdes y amarillos todos, rojos hasta 40, errores con lo que sobre.
-    var nUrg = await contarUrgentes();
-    var rsm = await llamarVer("admin_revisar_resumen", { p_version: verG || null, p_app: null }), hch = await llamar("admin_hechas_hoy");
+    var nUrg = await pUrg;
+    var rsm = await pRsm, hch = await pHch;
     rsm = rsm && !rsm.error ? rsm : null;
     if (rsm) {
       var META = 100, hechas = hch && !hch.error ? Number(hch.hechas || 0) : 0, resto = Math.max(0, META - hechas), pend = {};
@@ -443,7 +445,7 @@
       var extra = SPARK[i.clave] ? spark(SPARK[i.clave]) : i.clave === "calidad_interpretacion" && i.n ? el("span", { clase: "medidor" }, [(function () { var b = el("i"); b.style.width = Math.round(i.k / i.n * 100) + "%"; b.style.background = "var(--verde)"; return b; })()]) : i.clave === "calidad_interpretacion" ? el("span", { clase: "sp-vacio", "aria-hidden": "true" }) : null;
       if (extra && i.clave === "tasa_errores" && Number(i.valor) === 0) extra.setAttribute("class", "spark bueno");
       return kpi(CORTO[i.clave], valorInd(i), sub, extra, DEST[i.clave][0], DEST[i.clave][1]); });
-    var kc = await llamar("admin_costos", { desde: r.desde, hasta: r.hasta });
+    var kc = await pKc;
     if (kc) {
       var gasto = (kc.por_modelo || []).reduce(function (s, x) { return s + Number(x.usd || 0); }, 0);
       cuatro.push(kpi("Gasto en IA", (kc.por_modelo || []).length ? "$" + gasto.toFixed(2) : "—", "USD en el periodo", sv("svg", { viewBox: "0 0 120 30", preserveAspectRatio: "none", class: "spark sp-gasto", "aria-hidden": "true" }, Array.apply(null, Array(9)).map(function (_, k) { return sv("rect", { x: k * 12, y: 22, width: 6, height: 5, rx: 2, class: "fant" }); }).concat([sv("rect", { x: 108, y: 6, width: 12, height: 21, rx: 3, class: "ult" })])), "ajustes"));
