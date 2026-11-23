@@ -417,7 +417,7 @@
         var pt = el("i", { clase: "orden-pt", "aria-hidden": "true" }); pt.style.background = COL[L[0]];
         return el("a", { href: "#revisar", clase: "orden-fila", "data-lin": L[0], onclick: function (ev) { ev.preventDefault(); irA(L[0], false); } }, [
           el("span", { clase: "orden-paso", texto: String(k + 1) }), pt, el("span", { clase: "orden-nm" }, [el("b", { texto: L[3] }), el("small", { texto: NOTA[L[0]] })]),
-          el("span", { clase: "orden-hoy-n", texto: "hoy " + hoyN[L[0]] }), el("span", { clase: "orden-n", texto: String(pend[L[0]]) })]); })));
+          el("span", { clase: "orden-n", texto: String(pend[L[0]]) })]); })));
       c.appendChild(el("div", { clase: "detalle", texto: "«Hoy» es cuántos te tocan para llegar a 100. Cambia con lo que vaya llegando." }));
     }
     var at = el("div", { id: "alertas", clase: "atencion" });
