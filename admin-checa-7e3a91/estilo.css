@@ -596,7 +596,7 @@ details.filtros-hoja > summary { border:0; border-radius:14px; }
 .filtros input, .filtros select { border-radius:10px; }
 
 /* Hoy · estado */
-.estado-v3 { display:block; padding:16px; }
+.estado-v3 { display:block; justify-items:stretch; padding:16px; }
 .estado-cab { display:flex; align-items:center; gap:10px; }
 .estado-t { font:800 22px/1.15 "Bricolage Grotesque", system-ui, sans-serif; color:var(--texto); margin:0; text-wrap:balance; }
 .estado-p { margin:6px 0 14px; color:var(--tenue); font-size:14px; }
