@@ -307,6 +307,15 @@
   // Solo cuenta errores de la 10.82 en adelante: los anteriores no admiten veredicto (no se puede comprobar su captura).
   var urgPorVersion = {};
   async function contarUrgentes() {
+    var kU = "urg:" + (verG || ""), cU = swrLeer(kU);
+    if (cU && cU.v !== undefined) {   // al instante con lo último; se actualiza por detrás
+      urgentes = cU.v; urgPorVersion = cU.p || {}; var bU = document.getElementById("insignia-revisar"); if (bU) { bU.textContent = totalPend() ? String(totalPend()) : ""; bU.hidden = !totalPend(); }
+      contarUrgentesVivo().then(function (v) { swrGuardar(kU, { v: v, p: urgPorVersion }); });
+      return urgentes;
+    }
+    var v0 = await contarUrgentesVivo(); swrGuardar(kU, { v: v0, p: urgPorVersion }); return v0;
+  }
+  async function contarUrgentesVivo() {
     var r = rango(); await asegurarVersiones();
     var vs = VERSIONES.filter(function (x) { return versionNum(x) >= 10082 && (!verG || x === verG); });
     var res = await Promise.all(vs.map(function (ver) {
@@ -338,7 +347,7 @@
   async function inicio(c) {
     skeleton(c);
     var r = rango();
-    var pUrg = contarUrgentes(), pRsm = llamarVer("admin_revisar_resumen", { p_version: verG || null, p_app: null }, true), pHch = llamar("admin_hechas_hoy"), pKc = llamar("admin_costos", { desde: r.desde, hasta: r.hasta }, true);
+    var pUrg = contarUrgentes(), pRsm = llamarVer("admin_revisar_resumen", { p_version: verG || null, p_app: null }, true), pHch = llamar("admin_hechas_hoy", null, true), pKc = llamar("admin_costos", { desde: r.desde, hasta: r.hasta }, true);
     var d = await llamar("admin_salud", { desde: r.desde, hasta: r.hasta }, true);
     c.textContent = "";
     if (!d) return;
@@ -1332,6 +1341,11 @@
 
   // Cuántas capturas esperan revisión (solo lectura; si falla, simplemente no se muestra).
   async function pendientesRev() {
+    var kP = "pendrev:" + (verG || ""), cP = swrLeer(kP);
+    if (cP) { pendientesRevVivo().then(function (v) { if (v) swrGuardar(kP, v); }); return cP; }
+    var v0 = await pendientesRevVivo(); if (v0) swrGuardar(kP, v0); return v0;
+  }
+  async function pendientesRevVivo() {
     try { var r = await cli.rpc("admin_capturas_pendientes", { p_nivel: "rojo", p_limite: 1, p_version: verG || null, p_app: null }), d = r && r.data; if (!d || d.error) return null;
       var suma = function (o) { return Object.keys(o || {}).reduce(function (t, k) { return t + (Number(o[k]) || 0); }, 0); };
       return { pend: suma(d.pendientes), rev: suma(d.revisadas) }; } catch (x) { return null; }
