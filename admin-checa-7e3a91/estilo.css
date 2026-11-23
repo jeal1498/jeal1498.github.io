@@ -502,11 +502,6 @@ details.def-ayuda > summary { display:flex; align-items:center; min-height:44px;
 .subtabs button[aria-pressed="true"] { color:var(--texto); font-weight:800; border-bottom-color:var(--texto); }
 nav button { position:relative; }
 .insignia-nav { margin-left:auto; min-width:20px; height:20px; padding:0 6px; border-radius:10px; background:var(--rojo); color:#fff; font:700 12px/20px "DM Sans", system-ui, sans-serif; text-align:center; }
-.urgente { display:flex; align-items:center; gap:14px; padding:16px; border-radius:16px; background:var(--texto); color:var(--fondo); text-decoration:none; }
-.urgente-n { font:800 44px/1 "Bricolage Grotesque", system-ui, sans-serif; min-width:52px; }
-.urgente-t { display:flex; flex-direction:column; gap:2px; flex:1; min-width:0; } .urgente-t small { opacity:.8; font-size:13px; }
-.urgente-ir { flex:none; background:var(--fondo); color:var(--texto); border-radius:999px; padding:8px 14px; font-weight:800; font-size:14px; }
-.urgente.al-dia { background:var(--tablero); color:var(--texto); border:1px solid var(--borde); } .urgente.al-dia .urgente-ir { background:var(--panel); }
 .acciones-alerta { flex-wrap:wrap; gap:10px; margin-top:6px; }
 .accion-alerta { background:var(--texto); color:var(--fondo); border-color:var(--texto); font-weight:800; min-height:44px; }
 .tarjetas.cuatro { grid-template-columns:repeat(2, minmax(0,1fr)); }
@@ -617,18 +612,11 @@ details.filtros-hoja > summary { border:0; border-radius:14px; }
 
 /* Hoy · atención */
 .atencion { gap:10px; }
-.urgente { display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:14px; border-radius:24px; padding:18px; }
-.urgente-n { font:800 46px/1 "Bricolage Grotesque", system-ui, sans-serif; letter-spacing:-.03em; min-width:0; }
-.urgente-t strong { font-size:16px; } .urgente-t small { font-size:13px; opacity:.75; }
-.urgente-ir { padding:10px 16px; }
-.urgente.al-dia { border:0; }
-@media (max-width:400px) { .urgente { grid-template-columns:auto minmax(0,1fr); } .urgente-ir { grid-column:1 / -1; text-align:center; } }
 .alerta { padding:14px; gap:6px; }
 .alerta.media, .alerta.alta { background:var(--av-f); } .alerta.alta { background:var(--mal-f); }
 .alerta .tag { border:0; padding:3px 8px; border-radius:6px; background:color-mix(in srgb, currentColor 14%, transparent); }
 .acciones-alerta .enlace { font-weight:700; }
 .accion-alerta { border-radius:12px; }
-.meta-et { display:flex; align-items:center; gap:14px; background:var(--tablero); border-radius:var(--r); padding:16px; color:var(--texto); text-decoration:none; }
 .meta-tx { flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
 .meta-tx b { font-size:20px; } .meta-tx small { color:var(--tenue); font-size:13px; }
 .medidor { display:block; height:8px; border-radius:4px; background:var(--panel); overflow:hidden; margin-top:8px; }
@@ -681,10 +669,6 @@ details.acc > summary { min-height:60px; padding:0 16px; }
 #aviso { border:0; border-radius:14px; background:var(--mal-f); }
 .caso-fila { flex-direction:row; }
 .insignia { white-space:nowrap; }
-.urgente-t strong { font-size:15px; line-height:1.2; }
-.urgente-ir { padding:8px 14px; font-size:13px; }
-@media (max-width:400px) { .urgente { grid-template-columns:auto minmax(0,1fr) auto; gap:12px; padding:16px; } .urgente-ir { grid-column:auto; } .urgente-n { font-size:40px; } }
-@media (max-width:350px) { .urgente { grid-template-columns:auto minmax(0,1fr); } .urgente-ir { grid-column:1 / -1; } }
 
 /* ===== Diseño v3 · composición del prototipo ===== */
 /* Cabecera: logo de barras, nombre, píldora de periodo y lupa */
@@ -919,15 +903,6 @@ header .tit em.aviso i { background:var(--luz-a); } header .tit em.mal i { backg
 .estado-cont small { font:600 12px "JetBrains Mono", ui-monospace, monospace; text-transform:uppercase; letter-spacing:.04em; color:var(--gris); }
 .estado-v3 .paso { font-size:12px; } .estado-v3 .paso span { max-width:100%; white-space:nowrap; overflow:visible; text-overflow:clip; letter-spacing:-.01em; }
 .estado-v3 .estado-p { margin:10px 0 14px; }
-.atn-bloque { background:var(--texto); color:var(--fondo); border-radius:24px; overflow:hidden; }
-.atn-bloque.al-dia { background:var(--tablero); color:var(--texto); }
-.atn-bloque .urgente { background:transparent; color:inherit; border:0; border-radius:0; }
-.atn-bloque .urgente-ir { background:var(--fondo); color:var(--texto); }
-.atn-bloque.al-dia .urgente-ir { background:var(--panel); }
-.meta-pie { display:flex; align-items:center; gap:12px; margin:0 18px; padding:11px 0 14px; border-top:1px dotted currentColor; color:inherit; text-decoration:none; font:600 12px "JetBrains Mono", ui-monospace, monospace; min-height:44px; }
-.meta-pie .medidor { flex:1; margin:0; height:8px; background:color-mix(in srgb, currentColor 20%, transparent); }
-.meta-pie .medidor i { background:currentColor; }
-.meta-pie b { font-weight:600; white-space:nowrap; }
 .kpi > .spark, .kpi > .sp-vacio, .kpi > .medidor { margin-top:auto; }
 .kpi-d { margin-bottom:10px; }
 .sp-vacio { display:block; height:2px; border-radius:1px; background:repeating-linear-gradient(90deg, var(--gris) 0 3px, transparent 3px 9px); opacity:.6; }
@@ -953,18 +928,10 @@ header .tit { flex:1; margin-left:2px; } header .tit strong { font:800 18px/1.1 
 #vista-hoy .estado-v3 .cadena { border-top:2px dotted var(--hb); padding-top:14px; }
 #vista-hoy .estado-v3 .pasos::before { display:none; }
 #vista-hoy .estado-v3 .paso { font:600 12px "DM Sans", system-ui, sans-serif; letter-spacing:-.02em; color:var(--gm); min-height:44px; padding:0; gap:6px; background:transparent; }
-#vista-hoy .estado-v3 .paso.nd { color:color-mix(in srgb, var(--gm) 78%, var(--tablero)); }
+#vista-hoy .estado-v3 .paso.nd { color:var(--gm); }
 #vista-hoy .estado-v3 .paso .punto { width:16px; height:16px; border:0; box-sizing:border-box; }
-#vista-hoy .estado-v3 .paso.ok .punto { background:var(--luz-v); } #vista-hoy .estado-v3 .paso.nd .punto { background:var(--hb); }
+
 #vista-hoy .estado-v3 .paso.sel { background:var(--panel); color:var(--texto); }
-.atn-bloque { --bg:var(--texto); --fg:var(--fondo); margin:0; padding:16px 16px 14px; border-radius:28px; background:var(--bg); color:var(--fg); }
-.atn-bloque.al-dia { --bg:var(--tablero); --fg:var(--texto); border:1px solid var(--hb); }
-#vista-hoy .atn-bloque .urgente { display:flex; align-items:center; gap:14px; padding:0; }
-#vista-hoy .urgente-n { font:800 52px/.9 "Bricolage Grotesque", system-ui, sans-serif; letter-spacing:-.04em; }
-#vista-hoy .urgente-t strong { font:700 16px/1.15 "DM Sans", system-ui, sans-serif; } #vista-hoy .urgente-t small { font-size:13px; opacity:1; color:color-mix(in srgb, var(--bg) 30%, var(--fg)); }
-#vista-hoy .atn-bloque .urgente-ir { margin-left:auto; display:inline-flex; align-items:center; min-height:48px; padding:0 20px; border-radius:999px; background:var(--fg); color:var(--bg); font:700 15px "DM Sans", system-ui, sans-serif; }
-#vista-hoy .meta-pie { margin:12px 0 0; padding:11px 0 0; border-top:1px dotted color-mix(in srgb, var(--bg) 55%, var(--fg)); font:600 11.5px "JetBrains Mono", ui-monospace, monospace; color:color-mix(in srgb, var(--bg) 20%, var(--fg)); min-height:0; }
-#vista-hoy .meta-pie .medidor { background:color-mix(in srgb, var(--fg) 14%, var(--bg)); border-radius:999px; } #vista-hoy .meta-pie .medidor i { background:var(--fg); }
 #vista-hoy .kpis { gap:10px; }
 #vista-hoy .kpi { padding:14px 14px 12px; border-radius:24px; background:var(--tablero); border:1px solid var(--hb); }
 #vista-hoy .kpi-t { font:600 13px "DM Sans", system-ui, sans-serif; color:var(--gm); align-items:center; }
@@ -1324,7 +1291,6 @@ header .tit { flex:1; margin-left:2px; } header .tit strong { font:800 18px/1.1 
 .orden-paso { width:26px; height:26px; flex:none; border-radius:50%; background:var(--panel); display:grid; place-items:center; font:800 13px system-ui, sans-serif; }
 .orden-pt { width:11px; height:11px; flex:none; border-radius:50%; }
 .orden-nm { flex:1; min-width:0; } .orden-nm b { display:block; font-size:15px; } .orden-nm small { color:var(--tenue); font-size:12px; }
-.orden-hoy-n { font:700 12px "JetBrains Mono", ui-monospace, monospace; background:var(--panel); border-radius:999px; padding:3px 8px; white-space:nowrap; }
 .orden-n { font:800 22px "Bricolage Grotesque", system-ui, sans-serif; min-width:40px; text-align:right; }
 .meta-hoy small, .meta-hoy .meta-tx small { color:inherit; }
 
@@ -1341,3 +1307,24 @@ header .tit { flex:1; margin-left:2px; } header .tit strong { font:800 18px/1.1 
 #entrar .semaforo i { width:22px; height:22px; }
 #btn-entrar { background:var(--texto); color:var(--fondo); border-color:var(--texto); font-weight:800; min-height:48px; padding:0 24px; border-radius:14px; width:100%; }
 .sub-pregunta { margin:2px 0 12px; color:var(--tenue); font-size:15px; }
+
+/* Hoy: estado y trabajo con el mismo peso; puntos con glifo; cifras de hoy */
+#vista-hoy .meta-hoy { background:var(--tablero); color:var(--texto); border:1px solid var(--hb); border-radius:28px; padding:18px 18px 16px; }
+#vista-hoy .meta-n { font-size:44px; }
+#vista-hoy .meta-tx small, #vista-hoy .meta-hoy small { color:var(--tenue); opacity:1; }
+#vista-hoy .meta-ir { background:var(--texto); color:var(--fondo); display:inline-flex; align-items:center; min-height:48px; padding:0 20px; font-size:15px; }
+#vista-hoy .meta-barra { background:var(--panel); }
+#vista-hoy .meta-barra i { background:var(--texto); }
+#vista-hoy .meta-pie2 { color:var(--gm); opacity:1; align-items:center; }
+.orden-n { display:flex; flex-direction:column; align-items:flex-end; line-height:1.05; }
+.orden-n small { font:500 12px "DM Sans", system-ui, sans-serif; color:var(--tenue); }
+.punto-ic { width:20px; height:20px; border-radius:50%; display:grid; place-items:center; flex:none; background:var(--c, var(--gris)); color:var(--tablero); }
+.punto-ic svg { width:12px; height:12px; }
+.punto-ic.ok { --c:var(--verde); } .punto-ic.aviso { --c:var(--amarillo); } .punto-ic.mal { --c:var(--rojo); }
+.punto-ic.nd { background:var(--hb); color:var(--gm); }
+@media (max-width:760px) {
+  #vista-hoy .estado-v3 .pasos { grid-template-columns:repeat(4, minmax(0,1fr)); row-gap:6px; }
+  #vista-hoy .estado-v3 .paso { font-size:13px; }
+  #vista-hoy .estado-v3 .paso span { letter-spacing:-.01em; }
+}
+@media (prefers-reduced-motion: reduce) { .con-sesion #raiz::before { animation:none; } }

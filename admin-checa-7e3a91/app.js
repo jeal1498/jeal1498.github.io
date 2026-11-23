@@ -292,10 +292,10 @@
   // ---------- 01 Inicio (Salud) ----------
   // Qué dice el veredicto, qué luz enciende y qué hacer. Nunca verde si faltan datos: lo decide el servidor (estado_general).
   var VEREDICTO = {
-    verde:            ["Todo funciona", "No tienes que hacer nada hoy.", "luz-v"],
+    verde:            ["Todo funciona", "El sistema no necesita nada de ti.", "luz-v"],
     amarillo:         ["Funciona, con avisos", "Revisa los avisos de abajo cuando tengas un momento.", "luz-a"],
     amarillo_parcial: ["Todo lo medible funciona", "Aún no se puede medir todo: faltan datos en algunas cosas.", "luz-a"],
-    rojo:             ["Hay algo que atender", "Mira primero la sección «Por revisar».", "luz-r"],
+    rojo:             ["Hay algo que atender", "Mira primero la sección «Atención».", "luz-r"],
     gris:             ["Aún no se sabe", "Todavía no hay datos suficientes para opinar.", ""]
   };
   // A dónde lleva cada alerta: al lugar donde se puede hacer algo.
@@ -339,13 +339,19 @@
   // Los 7 pasos de la cadena de lectura → componentes del servidor que los miden.
   var PASOS = [{ nombre: "Equipos", claves: ["aplicacion_android"] }, { nombre: "Datos", claves: ["base_de_datos", "api", "ingesta"] }, { nombre: "OCR", claves: ["ocr"] },
                { nombre: "Lectura", claves: ["interpretacion"] }, { nombre: "IA", claves: ["revision_ia"] }, { nombre: "Capturas", claves: ["almacenamiento"] },
-               { nombre: "Cobros", claves: ["mercado_pago", "play_billing"] }];
+               { nombre: "Cobros", claves: ["mercado_pago", "play_billing"], noAplica: true }];
   var GRAVE = { fuera_de_servicio: 0, degradado: 1, sin_comprobar: 2, sin_datos: 2, no_aplicable: 3, operativo: 4 };
   function pasoEstado(paso, comps) {
+    if (paso.noAplica) return { paso: paso, estado: "no_aplicable", peor: { clave: paso.claves[0], nombre: paso.nombre, estado: "no_aplicable" } };
     var ms = comps.filter(function (x) { return paso.claves.indexOf(x.clave) >= 0; });
     if (!ms.length) return { paso: paso, estado: "sin_datos", peor: { clave: paso.claves[0], nombre: paso.nombre, estado: "sin_datos" } };
     var peor = ms.reduce(function (m, x) { return (GRAVE[x.estado] === undefined ? 2 : GRAVE[x.estado]) < (GRAVE[m.estado] === undefined ? 2 : GRAVE[m.estado]) ? x : m; });
     return { paso: paso, estado: peor.estado, peor: peor };
+  }
+  // Punto de cada paso con su glifo: el estado no depende solo del color.
+  function puntoIc(estado) {
+    var cls = ESTADO[estado] || "nd", d = cls === "ok" ? "M5 12.5l4.5 4.5L19 7" : cls === "nd" ? "M6 12h12" : "M12 5v9M12 19v.2";
+    return el("span", { clase: "punto-ic " + cls, "aria-hidden": "true" }, [sv("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "3.4", "stroke-linecap": "round", "stroke-linejoin": "round" }, [sv("path", { d: d })])]);
   }
   // Hoy se arma fuera de pantalla y se muestra completo de una vez (sin que aparezcan partes después).
   async function inicio(real) {
@@ -358,35 +364,40 @@
     var pUrg = contarUrgentes(), pRsm = llamarVer("admin_revisar_resumen", { p_version: verG || null, p_app: null }, true), pHch = llamar("admin_hechas_hoy", null, true), pKc = llamar("admin_costos", { desde: r.desde, hasta: r.hasta }, true);
     var d = await llamar("admin_salud", { desde: r.desde, hasta: r.hasta }, true);
     c.textContent = "";
-    if (!d) return;
+    if (!d) { c.appendChild(el("div", { clase: "vacio fallo", role: "status" }, [el("p", { texto: "No se pudo cargar el estado del sistema." }), el("button", { type: "button", texto: "Reintentar", onclick: function () { pintar(); } })])); return; }
     var inc = d.atencion.length, n = d.componentes.length;
     var comprobados = d.componentes.filter(function (x) { return ["operativo", "degradado", "fuera_de_servicio"].indexOf(x.estado) >= 0; }).length;
     var fallas = d.componentes.filter(function (x) { return x.estado === "fuera_de_servicio" || x.estado === "degradado"; }).length;
-    var v = VEREDICTO[d.estado_general] || VEREDICTO.gris;
+    var estGen = d.estado_general;
+    // Cobros todavía no aplica: si solo falta medir eso, el sistema está bien.
+    if (estGen === "amarillo_parcial" && !d.componentes.some(function (x) { return (x.estado === "sin_comprobar" || x.estado === "sin_datos") && ["mercado_pago", "play_billing"].indexOf(x.clave) < 0; })) estGen = "verde";
+    var v = VEREDICTO[estGen] || VEREDICTO.gris;
 
     // 1 · Veredicto y frase de acción
     var pasos = PASOS.map(function (p) { return pasoEstado(p, d.componentes); });
     var rotos = pasos.filter(function (x) { return x.estado === "fuera_de_servicio" || x.estado === "degradado"; }).length;
     var fraseCadena = rotos ? "Falla " + rotos + (rotos === 1 ? " paso" : " pasos") + " de " + PASOS.length + "." : "Ningún paso de la cadena falla.";
-    var medidos = pasos.filter(function (x) { return ["operativo", "degradado", "fuera_de_servicio"].indexOf(x.estado) >= 0; }).length;
+    var nPasos = PASOS.filter(function (q) { return !q.noAplica; }).length, medidos = pasos.filter(function (x) { return ["operativo", "degradado", "fuera_de_servicio"].indexOf(x.estado) >= 0; }).length;
+    var nombresRotos = pasos.filter(function (x) { return x.estado === "fuera_de_servicio" || x.estado === "degradado"; }).map(function (x) { return x.paso.nombre; });
     var heroEl;
+    c.appendChild(el("h2", { texto: "Sistema" }));
     c.appendChild(heroEl = el("section", { clase: "hero estado-v3", id: "estado-general" }, [
       el("div", { clase: "estado-cab" }, [
-        el("div", { clase: "estado-izq" }, [el("span", { clase: "latido " + (ESTADO[d.estado_general] || "nd"), "aria-hidden": "true" }), el("h2", { clase: "estado-t", texto: v[0] })]),
-        el("div", { clase: "estado-cont", "aria-label": medidos + " de " + PASOS.length + " partes medidas" }, [el("b", { texto: medidos + "/" + PASOS.length }), el("small", { texto: "medidas" })])]),
-      el("p", { clase: "estado-p", texto: rotos ? (rotos === 1 ? "Un paso tiene problemas." : rotos + " pasos tienen problemas.") + " Tócalo para ver el detalle." : v[1] })]));
+        el("div", { clase: "estado-izq" }, [el("span", { clase: "latido " + (ESTADO[estGen] || "nd"), "aria-hidden": "true" }), el("h2", { clase: "estado-t", texto: v[0] })]),
+        el("div", { clase: "estado-cont", "aria-label": medidos + " de " + nPasos + " partes medidas" }, [el("b", { texto: medidos + "/" + nPasos }), el("small", { texto: "partes" })])]),
+      el("p", { clase: "estado-p", texto: rotos ? "Falla: " + nombresRotos.join(", ") + ". Toca el paso para ver el detalle." : v[1] })]));
 
     // 2 · Pasos de la lectura: un punto por paso; el que falla se abre solo.
     var peor = -1;
     pasos.forEach(function (x, k) { if (GRAVE[x.estado] <= 1 && (peor < 0 || GRAVE[x.estado] < GRAVE[pasos[peor].estado])) peor = k; });
-    var sel = -1;   // el detalle se abre al tocar un paso
+    var sel = peor;   // el paso que peor está se abre solo; los demás, al tocarlos
     var cadena = el("section", { clase: "cadena", id: "cadena", "aria-label": "Pasos de la lectura" });
     var detalleCadena = el("div", { clase: "paso-detalle", "aria-live": "polite" });
     function pintarCadena() {
       cadena.textContent = "";
       cadena.appendChild(el("div", { clase: "pasos" }, pasos.map(function (p, k) {
         return el("button", { type: "button", clase: "paso " + (ESTADO[p.estado] || "nd") + (k === sel ? " sel" : ""), "aria-pressed": String(k === sel), "aria-label": p.paso.nombre + ": " + (TEXTO[p.estado] || p.estado),
-          onclick: function () { sel = sel === k ? -1 : k; pintarCadena(); } }, [punto(p.estado), el("span", { texto: p.paso.nombre })]); })));
+          onclick: function () { sel = sel === k ? -1 : k; pintarCadena(); } }, [puntoIc(p.estado), el("span", { texto: p.paso.nombre })]); })));
       detalleCadena.textContent = "";
       if (sel >= 0) {
         var p = pasos[sel], x = p.peor, pq = PREGUNTA[x.clave] || [x.nombre, x.nombre];
@@ -424,48 +435,56 @@
             el("details", { clase: "alerta-mas" }, [el("summary", { texto: "Dato técnico" }), el("div", { clase: "detalle", texto: a.evidencia })])])]),
         el("div", { clase: "alerta-acc" }, [el("button", { type: "button", clase: acc ? "" : "si", texto: acc ? "Ver detalle" : dest[1], onclick: function () { ir(dest[0]); } }), acc])]);
     }
+    // «Errores sin referencia humana» ya lo dice la tarjeta de arriba. Con alertas altas o medias, «Atención» va justo debajo del estado.
+    atn = atn.filter(function (a) { return a.componente !== "revision_humana"; });
+    var atnPrimero = atn.some(function (a) { return a.gravedad === "alta" || a.gravedad === "media"; });
+    function pintarAtencion() {
+      var at = el("div", { id: "alertas", clase: "atencion" });
+      atn.slice(0, 3).forEach(function (a) { at.appendChild(tarjetaAlerta(a)); });
+      if (atn.length > 3) at.appendChild(el("details", { clase: "mas-alertas" }, [el("summary", { texto: "Ver las " + (atn.length - 3) + " alertas restantes" }), el("div", { clase: "atencion" }, atn.slice(3).map(tarjetaAlerta))]));
+      if (atn.length) c.appendChild(el("h2", { texto: "Atención" }));
+      c.appendChild(at);
+    }
+    if (atnPrimero) pintarAtencion();
     // 3 · Tu meta de hoy (100 revisiones) y en qué orden hacerlas. Los casos de hoy se reparten: verdes y amarillos todos, rojos hasta 40, errores con lo que sobre.
     var nUrg = await pUrg;
     var rsm = await pRsm, hch = await pHch;
     rsm = rsm && !rsm.error ? rsm : null;
     if (rsm) {
-      var META = 100, hechas = hch && !hch.error ? Number(hch.hechas || 0) : 0, resto = Math.max(0, META - hechas), pend = {};
+      var META = 100, hchOk = !!(hch && !hch.error), hechas = hchOk ? Number(hch.hechas || 0) : 0, resto = hchOk ? Math.max(0, META - hechas) : META, pend = {};
       LINEAS.forEach(function (L) { pend[L[0]] = L[0] === "error" ? Number((rsm.err || {}).pend || 0) : Number(((rsm.pop || {})[L[0]] || {}).pend || 0); });
       var hoyN = {}, tope = { verde: 1e9, amarillo: 1e9, rojo: 40, error: 1e9 };
       LINEAS.forEach(function (L) { var t = Math.min(pend[L[0]], tope[L[0]], resto); hoyN[L[0]] = t; resto -= t; });
-      var primera = LINEAS.filter(function (L) { return hoyN[L[0]] > 0; })[0], faltan = Math.max(0, META - hechas), min = Math.round(faltan * 16 / 60);
+      var primera = LINEAS.filter(function (L) { return hoyN[L[0]] > 0; })[0] || LINEAS.filter(function (L) { return pend[L[0]] > 0; })[0], faltan = Math.max(0, META - hechas), min = Math.round(faltan * 16 / 60);
       function irA(lin, empezar) { F["f-kpi"] = "pend"; F["f-lin"] = lin || ""; F["f-sub"] = ""; F["f-abierto"] = "1"; pag.errores = pag.ofertas = 1; autoEmpezar = !!empezar; ir("revisar"); }
-      var barraM = el("i"); barraM.style.width = Math.min(100, hechas / META * 100) + "%";
-      c.appendChild(el("h2", { texto: "Tu meta de hoy" }));
+      var barraM = el("i"); barraM.style.width = (hchOk ? Math.min(100, hechas / META * 100) : 0) + "%";
+      c.appendChild(el("h2", { texto: "Tu trabajo de hoy" }));
       c.appendChild(el("div", { clase: "meta-hoy", id: "meta-hoy" }, [
-        el("div", { clase: "meta-fila" }, [el("b", { clase: "meta-n", texto: String(faltan) }),
-          el("span", { clase: "meta-tx" }, [el("b", { texto: faltan ? (faltan === 1 ? "revisión por hacer" : "revisiones por hacer") : "Meta cumplida" }), el("small", { texto: faltan ? "Unos " + min + " min · " + hechas + " hechas" : hechas + " hechas hoy" })]),
-          faltan && primera ? el("a", { href: "#revisar", id: "meta-empezar", clase: "meta-ir", texto: "Empezar", onclick: function (ev) { ev.preventDefault(); irA(primera[0], true); } }) : null]),
+        el("div", { clase: "meta-fila" }, [el("b", { clase: "meta-n", texto: hchOk ? String(faltan) : "—" }),
+          el("span", { clase: "meta-tx" }, [el("b", { texto: !hchOk || faltan ? (faltan === 1 && hchOk ? "revisión por hacer" : "revisiones por hacer") : "Meta cumplida" }), el("small", { texto: !hchOk ? "No se pudo contar las de hoy" : faltan ? "Unos " + min + " min · " + hechas + " hechas" : hechas + " hechas hoy" })]),
+          (!hchOk || faltan) && primera ? el("a", { href: "#revisar", id: "meta-empezar", clase: "meta-ir", texto: "Empezar", onclick: function (ev) { ev.preventDefault(); irA(primera[0], true); } }) : null]),
         el("span", { clase: "meta-barra" }, [barraM]),
-        el("div", { clase: "meta-pie2" }, [el("span", { texto: hechas + " de " + META }), el("span", { texto: "Avisos primero" })])]));
+        el("div", { clase: "meta-pie2" }, [el("span", { texto: (hchOk ? hechas : "—") + " de " + META }), hchOk ? el("span", { texto: "Avisos primero" }) : el("button", { type: "button", id: "meta-reintentar", texto: "Reintentar", onclick: function () { pintar(); } })])]));
       c.appendChild(el("h2", { texto: "En este orden" }));
       var COL = { verde: "var(--luz-v)", amarillo: "var(--luz-a)", rojo: "var(--luz-r)", error: "var(--gris)" };
-      var NOTA = { verde: "Dicen «Aceptar»: revísalos todos", amarillo: "Revísalos todos", rojo: "Con unos 40 al día alcanza", error: "Para la lista de arreglos" };
+      var NOTA = { verde: "Dicen «Aceptar»: todos los de hoy", amarillo: "Todos los de hoy", rojo: "Hasta 40 al día", error: "Con lo que sobre" };
       c.appendChild(el("div", { clase: "orden-hoy", id: "orden-hoy" }, LINEAS.map(function (L, k) {
         var pt = el("i", { clase: "orden-pt", "aria-hidden": "true" }); pt.style.background = COL[L[0]];
         return el("a", { href: "#revisar", clase: "orden-fila", "data-lin": L[0], onclick: function (ev) { ev.preventDefault(); irA(L[0], false); } }, [
           el("span", { clase: "orden-paso", texto: String(k + 1) }), pt, el("span", { clase: "orden-nm" }, [el("b", { texto: L[3] }), el("small", { texto: NOTA[L[0]] })]),
-          el("span", { clase: "orden-n", texto: String(pend[L[0]]) })]); })));
-      c.appendChild(el("div", { clase: "detalle", texto: "«Hoy» es cuántos te tocan para llegar a 100. Cambia con lo que vaya llegando." }));
+          hchOk ? el("span", { clase: "orden-n" }, [el("b", { texto: String(hoyN[L[0]]) }), el("small", { texto: "de " + pend[L[0]] })]) : el("span", { clase: "orden-n", texto: String(pend[L[0]]) })]); })));
+      c.appendChild(el("div", { clase: "detalle", texto: hchOk ? "El número grande es cuántos te tocan hoy para llegar a 100; el chico, el total pendiente." : "No se pudo contar lo de hoy: se muestra el total pendiente de cada color." }));
+    } else {
+      c.appendChild(el("h2", { texto: "Tu trabajo de hoy" }));
+      c.appendChild(el("div", { clase: "vacio fallo", role: "status" }, [el("p", { texto: "No se pudo cargar tu meta de hoy." }), el("button", { type: "button", texto: "Reintentar", onclick: function () { pintar(); } })]));
     }
-    var at = el("div", { id: "alertas", clase: "atencion" });
-    // «Errores sin referencia humana» ya lo dice la tarjeta de arriba.
-    atn = atn.filter(function (a) { return a.componente !== "revision_humana"; });
-    atn.slice(0, 3).forEach(function (a) { at.appendChild(tarjetaAlerta(a)); });
-    if (atn.length > 3) at.appendChild(el("details", { clase: "mas-alertas" }, [el("summary", { texto: "Ver las " + (atn.length - 3) + " alertas restantes" }), el("div", { clase: "atencion" }, atn.slice(3).map(tarjetaAlerta))]));
-    if (atn.length) c.appendChild(el("h2", { texto: "Atención" }));
-    c.appendChild(at);
+    if (!atnPrimero) pintarAtencion();
     // 4 · Cuatro cifras: cada una lleva a su detalle.
     var porClave = {}; d.indicadores.forEach(function (i) { porClave[i.clave] = i; });
     var DEST = { lecturas: ["calidad", "resumen"], tasa_errores: ["calidad", "versiones"], calidad_interpretacion: ["calidad", "ia"] };
     var hs = d.historia || [];
     var SPARK = { lecturas: hs.map(function (x) { return x.lecturas; }), tasa_errores: hs.map(function (x) { return x.lecturas ? x.errores / x.lecturas : null; }) };
-    var CORTO = { lecturas: "Lecturas", tasa_errores: "Errores", calidad_interpretacion: "Acierto" };
+    var CORTO = { lecturas: "Lecturas", tasa_errores: "Errores", calidad_interpretacion: "Bien leídas" };
     function valorInd(i) { var v = i.valor === undefined || i.valor === null ? (i.k !== undefined && i.n ? i.k / i.n : null) : i.valor; return v === null ? "—" : (i.unidad && i.unidad.indexOf("proporci") === 0 ? pct(v) : Number(v).toLocaleString("en-US")); }
     function kpi(titulo, valor, sub, extra, v, p) {
       return el("a", { href: "#" + v + (p ? "/" + p : ""), clase: "kpi", onclick: function (ev) { ev.preventDefault(); ir(v, p); } }, [
@@ -473,7 +492,7 @@
     }
     var cuatro = ["lecturas", "tasa_errores", "calidad_interpretacion"].map(function (k) { return porClave[k]; }).filter(Boolean).map(function (i) {
       var sub = i.n ? (i.clave === "lecturas" ? "en el periodo" : i.k + " de " + i.n) : i.clave === "lecturas" ? "en el periodo" : "aún sin casos";
-      var extra = SPARK[i.clave] ? spark(SPARK[i.clave]) : i.clave === "calidad_interpretacion" && i.n ? el("span", { clase: "medidor" }, [(function () { var b = el("i"); b.style.width = Math.round(i.k / i.n * 100) + "%"; b.style.background = "var(--verde)"; return b; })()]) : i.clave === "calidad_interpretacion" ? el("span", { clase: "sp-vacio", "aria-hidden": "true" }) : null;
+      var extra = SPARK[i.clave] ? spark(SPARK[i.clave]) : i.clave === "calidad_interpretacion" && i.n ? el("span", { clase: "medidor" }, [(function () { var b = el("i"); b.style.width = Math.round(i.k / i.n * 100) + "%"; b.style.background = i.n < 30 ? "var(--gris)" : "var(--verde)"; return b; })()]) : i.clave === "calidad_interpretacion" ? el("span", { clase: "sp-vacio", "aria-hidden": "true" }) : null;
       if (extra && i.clave === "tasa_errores" && Number(i.valor) === 0) extra.setAttribute("class", "spark bueno");
       return kpi(CORTO[i.clave], valorInd(i), sub, extra, DEST[i.clave][0], DEST[i.clave][1]); });
     var kc = await pKc;
