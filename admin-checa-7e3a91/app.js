@@ -4,7 +4,7 @@
 (function () {
   "use strict";
   var cli = null, yo = null, correo = "", falloCarga = false, filtrosAbiertos = false, colaErrores = [], dirCola = 1, scrollErrores = 0, restaurarScroll = null, ultimaClave = "", vista = "hoy", param = null, pag = { errores: 1, ofertas: 1 }, F = {}, dias = 90, verG = (function () { try { return localStorage.getItem("checa-ver") || ""; } catch (e) { return ""; } })();
-  var urgentes = null, capPend = 0, buscarEq = "";
+  var urgentes = null, capPend = 0, buscarEq = "", filtroRestaurado = false;
   function totalPend() { return (urgentes || 0) + (capPend || 0); }
   var SVG = "http://www.w3.org/2000/svg";
   // Cuatro pestañas, una pregunta cada una: ¿qué pasa? ¿qué decido? ¿qué tan bien va? ¿cómo está configurado?
@@ -1218,11 +1218,6 @@
     var esRevisor = !!(yo && yo.rol === "revisor");
     var cuerpo = el("div", { id: "rev-cuerpo" }); c.appendChild(cuerpo);
     var estado = { items: [], hist: [], pend: {}, rev: {}, actual: null, url: null, blob: null, ultima: null, ocupado: false, sug: null, pidiendo: false, prec: null };
-    // Avance del día: cuántas revisaste hoy (solo en este teléfono; se reinicia cada día).
-    var META_DIA = 100;
-    function claveDia() { var d = new Date(); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
-    function hoyN() { try { var o = JSON.parse(localStorage.getItem("rev-dia") || "null"); return o && o.f === claveDia() ? o.n : 0; } catch (x) { return 0; } }
-    function sumarHoy(k) { try { localStorage.setItem("rev-dia", JSON.stringify({ f: claveDia(), n: Math.max(0, hoyN() + k) })); } catch (x) { /* sin almacenamiento: solo no se recuerda */ } }
     function soltar() { if (estado.url) { URL.revokeObjectURL(estado.url); estado.url = null; } estado.blob = null; estado.sug = null; estado.pidiendo = false; }
 
     async function cargarCola() {
@@ -1366,9 +1361,9 @@
         el("div", { clase: "detalle meta-color", texto: rotulo[1] + ": " + (estado.rev[revNivel] || 0) + " de " + REV_META + " para la meta de este color" }),
         P && P.n > 0 ? el("div", { clase: "detalle", id: "rev-ia-prec", texto: "IA (DeepSeek) acertó " + P.aciertos + " de " + P.n + (P.n < (P.minimo || 30) ? " · pocos casos para opinar (menos de " + (P.minimo || 30) + ")" : " · " + Math.round(P.aciertos / P.n * 100) + " %") }) : null], false, "rev-progreso")])]);
       if (esRevisor) cuerpo.appendChild(el("div", { clase: "ficha-bar", id: "rev-botones" }, [
-        el("button", { type: "button", id: "rev-correcta", clase: "p ancho" + (recAcc === "ok" ? " rec" : ""), disabled: off ? "" : null, onclick: function () { guardar({ resultado: "correcta" }); } }, ["Está bien", recAcc === "ok" ? el("small", { texto: "Sugerido" }) : null]),
-        el("button", { type: "button", id: "rev-valores", clase: recAcc === "corregir" ? "rec" : "", disabled: off ? "" : null, onclick: function () { hojaValores(it, vigS && SV && SV.tarifa !== null && SV.km !== null && SV.min !== null && SV.tarifa !== undefined && SV.km !== undefined && SV.min !== undefined ? { tarifa: SV.tarifa, km: SV.km, min: SV.min } : undefined); } }, ["Corregir", recAcc === "corregir" ? el("small", { texto: "Sugerido" }) : null]),
-        el("button", { type: "button", id: "rev-falso", clase: recAcc === "falso" ? "rec" : "", disabled: off ? "" : null, onclick: function () { hojaFalso(SV && !vigS ? (SV.estado === "vencida" ? "vencida" : "no_oferta") : undefined); } }, ["No es oferta", recAcc === "falso" ? el("small", { texto: "Sugerido" }) : null])]));
+        el("button", { type: "button", id: "rev-correcta", clase: "ancho" + (recAcc === "ok" || !recAcc ? " p" : "") + (recAcc === "ok" ? " rec" : ""), disabled: off ? "" : null, onclick: function () { guardar({ resultado: "correcta" }); } }, ["Está bien", recAcc === "ok" ? el("small", { texto: "Sugerido" }) : null]),
+        el("button", { type: "button", id: "rev-valores", clase: recAcc === "corregir" ? "p rec" : "", disabled: off ? "" : null, onclick: function () { hojaValores(it, vigS && SV && SV.tarifa !== null && SV.km !== null && SV.min !== null && SV.tarifa !== undefined && SV.km !== undefined && SV.min !== undefined ? { tarifa: SV.tarifa, km: SV.km, min: SV.min } : undefined); } }, ["Corregir", recAcc === "corregir" ? el("small", { texto: "Sugerido" }) : null]),
+        el("button", { type: "button", id: "rev-falso", clase: recAcc === "falso" ? "p rec" : "", disabled: off ? "" : null, onclick: function () { hojaFalso(SV && !vigS ? (SV.estado === "vencida" ? "vencida" : "no_oferta") : undefined); } }, ["No es oferta", recAcc === "falso" ? el("small", { texto: "Sugerido" }) : null])]));
       else cuerpo.appendChild(el("div", { clase: "solo-lectura", texto: "Tu rol es de solo lectura: no puedes revisar." }));
     }
     await cargarPrecision();
@@ -1485,12 +1480,17 @@
     if (F.desde || F.hasta) a.push(["desde", corto(F.desde) + " – " + corto(F.hasta)]);
     return a;
   }
-  // ---------- Revisar: tres cuadros (Pendientes · Revisadas · Revisables), su desglose y la lista filtrada ----------
-  var KPIS = [["pend", "Pendientes"], ["rev", "Revisadas"], ["todo", "Revisables"]];
+  // Avance del día: cuántas revisaste hoy (solo en este teléfono; se reinicia cada día).
+  var META_DIA = 100;
+  function claveDia() { var d = new Date(); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
+  function hoyN() { try { var o = JSON.parse(localStorage.getItem("rev-dia") || "null"); return o && o.f === claveDia() ? o.n : 0; } catch (x) { return 0; } }
+  function sumarHoy(k) { try { localStorage.setItem("rev-dia", JSON.stringify({ f: claveDia(), n: Math.max(0, hoyN() + k) })); } catch (x) { /* sin almacenamiento: solo no se recuerda */ } }
+  // ---------- Revisar: tres cuadros (Pendientes · Hechas · Todas), su desglose y la lista filtrada ----------
+  var KPIS = [["pend", "Pendientes"], ["rev", "Hechas"], ["todo", "Todas"]];
   // Orden de prioridad: verdes (dicen «Aceptar»), amarillos, rojos y al final los errores.
   var LINEAS = [["verde", "Pop-ups verdes", "dv", "Verdes"], ["amarillo", "Pop-ups amarillos", "da", "Amarillos"], ["rojo", "Pop-ups rojos", "dr", "Rojos"], ["error", "Errores del OCR", "dg", "Errores"]];
-  var EDADES = [["hoy", "De hoy", "De hoy"], ["ayer", "De ayer", "De ayer"], ["d2_4", "De 2 a 4 días", "2 a 4 días"], ["borrarse", "Por borrarse (5 días o más)", "Por borrarse"]];
-  var RES_POP = [["correcta", "Correctas", "Correctas"], ["valores_mal", "Valores mal", "Valores mal"], ["falso_positivo", "Falsos positivos", "Falsos +"]];
+  var EDADES = [["hoy", "De hoy", "De hoy"], ["ayer", "De ayer", "De ayer"], ["d2_4", "De 2 a 4 días", "2 a 4 días"], ["borrarse", "Se borran pronto (5 días o más)", "Se borran pronto"]];
+  var RES_POP = [["correcta", "Correctas", "Correctas"], ["valores_mal", "Estaban mal", "Estaban mal"], ["falso_positivo", "No era oferta", "No era oferta"]];
   var RES_ERR = [["ia", "Acertó la IA", "Acertó la IA"], ["lector", "Acertó el OCR", "Acertó el OCR"], ["ilegible", "Ilegible", "Ilegible"], ["otro_valor", "Otro valor", "Otro valor"], ["no_oferta", "No era oferta", "No era oferta"]];
   function fechaMX(f) { try { return new Date(f).toLocaleDateString("en-CA", { timeZone: "America/Mexico_City" }); } catch (e) { return ""; } }
   function edadDe(f) {
@@ -1539,7 +1539,7 @@
     if (!usarCache) { cacheRev = { t: Date.now(), d: {} }; cuerpoRev = c; }
     var kpi = KPIS.map(function (x) { return x[0]; }).indexOf(F["f-kpi"]) >= 0 ? F["f-kpi"] : "pend";
     var lin = LINEAS.map(function (x) { return x[0]; }).indexOf(F["f-lin"]) >= 0 ? F["f-lin"] : "", sub = lin ? (F["f-sub"] || "") : "";
-    var abierto = F["f-abierto"] !== "0";
+    var abierto = F["f-abierto"] === "1";
     var esRevisor = !!(yo && yo.rol === "revisor"), vf = valor("f-version"), af = valor("f-app");
     var tarj = el("div", { clase: "kp3", role: "group", "aria-label": "Qué casos ver" }); c.appendChild(tarj);
     if (!usarCache) skeleton(c);
@@ -1553,12 +1553,19 @@
     var SUB = { pend: [Number(R.err.pend), sumaPop("pend")], rev: [Number(R.err.rev), sumaPop("rev")], todo: [Number(R.err.pend) + Number(R.err.rev), sumaPop("pend") + sumaPop("rev")] };
     var b = document.getElementById("insignia-revisar"); if (b) { b.textContent = NUM.pend ? String(NUM.pend) : ""; b.hidden = !NUM.pend; }
     KPIS.forEach(function (x) {
-      tarj.appendChild(el("button", { type: "button", id: "kp-" + x[0], clase: "kp-c" + (x[0] === "pend" ? " p" : "") + (kpi === x[0] ? " on" : ""), "aria-pressed": String(kpi === x[0]), "aria-expanded": String(kpi === x[0] && abierto),
+      tarj.appendChild(el("button", { type: "button", id: "kp-" + x[0], clase: "kp-c" + (kpi === x[0] ? " on" : ""), "aria-pressed": String(kpi === x[0]), "aria-expanded": String(kpi === x[0] && abierto),
         onclick: function () {
           if (kpi === x[0]) F["f-abierto"] = abierto ? "0" : "1"; else { F["f-kpi"] = x[0]; F["f-lin"] = ""; F["f-sub"] = ""; F["f-abierto"] = "1"; }
           pag.errores = pag.ofertas = 1; scrollErrores = 0; refrescarRev(); } },
         [el("small", { texto: x[1] }), el("span", { clase: "kp-n", texto: NUM[x[0]].toLocaleString("en-US") }), el("span", { clase: "kp-s", texto: SUB[x[0]][0] + " errores" }), el("span", { clase: "kp-s", texto: SUB[x[0]][1] + " pop-ups" })]));
     });
+    // La acción del día va arriba: empezar a revisar.
+    if (esRevisor && NUM.pend) {
+      var viejoTxt = R.mas_viejo ? "el más viejo, " + haceTxt(R.mas_viejo.creado) : "";
+      c.insertBefore(el("div", { clase: "rev-cta" }, [el("a", { href: "#revisar", id: "empezar", clase: "empezar-v", onclick: function (ev) { ev.preventDefault(); if (empezarAbrir) empezarAbrir(); } }, [
+        sv("svg", { viewBox: "0 0 24 24", "aria-hidden": "true", class: "ico-play" }, [sv("path", { d: "M8 5l11 7-11 7z", fill: "currentColor" })]),
+        el("span", { clase: "cta-tx" }, [el("b", { texto: NUM.pend === 1 ? "Revisar el pendiente" : "Revisar los " + NUM.pend.toLocaleString("en-US") + " pendientes" }), el("small", { texto: [viejoTxt, "hoy " + hoyN() + " de " + META_DIA].filter(Boolean).join(" · ") })])])]), tarj);
+    }
     // Desglose del cuadro elegido
     if (abierto) {
       var des = el("div", { clase: "kp-d", id: "kp-desglose" });
@@ -1580,12 +1587,11 @@
       if (kpi === "pend") {
         des.appendChild(el("div", { clase: "kp-pie" }, [el("span", { texto: "El más viejo sin revisar" }), el("b", { texto: R.mas_viejo ? haceTxt(R.mas_viejo.creado) + " · " + (R.mas_viejo.t === "error" ? "error" : "pop-up") : "nada pendiente" })]));
         if (Number((R.err || {}).no_decidibles || 0) > 0) des.appendChild(el("div", { clase: "kp-pie" }, [el("span", { texto: "Sin captura ni huella: no se pueden decidir, no cuentan" }), el("b", { texto: String(R.err.no_decidibles) })]));
-        if (esRevisor && NUM.pend) des.appendChild(el("a", { href: "#revisar", id: "empezar", clase: "empezar-v", onclick: function (ev) { ev.preventDefault(); if (empezarAbrir) empezarAbrir(); } }, [sv("svg", { viewBox: "0 0 24 24", "aria-hidden": "true", class: "ico-play" }, [sv("path", { d: "M8 5l11 7-11 7z", fill: "currentColor" })]), "Empezar por el más viejo"]));
       } else if (kpi === "rev") {
         var ac = R.acierto || {}, nA = Number(ac.n || 0);
         des.appendChild(el("div", { clase: "kp-pie" }, [el("span", { texto: "Acierto OCR / IA" + (nA < 30 ? " · " + nA + " casos: pocos casos para opinar" : " · " + nA + " casos") }), el("b", { texto: nA ? ac.lector + "/" + nA + " · " + ac.ia + "/" + nA : "aún no se sabe" })]));
       } else {
-        des.appendChild(el("div", { clase: "kp-pie" }, [el("span", { texto: "Total revisables (versión " + txt(R.version_min) + " en adelante)" }), el("b", { texto: String(NUM.todo) })]));
+        des.appendChild(el("div", { clase: "kp-pie" }, [el("span", { texto: "Total de casos (versión " + txt(R.version_min) + " en adelante)" }), el("b", { texto: String(NUM.todo) })]));
       }
       c.appendChild(des);
     }
@@ -1627,11 +1633,15 @@
       viejo.abrir(); } : null;
     if (autoEmpezar) { autoEmpezar = false; if (empezarAbrir) { empezarAbrir(); return; } }
     var sk = c.querySelector(".skeleton"); if (sk) sk.remove();
-    var corteRev = el("h2", { clase: "grupo-h" }, [el("span", { texto: migas }), el("span", { texto: items.length + (items.length === 1 ? " caso" : " casos") })]); c.appendChild(corteRev);
+    var corteRev = el("h2", { clase: "grupo-h" }, [el("span", { texto: items.length + (items.length === 1 ? " caso" : " casos") })]); c.appendChild(corteRev);
+    if (filtroRestaurado && (lin || sub || act.length)) { filtroRestaurado = false; c.insertBefore(el("div", { clase: "detalle", id: "nota-filtro", texto: "Este filtro quedó de tu última visita." }), corteRev); }
     var lista = el("div", { clase: "lista-v", id: "lista-v" }), dia = null;
-    if (!items.length) lista.appendChild(el("div", { clase: "vacio-v" }, [el("b", { texto: kpi === "pend" && !lin ? "Nada pendiente" : "Sin casos con estos filtros" }),
-      el("span", { texto: kpi === "pend" && !lin ? "Todo lo que llegó ya está revisado." : "Prueba quitando un filtro." }),
-      kpi === "pend" && !lin && !act.length ? null : el("button", { type: "button", id: "quitar-filtros", clase: "primario", texto: "Quitar filtros", onclick: function () { F = { "f-kpi": kpi }; pag.errores = pag.ofertas = 1; pintar(); } })]));
+    if (!items.length) {
+      var ok0 = kpi === "pend";   // con Pendientes, no ver casos es buena noticia, no un fallo
+      lista.appendChild(el("div", { clase: "vacio-v" }, [el("b", { texto: ok0 ? (lN ? "Todo al día en " + lN[3].toLowerCase() : "Todo al día") : "Sin casos con estos filtros" }),
+        el("span", { texto: ok0 ? (lN || act.length ? "No hay nada pendiente con este filtro." : "Todo lo que llegó ya está revisado.") : "Prueba quitando un filtro." }),
+        ok0 && !lN && !act.length ? null : el("button", { type: "button", id: "quitar-filtros", clase: "primario", texto: ok0 ? "Ver todos los pendientes" : "Quitar filtros", onclick: function () { F = { "f-kpi": kpi }; pag.errores = pag.ofertas = 1; pintar(); } })]));
+    }
     items.forEach(function (it) {
       var d = etiquetaDia(it.creado);
       if (d !== dia) { dia = d; lista.appendChild(el("div", { clase: "dia-v" }, [el("span", { texto: d }), el("span", { clase: "dia-n", "data-dia": d })])); }
@@ -2160,7 +2170,7 @@
       if (btn) btn.onclick = function () { cli.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.href.split("#")[0] } }); };
       return;
     }
-    try { var gv = JSON.parse(sessionStorage.getItem("checa-vista") || "null"); if (gv && gv.F && typeof gv.F === "object") { F = gv.F; delete F["f-version"]; if (gv.pag && gv.pag.errores > 0 && gv.pag.ofertas > 0) pag = gv.pag; } } catch (x) { /* sin almacenamiento */ }
+    try { var gv = JSON.parse(sessionStorage.getItem("checa-vista") || "null"); if (gv && gv.F && typeof gv.F === "object") { F = gv.F; delete F["f-version"]; filtroRestaurado = !!(F["f-lin"] || F["f-sub"] || F["f-dup"]); if (gv.pag && gv.pag.errores > 0 && gv.pag.ofertas > 0) pag = gv.pag; } } catch (x) { /* sin almacenamiento */ }
     var h = (location.hash || "").replace(/^#/, "").split("/"), t = traducir(h[0], h[1]);
     if (VISTAS[t[0]]) { vista = t[0]; param = t[1] || null; if (t[0] !== h[0]) { try { history.replaceState(null, "", "#" + vista + (param ? "/" + param : "")); } catch (e) { /* sin historial */ } } }
     correo = (s.user && s.user.email) || ""; document.getElementById("quien").textContent = correo || "Sesión iniciada";
