@@ -344,8 +344,13 @@
     var peor = ms.reduce(function (m, x) { return (GRAVE[x.estado] === undefined ? 2 : GRAVE[x.estado]) < (GRAVE[m.estado] === undefined ? 2 : GRAVE[m.estado]) ? x : m; });
     return { paso: paso, estado: peor.estado, peor: peor };
   }
-  async function inicio(c) {
-    skeleton(c);
+  // Hoy se arma fuera de pantalla y se muestra completo de una vez (sin que aparezcan partes después).
+  async function inicio(real) {
+    skeleton(real);
+    var tmp = el("div", { clase: "hoy-tmp" });
+    try { await inicioArmar(tmp); } finally { real.textContent = ""; while (tmp.firstChild) real.appendChild(tmp.firstChild); }
+  }
+  async function inicioArmar(c) {
     var r = rango();
     var pUrg = contarUrgentes(), pRsm = llamarVer("admin_revisar_resumen", { p_version: verG || null, p_app: null }, true), pHch = llamar("admin_hechas_hoy", null, true), pKc = llamar("admin_costos", { desde: r.desde, hasta: r.hasta }, true);
     var d = await llamar("admin_salud", { desde: r.desde, hasta: r.hasta }, true);
