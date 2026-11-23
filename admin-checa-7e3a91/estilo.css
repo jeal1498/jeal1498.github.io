@@ -1317,7 +1317,8 @@ header .tit { flex:1; margin-left:2px; } header .tit strong { font:800 18px/1.1 
 .punto-ic.ok { --c:var(--verde); } .punto-ic.aviso { --c:var(--amarillo); } .punto-ic.mal { --c:var(--rojo); }
 .punto-ic.nd { background:var(--hb); color:var(--gm); }
 @media (max-width:760px) {
-  #vista-hoy .estado-v3 .pasos { grid-template-columns:repeat(4, minmax(0,1fr)); row-gap:6px; }
+  #vista-hoy .estado-v3 .pasos { display:flex; flex-wrap:wrap; justify-content:center; gap:6px 0; }
+  #vista-hoy .estado-v3 .pasos .paso { flex:0 0 25%; min-width:0; }
   #vista-hoy .estado-v3 .paso { font-size:13px; }
   #vista-hoy .estado-v3 .paso span { letter-spacing:-.01em; }
 }
