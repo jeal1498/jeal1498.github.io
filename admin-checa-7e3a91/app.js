@@ -117,12 +117,26 @@
   function insignia(estado) { return el("span", { clase: "insignia " + (ESTADO[estado] || "nd"), texto: TEXTO[estado] || estado }); }
 
   // Mientras la base no tenga p_version/p_app, reintenta sin ellos (los números quedan sin filtrar, la lista sí se filtra aquí).
-  async function llamarVer(fn, args) {
-    var r = await llamar(fn, args);
-    if (r === null && args && ("p_version" in args || "p_app" in args)) { var a = Object.assign({}, args); delete a.p_version; delete a.p_app; r = await llamar(fn, a); }
+  async function llamarVer(fn, args, swr) {
+    var r = await llamar(fn, args, swr);
+    if (r === null && args && ("p_version" in args || "p_app" in args)) { var a = Object.assign({}, args); delete a.p_version; delete a.p_app; r = await llamar(fn, a, swr); }
     return r;
   }
-  async function llamar(fn, args) {
+  // Datos al instante: con swr se devuelve lo último guardado y se actualiza por detrás; si cambió, se vuelve a pintar.
+  function swrLeer(k) { try { var t = localStorage.getItem("checa-swr:" + k); return t ? JSON.parse(t) : null; } catch (e) { return null; } }
+  function swrGuardar(k, d) { try { localStorage.setItem("checa-swr:" + k, JSON.stringify(d)); } catch (e) { /* sin almacenamiento */ } }
+  var swrRepintado = {};
+  async function llamar(fn, args, swr) {
+    if (swr) {
+      var k = fn + JSON.stringify(args || {}), c = swrLeer(k);
+      if (c) {
+        llamar(fn, args).then(function (d) {
+          if (d && JSON.stringify(d) !== JSON.stringify(c)) { swrGuardar(k, d); if (Date.now() - (swrRepintado[k] || 0) > 30000 && window.Admin && window.Admin.pintar && !document.hidden) { swrRepintado[k] = Date.now(); window.Admin.pintar(); } }
+        });
+        return c;
+      }
+      var d0 = await llamar(fn, args); if (d0) swrGuardar(k, d0); return d0;
+    }
     aviso("");
     var r;
     try { r = await cli.rpc(fn, args || {}); } catch (e) { falloCarga = true; aviso("No hay conexión con el servidor. Revisa tu internet e intenta de nuevo.", true); return null; }
@@ -324,8 +338,8 @@
   async function inicio(c) {
     skeleton(c);
     var r = rango();
-    var pUrg = contarUrgentes(), pRsm = llamarVer("admin_revisar_resumen", { p_version: verG || null, p_app: null }), pHch = llamar("admin_hechas_hoy"), pKc = llamar("admin_costos", { desde: r.desde, hasta: r.hasta });
-    var d = await llamar("admin_salud", { desde: r.desde, hasta: r.hasta });
+    var pUrg = contarUrgentes(), pRsm = llamarVer("admin_revisar_resumen", { p_version: verG || null, p_app: null }, true), pHch = llamar("admin_hechas_hoy"), pKc = llamar("admin_costos", { desde: r.desde, hasta: r.hasta }, true);
+    var d = await llamar("admin_salud", { desde: r.desde, hasta: r.hasta }, true);
     c.textContent = "";
     if (!d) return;
     var inc = d.atencion.length, n = d.componentes.length;
@@ -515,7 +529,7 @@
     var nL = T.rev + T.eDec, nI = T.conIa + T.eDec;
     return [{ componente: "lector", n: nL, coinciden: T.ok + T.eLector }, { componente: "vision", n: nI, coinciden: T.iaOk + T.eIa }];
   }
-  async function cargarCalidad(r) { var x = await llamar("admin_calidad", { desde: r.desde, hasta: r.hasta }); return x && !x.error ? x.filas || [] : null; }
+  async function cargarCalidad(r) { var x = await llamar("admin_calidad", { desde: r.desde, hasta: r.hasta }, true); return x && !x.error ? x.filas || [] : null; }
   function conCalidad(versiones, filas) {
     if (!filas) return versiones;
     return versiones.map(function (v) { var t = totalesCal(filas, v.version); return Object.assign({}, v, { con_referencia: t.rev, coinciden: t.ok }); });
@@ -523,7 +537,7 @@
   async function resumen(c) {
     skeleton(c);
     var r = rango();
-    var res = await Promise.all([llamar("admin_metricas", { desde: r.desde, hasta: r.hasta, app: null, version: verG || null }), llamar("admin_salud", { desde: r.desde, hasta: r.hasta }),
+    var res = await Promise.all([llamar("admin_metricas", { desde: r.desde, hasta: r.hasta, app: null, version: verG || null }, true), llamar("admin_salud", { desde: r.desde, hasta: r.hasta }, true),
       llamar("admin_versiones", { desde: r.desde, hasta: r.hasta }), llamar("admin_ia", { desde: r.desde, hasta: r.hasta }), cargarCalidad(r)]);
     var m = res[0], d = res[1], dv = res[2], di = res[3], cal = res[4], T = cal ? totalesCal(cal, verG) : null;
     if (dv && verG) dv = Object.assign({}, dv, { versiones: (dv.versiones || []).filter(function (x) { return x.version === verG; }) });
@@ -2093,6 +2107,7 @@
     try { s = (await cli.auth.getSession()).data.session; } catch (e) { s = null; }
     var btn = document.getElementById("btn-entrar");
     if (!s) {
+      document.documentElement.className = "";
       if (btn) btn.onclick = function () { cli.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.href.split("#")[0] } }); };
       return;
     }

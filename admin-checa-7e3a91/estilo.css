@@ -1332,3 +1332,7 @@ header .tit { flex:1; margin-left:2px; } header .tit strong { font:800 18px/1.1 
 .orden-hoy-n { font:700 11px "JetBrains Mono", ui-monospace, monospace; background:var(--panel); border-radius:999px; padding:3px 8px; white-space:nowrap; }
 .orden-n { font:800 22px "Bricolage Grotesque", system-ui, sans-serif; min-width:40px; text-align:right; }
 .meta-hoy small, .meta-hoy .meta-tx small { color:inherit; }
+
+/* Con sesión guardada: sin pantalla de acceso mientras carga; se ve el esqueleto. */
+.con-sesion #entrar { display:none; }
+.con-sesion #raiz:empty::before, .con-sesion #raiz:has(> #entrar:only-child)::before { content:""; display:block; height:120px; margin:16px; border-radius:12px; background:linear-gradient(90deg, var(--tablero), var(--panel), var(--tablero)); background-size:200% 100%; animation:brilla 1.2s infinite; }
