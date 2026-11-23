@@ -131,7 +131,7 @@
       var k = fn + JSON.stringify(args || {}), c = swrLeer(k);
       if (c) {
         llamar(fn, args).then(function (d) {
-          if (d && JSON.stringify(d) !== JSON.stringify(c)) { swrGuardar(k, d); if (Date.now() - (swrRepintado[k] || 0) > 30000 && window.Admin && window.Admin.pintar && !document.hidden) { swrRepintado[k] = Date.now(); window.Admin.pintar(); } }
+          if (d && JSON.stringify(d) !== JSON.stringify(c)) { swrGuardar(k, d); if (Date.now() - (swrRepintado[k] || 0) > 3000 && window.Admin && window.Admin.pintar && !document.hidden) { swrRepintado[k] = Date.now(); window.Admin.pintar(); } }
         });
         return c;
       }
@@ -538,7 +538,7 @@
     skeleton(c);
     var r = rango();
     var res = await Promise.all([llamar("admin_metricas", { desde: r.desde, hasta: r.hasta, app: null, version: verG || null }, true), llamar("admin_salud", { desde: r.desde, hasta: r.hasta }, true),
-      llamar("admin_versiones", { desde: r.desde, hasta: r.hasta }), llamar("admin_ia", { desde: r.desde, hasta: r.hasta }), cargarCalidad(r)]);
+      llamar("admin_versiones", { desde: r.desde, hasta: r.hasta }, true), llamar("admin_ia", { desde: r.desde, hasta: r.hasta }, true), cargarCalidad(r)]);
     var m = res[0], d = res[1], dv = res[2], di = res[3], cal = res[4], T = cal ? totalesCal(cal, verG) : null;
     if (dv && verG) dv = Object.assign({}, dv, { versiones: (dv.versiones || []).filter(function (x) { return x.version === verG; }) });
     if (dv && cal) dv = Object.assign({}, dv, { versiones: conCalidad(dv.versiones || [], cal) });
@@ -1473,7 +1473,7 @@
   async function pedirRev(usar, fn, args) {
     var k = fn + JSON.stringify(args || {});
     if (usar && cacheRev.d[k] !== undefined && Date.now() - cacheRev.t < 120000) return cacheRev.d[k];
-    var r = await llamarVer(fn, args); cacheRev.d[k] = r; return r;
+    var r = await llamarVer(fn, args, true); cacheRev.d[k] = r; return r;
   }
   function refrescarRev() {
     try { sessionStorage.setItem("checa-vista", JSON.stringify({ F: F, dias: dias, pag: pag })); } catch (x) { /* sin almacenamiento */ }
@@ -1634,7 +1634,7 @@
   }
   async function versiones(c) {
     skeleton(c);
-    var r = rango(), rs = await Promise.all([llamar("admin_versiones", { desde: r.desde, hasta: r.hasta }), cargarCalidad(r), cli.rpc("admin_dispositivos_version").then(function (x) { return x && x.data && !x.data.error ? x.data : null; }, function () { return null; })]), d = rs[0], dd = rs[2];
+    var r = rango(), rs = await Promise.all([llamar("admin_versiones", { desde: r.desde, hasta: r.hasta }, true), cargarCalidad(r), llamar("admin_dispositivos_version", null, true)]), d = rs[0], dd = rs[2];
     var sk = c.querySelector(".skeleton"); if (sk) sk.remove();
     if (!d) return;
     var vs = conCalidad(d.versiones || [], rs[1]).slice().sort(function (x, y) { return String(y.primera || "").localeCompare(String(x.primera || "")); });
@@ -1705,7 +1705,7 @@
   }
   async function dispositivos(c) {
     skeleton(c);
-    var r = rango(), d = await llamar("admin_dispositivos", { desde: r.desde, hasta: r.hasta });
+    var r = rango(), d = await llamar("admin_dispositivos", { desde: r.desde, hasta: r.hasta }, true);
     var sk = c.querySelector(".skeleton"); if (sk) sk.remove();
     if (!d) return;
     var q = buscarEq.trim().toLowerCase();
@@ -1775,7 +1775,7 @@
   }
   async function ia(c) {
     skeleton(c);
-    var r = rango(), rs = await Promise.all([llamar("admin_ia", { desde: r.desde, hasta: r.hasta }), cargarCalidad(r)]), d = rs[0], T = rs[1] ? totalesCal(rs[1], verG) : null;
+    var r = rango(), rs = await Promise.all([llamar("admin_ia", { desde: r.desde, hasta: r.hasta }, true), cargarCalidad(r)]), d = rs[0], T = rs[1] ? totalesCal(rs[1], verG) : null;
     var ie = null; try { var rr = await cli.rpc("admin_ia_estado"); ie = rr && rr.data && !rr.data.error ? rr.data : null; } catch (x) { ie = null; }
     var sk = c.querySelector(".skeleton"); if (sk) sk.remove();
     if (!d) return;
@@ -1865,7 +1865,7 @@
   }
   async function config(c) {
     skeleton(c);
-    var r = rango(), g = await llamar("admin_config"), k = await llamar("admin_costos", { desde: r.desde, hasta: r.hasta }), cu = await llamar("admin_costo_usuarios", { desde: r.desde, hasta: r.hasta }), b = await llamar("admin_bitacora", { pagina: 1 });
+    var r = rango(), rsC = await Promise.all([llamar("admin_config"), llamar("admin_costos", { desde: r.desde, hasta: r.hasta }, true), llamar("admin_costo_usuarios", { desde: r.desde, hasta: r.hasta }, true), llamar("admin_bitacora", { pagina: 1 }, true)]), g = rsC[0], k = rsC[1], cu = rsC[2], b = rsC[3];
     var sk = c.querySelector(".skeleton"); if (sk) sk.remove();
     var ie = null; try { var rr = await cli.rpc("admin_ia_estado"); ie = rr && rr.data && !rr.data.error ? rr.data : null; } catch (x) { ie = null; }
     var ancho = !!(window.matchMedia && matchMedia("(min-width:761px)").matches);
