@@ -2031,7 +2031,6 @@
     h.textContent = "";
     var et = verG ? "v" + verG : "Todas";
     h.appendChild(el("button", { type: "button", id: "btn-periodo", clase: "pildora", "aria-haspopup": "dialog", "aria-label": "Versión: " + et, onclick: abrirPeriodo }, [et, sv("svg", { viewBox: "0 0 24 24", "aria-hidden": "true", class: "ico-p" }, [sv("path", { d: "m7 10 5 5 5-5" })])]));
-    h.appendChild(el("button", { type: "button", id: "btn-buscar", clase: "btn-buscar", "aria-label": "Buscar un caso o un conductor", onclick: abrirBusqueda }, [icono("buscar"), el("span", { clase: "largo", texto: "Buscar" })]));
   }
   function abrirPeriodo() {
     var viejo = document.getElementById("hoja-buscar"); if (viejo) viejo.remove();
