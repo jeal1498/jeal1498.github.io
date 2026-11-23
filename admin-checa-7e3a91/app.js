@@ -455,25 +455,25 @@
       LINEAS.forEach(function (L) { pend[L[0]] = L[0] === "error" ? Number((rsm.err || {}).pend || 0) : Number(((rsm.pop || {})[L[0]] || {}).pend || 0); });
       var hoyN = {}, tope = { verde: 1e9, amarillo: 1e9, rojo: 40, error: 1e9 };
       LINEAS.forEach(function (L) { var t = Math.min(pend[L[0]], tope[L[0]], resto); hoyN[L[0]] = t; resto -= t; });
-      var primera = LINEAS.filter(function (L) { return hoyN[L[0]] > 0; })[0] || LINEAS.filter(function (L) { return pend[L[0]] > 0; })[0], faltan = Math.max(0, META - hechas), min = Math.round(faltan * 16 / 60);
+      var primera = LINEAS.filter(function (L) { return hoyN[L[0]] > 0; })[0] || LINEAS.filter(function (L) { return pend[L[0]] > 0; })[0], totalPend = LINEAS.reduce(function (t, L) { return t + pend[L[0]]; }, 0), faltan = Math.min(Math.max(0, META - hechas), totalPend), min = Math.round(faltan * 16 / 60);
       function irA(lin, empezar) { F["f-kpi"] = "pend"; F["f-lin"] = lin || ""; F["f-sub"] = ""; F["f-abierto"] = "1"; pag.errores = pag.ofertas = 1; autoEmpezar = !!empezar; ir("revisar"); }
       var barraM = el("i"); barraM.style.width = (hchOk ? Math.min(100, hechas / META * 100) : 0) + "%";
       c.appendChild(el("h2", { texto: "Tu trabajo de hoy" }));
       c.appendChild(el("div", { clase: "meta-hoy", id: "meta-hoy" }, [
         el("div", { clase: "meta-fila" }, [el("b", { clase: "meta-n", texto: hchOk ? String(faltan) : "—" }),
-          el("span", { clase: "meta-tx" }, [el("b", { texto: !hchOk || faltan ? (faltan === 1 && hchOk ? "revisión por hacer" : "revisiones por hacer") : "Meta cumplida" }), el("small", { texto: !hchOk ? "No se pudo contar las de hoy" : faltan ? "Unos " + min + " min · " + hechas + " hechas" : hechas + " hechas hoy" })]),
-          (!hchOk || faltan) && primera ? el("a", { href: "#revisar", id: "meta-empezar", clase: "meta-ir", texto: "Empezar", onclick: function (ev) { ev.preventDefault(); irA(primera[0], true); } }) : null]),
+          el("span", { clase: "meta-tx" }, [el("b", { texto: !hchOk || faltan ? (faltan === 1 && hchOk ? "revisión por hacer" : "revisiones por hacer") : hechas >= META ? "Meta cumplida" : "Todo al día" }), el("small", { texto: !hchOk ? "No se pudo contar las de hoy" : faltan ? "Unos " + min + " min · " + hechas + " hechas" : hechas >= META ? hechas + " hechas hoy" : "No hay más por revisar · " + hechas + " hechas" })]),
+          (!hchOk || faltan) && primera && totalPend ? el("a", { href: "#revisar", id: "meta-empezar", clase: "meta-ir", texto: "Empezar", onclick: function (ev) { ev.preventDefault(); irA(primera[0], true); } }) : null]),
         el("span", { clase: "meta-barra" }, [barraM]),
         el("div", { clase: "meta-pie2" }, [el("span", { texto: (hchOk ? hechas : "—") + " de " + META }), hchOk ? el("span", { texto: "Avisos primero" }) : el("button", { type: "button", id: "meta-reintentar", texto: "Reintentar", onclick: function () { pintar(); } })])]));
-      c.appendChild(el("h2", { texto: "En este orden" }));
+      if (totalPend) c.appendChild(el("h2", { texto: "En este orden" }));
       var COL = { verde: "var(--luz-v)", amarillo: "var(--luz-a)", rojo: "var(--luz-r)", error: "var(--gris)" };
-      var NOTA = { verde: "Dicen «Aceptar»: todos los de hoy", amarillo: "Todos los de hoy", rojo: "Hasta 40 al día", error: "Con lo que sobre" };
-      c.appendChild(el("div", { clase: "orden-hoy", id: "orden-hoy" }, LINEAS.map(function (L, k) {
+      var NOTA = { verde: "Los que dicen «Aceptar»", amarillo: "Todos los de hoy", rojo: "Hasta 40 al día", error: "Con lo que sobre" };
+      if (totalPend) c.appendChild(el("div", { clase: "orden-hoy", id: "orden-hoy" }, LINEAS.map(function (L, k) {
         var pt = el("i", { clase: "orden-pt", "aria-hidden": "true" }); pt.style.background = COL[L[0]];
-        return el("a", { href: "#revisar", clase: "orden-fila", "data-lin": L[0], onclick: function (ev) { ev.preventDefault(); irA(L[0], false); } }, [
+        return el("a", { href: "#revisar", clase: "orden-fila" + (pend[L[0]] ? "" : " vacia"), "data-lin": L[0], onclick: function (ev) { ev.preventDefault(); irA(L[0], false); } }, [
           el("span", { clase: "orden-paso", texto: String(k + 1) }), pt, el("span", { clase: "orden-nm" }, [el("b", { texto: L[3] }), el("small", { texto: NOTA[L[0]] })]),
-          hchOk ? el("span", { clase: "orden-n" }, [el("b", { texto: String(hoyN[L[0]]) }), el("small", { texto: "de " + pend[L[0]] })]) : el("span", { clase: "orden-n", texto: String(pend[L[0]]) })]); })));
-      c.appendChild(el("div", { clase: "detalle", texto: hchOk ? "El número grande es cuántos te tocan hoy para llegar a 100; el chico, el total pendiente." : "No se pudo contar lo de hoy: se muestra el total pendiente de cada color." }));
+          hchOk ? el("span", { clase: "orden-n" }, [el("b", { texto: String(hoyN[L[0]]) }), pend[L[0]] ? el("small", { texto: "de " + pend[L[0]] }) : null]) : el("span", { clase: "orden-n", texto: String(pend[L[0]]) })]); })));
+      if (totalPend) c.appendChild(el("div", { clase: "detalle", texto: hchOk ? "El número grande es cuántos te tocan hoy para llegar a 100; el chico, el total pendiente." : "No se pudo contar lo de hoy: se muestra el total pendiente de cada color." }));
     } else {
       c.appendChild(el("h2", { texto: "Tu trabajo de hoy" }));
       c.appendChild(el("div", { clase: "vacio fallo", role: "status" }, [el("p", { texto: "No se pudo cargar tu meta de hoy." }), el("button", { type: "button", texto: "Reintentar", onclick: function () { pintar(); } })]));

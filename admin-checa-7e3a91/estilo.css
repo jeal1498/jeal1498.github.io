@@ -1328,3 +1328,5 @@ header .tit { flex:1; margin-left:2px; } header .tit strong { font:800 18px/1.1 
   #vista-hoy .estado-v3 .paso span { letter-spacing:-.01em; }
 }
 @media (prefers-reduced-motion: reduce) { .con-sesion #raiz::before { animation:none; } }
+
+.orden-fila.vacia { opacity:.55; }
