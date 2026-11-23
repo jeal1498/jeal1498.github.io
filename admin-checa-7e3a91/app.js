@@ -81,8 +81,10 @@
   function aviso(t, reintentar, detalle) {
     var a = document.getElementById("aviso"); a.textContent = "";
     if (!t) { a.hidden = true; return; }
-    a.appendChild(el("span", { clase: "aviso-t", texto: t }));
-    if (detalle) a.appendChild(el("small", { texto: detalle }));
+    var sinRed = reintentar && navigator.onLine === false;
+    a.appendChild(el("span", { clase: "aviso-t", texto: sinRed ? "Sin internet. Toca Reintentar cuando vuelva la señal." : t }));
+    if (reintentar) { var mm = Math.floor((Date.now() - ultima) / 60000); a.appendChild(el("small", { texto: "Último dato bueno: " + (mm < 1 ? "hace un momento" : "hace " + mm + " min") })); }
+    if (detalle && !sinRed) a.appendChild(el("small", { texto: detalle }));
     if (reintentar) a.appendChild(el("button", { type: "button", texto: "Reintentar", onclick: function () { pintar(); } }));
     a.appendChild(el("button", { type: "button", clase: "cerrar-aviso", texto: "Cerrar", "aria-label": "Cerrar aviso", onclick: function () { aviso(""); } }));
     a.hidden = false;
@@ -790,9 +792,9 @@
   function legibleCap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   function marcoCaptura(e) {
     var marco = el("div", { clase: "marco-captura vacio", id: "marco-captura" });
-    function vacio(texto, conBoton) {
+    function vacio(texto, conBoton, rotulo) {
       marco.textContent = ""; marco.classList.add("vacio");
-      var centro = el("div", { clase: "marco-centro" }, [conBoton ? el("button", { type: "button", id: "ver-captura", clase: "ver-captura", texto: "Ver captura", onclick: cargar }) : null, el("span", { texto: texto })]);
+      var centro = el("div", { clase: "marco-centro" }, [conBoton ? el("button", { type: "button", id: "ver-captura", clase: "ver-captura", texto: rotulo || "Ver captura", onclick: cargar }) : null, el("span", { texto: texto })]);
       marco.appendChild(centro);
     }
     async function cargar(ev) {
@@ -800,7 +802,7 @@
       marco.classList.add("cargando");
       var url = await cargarCaptura(e.id);
       marco.classList.remove("cargando");
-      if (!url) { vacio("No se pudo cargar.", true); return; }
+      if (!url) { vacio(navigator.onLine === false ? "Sin internet." : "No se pudo cargar la captura.", true, "Reintentar"); return; }
       marco.textContent = ""; marco.classList.remove("vacio");
       var img = el("img", { src: url, alt: "Captura del error " + e.id, clase: "captura-img" });
       img.addEventListener("click", function () { abrirVisor(url, e.id); });
@@ -1192,6 +1194,11 @@
     var esRevisor = !!(yo && yo.rol === "revisor");
     var cuerpo = el("div", { id: "rev-cuerpo" }); c.appendChild(cuerpo);
     var estado = { items: [], hist: [], pend: {}, rev: {}, actual: null, url: null, blob: null, ultima: null, ocupado: false, sug: null, pidiendo: false, prec: null };
+    // Avance del día: cuántas revisaste hoy (solo en este teléfono; se reinicia cada día).
+    var META_DIA = 100;
+    function claveDia() { var d = new Date(); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
+    function hoyN() { try { var o = JSON.parse(localStorage.getItem("rev-dia") || "null"); return o && o.f === claveDia() ? o.n : 0; } catch (x) { return 0; } }
+    function sumarHoy(k) { try { localStorage.setItem("rev-dia", JSON.stringify({ f: claveDia(), n: Math.max(0, hoyN() + k) })); } catch (x) { /* sin almacenamiento: solo no se recuerda */ } }
     function soltar() { if (estado.url) { URL.revokeObjectURL(estado.url); estado.url = null; } estado.blob = null; estado.sug = null; estado.pidiendo = false; }
 
     async function cargarCola() {
@@ -1242,14 +1249,14 @@
       if (estado.sug) p.p_ia_sugerencia = estado.sug;
       var r = await llamar("admin_revisar_captura", p);
       estado.ocupado = false;
-      if (r && r.id) { var conSug = !!estado.sug; estado.ultima = it; estado.pend[it.nivel] = Math.max(0, (estado.pend[it.nivel] || 0) - 1); estado.rev[it.nivel] = (estado.rev[it.nivel] || 0) + 1; if (conSug) await cargarPrecision(); await siguiente(); }
+      if (r && r.id) { var conSug = !!estado.sug; estado.ultima = it; sumarHoy(1); estado.pend[it.nivel] = Math.max(0, (estado.pend[it.nivel] || 0) - 1); estado.rev[it.nivel] = (estado.rev[it.nivel] || 0) + 1; if (conSug) await cargarPrecision(); await siguiente(); }
       else pintarRev();
     }
     async function deshacer() {
       if (estado.ocupado || !estado.ultima) return; estado.ocupado = true; pintarRev();
       var it = estado.ultima, r = await llamar("admin_revisar_captura", { p_captura_ok_id: it.id, p_resultado: "anulada" });
       estado.ocupado = false;
-      if (r && r.id) { estado.ultima = null; if (estado.actual) estado.items.unshift(estado.actual); estado.actual = it; estado.pend[it.nivel] = (estado.pend[it.nivel] || 0) + 1; estado.rev[it.nivel] = Math.max(0, (estado.rev[it.nivel] || 0) - 1);
+      if (r && r.id) { estado.ultima = null; sumarHoy(-1); if (estado.actual) estado.items.unshift(estado.actual); estado.actual = it; estado.pend[it.nivel] = (estado.pend[it.nivel] || 0) + 1; estado.rev[it.nivel] = Math.max(0, (estado.rev[it.nivel] || 0) - 1);
         soltar(); var rr = await cli.storage.from("capturas").download(it.nombre).catch(function () { return { error: true }; }); if (rr && rr.data) { estado.blob = rr.data; estado.url = URL.createObjectURL(rr.data); } }
       pintarRev();
     }
@@ -1280,7 +1287,7 @@
       cuerpo.textContent = ""; slot.textContent = "";
       var tot = REV_COLORES.reduce(function (t, k) { return t + (estado.pend[k[0]] || 0) + (estado.rev[k[0]] || 0); }, 0), hechas = REV_COLORES.reduce(function (t, k) { return t + (estado.rev[k[0]] || 0); }, 0);
       var pendTot = REV_COLORES.reduce(function (t, k) { return t + (estado.pend[k[0]] || 0); }, 0);
-      slot.appendChild(el("span", { clase: "ficha-pos", id: "rev-pos", texto: pendTot + " por revisar" }));
+      slot.appendChild(el("span", { clase: "ficha-pos", id: "rev-pos", texto: hoyN() + " de " + META_DIA + " hoy · " + pendTot + " por revisar" }));
       slot.appendChild(el("button", { type: "button", id: "rev-deshacer", clase: "ficha-nv deshacer", "aria-label": "Deshacer la última", disabled: estado.ultima && !estado.ocupado ? null : "", onclick: deshacer }, [sv("svg", { viewBox: "0 0 24 24", width: "18", height: "18", fill: "none", stroke: "currentColor", "stroke-width": "2.4", "stroke-linecap": "round", "stroke-linejoin": "round", "aria-hidden": "true" }, [sv("path", { d: "M9 14L4 9l5-5" }), sv("path", { d: "M4 9h10a6 6 0 0 1 0 12h-3" })])]));
       slot.appendChild(el("button", { type: "button", id: "rev-anterior", clase: "ficha-nv", "aria-label": "Pop-up anterior", disabled: estado.hist.length && !estado.ocupado ? null : "", onclick: function () { saltar(-1); } }, [el("span", { clase: "ficha-flecha", "aria-hidden": "true" })]));
       slot.appendChild(el("button", { type: "button", id: "rev-siguiente", clase: "ficha-nv sig", "aria-label": "Pop-up siguiente", disabled: estado.items.length && !estado.ocupado ? null : "", onclick: function () { saltar(1); } }, [el("span", { clase: "ficha-flecha", "aria-hidden": "true" })]));
