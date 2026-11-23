@@ -10,6 +10,7 @@
   // Cuatro pestañas, una pregunta cada una: ¿qué pasa? ¿qué decido? ¿qué tan bien va? ¿cómo está configurado?
   var MODULOS = [["hoy", "Hoy", "Hoy"], ["revisar", "Revisar", "Revisar"], ["calidad", "Calidad", "Calidad"], ["ajustes", "Ajustes", "Ajustes"]];
   // Subpestañas: [id, nombre]. La primera es la que se abre por omisión.
+  var SUB_PREGUNTA = { resumen: "¿La app está leyendo bien las ofertas?", versiones: "¿La versión nueva lee mejor que la anterior?", ia: "¿La IA ayuda a revisar o solo gasta?", conductores: "¿A quién le falla más la lectura?" };
   var SUBS = { calidad: [["resumen", "Resumen"], ["versiones", "Versiones"], ["ia", "IA"], ["conductores", "Conductores"]] };
   // Rutas de antes (#errores, #ofertas…) → [pestaña, subpestaña]. Mantienen vivos los enlaces guardados.
   var ANTIGUAS = { inicio: ["hoy", null], errores: ["revisar", null], ofertas: ["revisar", "historial"], versiones: ["calidad", "versiones"],
@@ -2113,6 +2114,7 @@
         var sa = subActual();
         marco.appendChild(el("div", { clase: "subtabs", role: "group", "aria-label": "Secciones de " + vista }, SUBS[vista].map(function (x) {
           return el("button", { type: "button", id: "sub-" + x[0], "aria-pressed": String(x[0] === sa), texto: x[1], onclick: function () { ir(vista, x[0] === SUBS[vista][0][0] ? null : x[0]); } }); })));
+        if (SUB_PREGUNTA[sa]) marco.appendChild(el("p", { clase: "sub-pregunta", texto: SUB_PREGUNTA[sa] }));
       }
     }
     var c = el("div", { clase: "vista-cuerpo", id: "vista-" + vista + "-" + (subActual() || "x") });
@@ -2153,7 +2155,7 @@
 
   // Tema claro/oscuro: sigue al teléfono; el botón lo cambia a mano y lo recuerda (si el navegador lo permite).
   function temaActual() { var t = document.documentElement.getAttribute("data-theme"); return t || (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); }
-  function aplicarTema(t) { document.documentElement.setAttribute("data-theme", t); var b = document.getElementById("tema"); if (b) b.textContent = t === "dark" ? "Modo claro" : "Modo oscuro"; }
+  function aplicarTema(t) { document.documentElement.setAttribute("data-theme", t); var b = document.getElementById("tema"); if (b) b.textContent = t === "dark" ? "Tema: oscuro" : "Tema: claro"; b.setAttribute("aria-pressed", String(t === "dark")); }
   try { var gt = localStorage.getItem("checa-tema"); if (gt === "dark" || gt === "light") document.documentElement.setAttribute("data-theme", gt); } catch (e) { /* sin almacenamiento */ }
 
   window.addEventListener("popstate", function () {
