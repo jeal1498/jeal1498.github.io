@@ -596,8 +596,8 @@
     var teV = te ? (te.valor !== null && te.valor !== undefined ? Number(te.valor) : te.n ? te.k / te.n : null) : null;
     c.appendChild(el("div", { clase: "caja-v3", id: "calidad" }, [
       el("div", { clase: "aro-caja" }, [aro(pv, claseAcierto(pv, ph ? ph.n : 0)), el("div", { clase: "aro-tx" }, [
-        el("b", { texto: pv === null ? "Aún no se puede medir" : "La app acierta " + Math.round(pv * 100) + " de cada 100" }),
-        el("small", { texto: ph && ph.n ? "Comparado con " + ph.n + " avisos revisados por una persona" + (rg ? ". Lo más probable: entre " + rg[0] + " y " + rg[1] + " de cada 100" : "") + (ph.n < 30 ? ". Son pocos casos para opinar." : ".") + " Meta: 93 de cada 100 o más." : "Falta que una persona revise avisos." })])]),
+        el("b", { texto: pv === null ? "Aún no se puede medir" : "La app acierta " + (pv * 100).toFixed(1).replace(".0", "") + " de cada 100" }),
+        el("small", { texto: ph && ph.n ? "Solo avisos: " + ph.n + " revisados por una persona" + (rg ? ". Lo más probable: entre " + rg[0] + " y " + rg[1] + " de cada 100" : "") + (ph.n < 30 ? ". Son pocos casos para opinar. Meta: 93 de cada 100 o más." : ". " + (pv >= META_LECTURA ? "Cumple la meta de 93 de cada 100." : "Aún no llega a la meta de 93 de cada 100.")) : "Falta que una persona revise avisos." })])]),
       el("div", { clase: "trio" }, [["Fallas al procesar", teV === null ? "—" : pct(teV)], ["Tarda en leer", p50 ? (p50 / 1000).toFixed(1) + " s" : "—"], ["Lecturas", lecI && lecI.valor !== undefined && lecI.valor !== null ? Number(lecI.valor).toLocaleString("en-US") : "—"]].map(function (x) {
         return el("div", {}, [el("small", { texto: x[0] }), el("b", { texto: x[1] })]); }))]));
     // 2 · Por versión
@@ -615,7 +615,7 @@
       c.appendChild(el("div", { clase: "h-fila sec-v3" }, [el("h2", { texto: "Quién acierta contra una persona" }), enlace("Detalle ›", "calidad", "ia")]));
       c.appendChild(el("div", { clase: "caja-v3" }, comps.map(function (x) {
         var q = x.n ? x.coinciden / x.n : null, i = el("i"); i.style.width = (q === null ? 0 : q * 100) + "%";
-        return el("div", { clase: "vbar ancha " + claseAcierto(q, x.n) }, [el("span", {}, [({ lector: "Lector", revision_ia: "IA de revisión", vision: "IA con imagen", texto: "IA de texto" })[x.componente] || legible(x.componente), el("small", { texto: "n=" + x.n })]), el("div", { clase: "p" }, [i]), el("b", { texto: q === null ? "—" : pct(q) })]); }).concat([el("div", { clase: "detalle nota-v", texto: "Cada barra se mide sobre sus propios casos: no son los mismos que en el círculo de arriba." })])));
+        return el("div", { clase: "vbar ancha " + claseAcierto(q, x.n) }, [el("span", {}, [({ lector: "Lector", revision_ia: "IA de revisión", vision: "IA con imagen", texto: "IA de texto" })[x.componente] || legible(x.componente), el("small", { texto: "n=" + x.n })]), el("div", { clase: "p" }, [i]), el("b", { texto: q === null ? "—" : pct(q) })]); }).concat([el("div", { clase: "detalle nota-v", texto: "Estas barras cuentan también los errores que decidiste; por eso difieren del círculo, que solo cuenta avisos revisados." })])));
     }
     if (!d) return;
     // Todo lo demás, plegado
@@ -1168,7 +1168,7 @@
     return el("div", { clase: "tarjeta", "data-clave": x.clave }, [
       el("div", { clase: "detalle", texto: x.nombre }), el("div", { clase: "valor", texto: v }),
       el("div", { clase: "detalle", texto: casos(x.k, x.n) || "sin casos" }),
-      el("span", { clase: "etiqueta " + (x.estado === "suficiente" ? "ok" : x.estado === "no_medible" ? "mal" : "aviso"), texto: x.estado.replace("_", " ") }),
+      el("span", { clase: "etiqueta " + (x.estado === "suficiente" ? "ok" : x.estado === "no_medible" ? "mal" : "aviso"), texto: String(x.estado || "sin dato").replace("_", " ") }),
       x.motivo ? el("div", { clase: "detalle", texto: x.motivo }) : null,
       el("details", { clase: "def-ayuda" }, [el("summary", { texto: "Cómo se calcula" }), el("div", { clase: "detalle", texto: "Cálculo: " + txt(x.formula) + ". Casos que cuenta: " + txt(x.poblacion) + ". De dónde sale: " + txt(x.fuente) + "." })])]);
   }
@@ -1662,7 +1662,7 @@
   function tasa(x, y) { return y ? x / y : null; }
   function calidadV(v) { return tasa(v.coinciden, v.con_referencia); }
   var FILAS_CMP = [
-    ["Calidad humana", function (v) { return calidadV(v); }, function (v) { return v.con_referencia >= 30; }, "mayor", function (v) { return v.con_referencia ? pct(calidadV(v)) : "sin referencia"; }, function (v) { return "n=" + v.con_referencia; }],
+    ["Calidad según una persona", function (v) { return calidadV(v); }, function (v) { return v.con_referencia >= 30; }, "mayor", function (v) { return v.con_referencia ? pct(calidadV(v)) : "sin referencia"; }, function (v) { return "n=" + v.con_referencia; }],
     ["Falla al procesar", function (v) { return tasa(v.errores_proceso, v.lecturas); }, function (v) { return v.lecturas >= 30; }, "menor", function (v) { return pct(tasa(v.errores_proceso, v.lecturas)); }, null],
     ["Falla del lector", function (v) { return tasa(v.errores_lector, v.lecturas); }, function (v) { return v.lecturas >= 30; }, "menor", function (v) { return pct(tasa(v.errores_lector, v.lecturas)); }, null],
     ["Tiempo del pop-up (típico, ms)", function (v) { return v.ms_popup_p50; }, null, null, function (v) { return txt(v.ms_popup_p50); }, null],
@@ -1674,7 +1674,7 @@
     FILAS_CMP.forEach(function (f) {
       var vals = sel.map(f[1]), ok = f[2] && sel.every(f[2]) && vals.every(function (x) { return x !== null && x !== undefined; });
       var mejor = null, peor = null;
-      if (ok && f[3]) { var mx = Math.max.apply(null, vals), mn = Math.min.apply(null, vals); if (mx !== mn) { mejor = f[3] === "mayor" ? mx : mn; peor = f[3] === "mayor" ? mn : mx; } }
+      if (ok && f[3]) { var mx = Math.max.apply(null, vals), mn = Math.min.apply(null, vals); if (mx - mn >= 0.02) { mejor = f[3] === "mayor" ? mx : mn; peor = f[3] === "mayor" ? mn : mx; } }
       celdas.push(el("div", { clase: "vc-l", texto: f[0] }));
       sel.forEach(function (v, k) {
         var cls = "vc-v" + (mejor !== null && vals[k] === mejor ? " mejor" : mejor !== null && vals[k] === peor ? " peor" : "");
@@ -1711,11 +1711,11 @@
       else {
         panel.appendChild(el("div", { clase: "h-fila" }, [el("h2", { texto: manual ? "Comparando " + usar.length + " versiones" : "La nueva contra la anterior" }),
           manual ? el("button", { type: "button", id: "quitar-cmp", texto: "Quitar", onclick: function () { elegidas = {}; pintarTodo(); } }) : el("span", { clase: "detalle", texto: usar[0].version + " · " + usar[1].version })]));
-        panel.appendChild(tablaComparar(usar));
         var cortas = usar.filter(function (v) { return v.con_referencia < 30; });
         panel.appendChild(el("div", { id: "aviso-comparacion", clase: cortas.length ? "aviso-cmp" : "detalle",
           texto: cortas.length ? cortas.map(function (v) { return "La " + v.version + " tiene solo " + v.con_referencia + " casos revisados por una persona (< 30): no se puede declarar mejora ni regresión."; }).join(" ")
             : "Todas las versiones tienen 30 casos o más revisados por una persona. Aun así, los casos no son los mismos en cada versión: confirma la cobertura antes de concluir." }));
+        panel.appendChild(tablaComparar(usar));
         if (manual && sel.length > 3) panel.appendChild(el("div", { clase: "detalle", texto: "Se comparan las 3 primeras versiones marcadas." }));
       }
       lista.textContent = "";
@@ -1821,7 +1821,12 @@
   }
 
   // ---------- 06 Auditoría IA ----------
-  function legible(k) { var s = String(k).replace(/_/g, " "); return s.charAt(0).toUpperCase() + s.slice(1); }
+  var ETIQ = { http_402: "Sin saldo en DeepSeek", http_401: "Clave de la IA rechazada", http_403: "Acceso de la IA rechazado", http_429: "Demasiadas peticiones a la IA", http_500: "Falla del servidor de la IA", http_502: "Falla del servidor de la IA", http_503: "IA no disponible", timeout: "Tardó demasiado", ninguno: "Ninguno acertó", ambos: "Los dos acertaron" };
+  function legible(k) {
+    var raw = String(k), e = ETIQ[raw.toLowerCase()]; if (e) return e;
+    var s = raw.replace(/_/g, " ").replace(/\bacerto\b/gi, "acertó").replace(/^ia /i, "La IA ").replace(/^lector /i, "El lector ");
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
   function barraFila(nombre, n, max, color, gris) {
     var tr = el("div", { clase: "tr" }), i = el("i", { clase: gris ? "gr" : "" });
     i.style.width = (max ? Math.max(3, n / max * 100) : 0) + "%"; if (color) i.style.background = color; tr.appendChild(i);
@@ -1847,8 +1852,8 @@
     c.appendChild(el("div", { clase: "h-fila sec-v3" }, [el("h2", { texto: "Quién acierta contra una persona" }), el("span", { clase: "detalle", texto: T && T.rev + T.eDec ? (T.rev + T.eDec) + " revisadas" : txt(d.con_referencia_humana) + " revisadas" })]));
     c.appendChild(el("div", { clase: "caja-v3", id: "ia-componentes" }, comps.length ? comps.map(function (x) {
       var q = x.n ? x.coinciden / x.n : null, b = el("i"); b.style.width = (q === null ? 0 : q * 100) + "%";
-      return el("div", { clase: "vbar ancha" + (x.n < 30 ? " poca" : " ok") }, [el("span", { texto: (NOM[x.componente] || legible(x.componente)) + (x.modelo ? " · " + x.modelo : "") }), el("div", { clase: "p" }, [b]), el("b", { texto: q === null ? "—" : pct(q) })]);
-    }).concat(cortas.length ? [el("div", { clase: "detalle nota-v", id: "aviso-muestra", texto: "En gris: menos de 30 casos revisados por una persona; todavía no se puede decir quién acierta más." })] : [])
+      return el("div", { clase: "vbar ancha " + claseAcierto(q, x.n) }, [el("span", {}, [(NOM[x.componente] || legible(x.componente)) + (x.modelo ? " · " + x.modelo : ""), el("small", { texto: "n=" + x.n })]), el("div", { clase: "p" }, [b]), el("b", { texto: q === null ? "—" : pct(q) })]);
+    }).concat(cortas.length ? [el("div", { clase: "detalle nota-v", id: "aviso-muestra", texto: "En gris: menos de 30 casos revisados por una persona; todavía no se puede decir quién acierta más." })] : []).concat([el("div", { clase: "detalle nota-v", texto: "Verde: meta de 93 % o más. Estas barras cuentan también los errores que decidiste." })])
       : [el("div", { clase: "detalle", texto: "Sin referencia humana todavía." })]));
     // 2 · Acuerdo IA con el lector (barra apilada)
     var ac = d.acuerdo_ia_lector || {};
