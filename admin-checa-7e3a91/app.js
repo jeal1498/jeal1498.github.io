@@ -377,20 +377,21 @@
     var pasos = PASOS.map(function (p) { return pasoEstado(p, d.componentes); });
     var rotos = pasos.filter(function (x) { return x.estado === "fuera_de_servicio" || x.estado === "degradado"; }).length;
     var fraseCadena = rotos ? "Falla " + rotos + (rotos === 1 ? " paso" : " pasos") + " de " + PASOS.length + "." : "Ningún paso de la cadena falla.";
-    var nPasos = PASOS.filter(function (q) { return !q.noAplica; }).length, medidos = pasos.filter(function (x) { return ["operativo", "degradado", "fuera_de_servicio"].indexOf(x.estado) >= 0; }).length;
+    var nPasos = PASOS.filter(function (q) { return !q.noAplica; }).length, medidos = pasos.filter(function (x) { return x.estado === "operativo"; }).length;
     var nombresRotos = pasos.filter(function (x) { return x.estado === "fuera_de_servicio" || x.estado === "degradado"; }).map(function (x) { return x.paso.nombre; });
     var heroEl;
     c.appendChild(el("h2", { texto: "Sistema" }));
     c.appendChild(heroEl = el("section", { clase: "hero estado-v3", id: "estado-general" }, [
       el("div", { clase: "estado-cab" }, [
-        el("div", { clase: "estado-izq" }, [el("span", { clase: "latido " + (ESTADO[estGen] || "nd"), "aria-hidden": "true" }), el("h2", { clase: "estado-t", texto: v[0] })]),
-        el("div", { clase: "estado-cont", "aria-label": medidos + " de " + nPasos + " partes medidas" }, [el("b", { texto: medidos + "/" + nPasos }), el("small", { texto: "partes" })])]),
-      el("p", { clase: "estado-p", texto: rotos ? "Falla: " + nombresRotos.join(", ") + ". Toca el paso para ver el detalle." : v[1] })]));
+        el("div", { clase: "estado-izq" }, [el("span", { clase: "latido " + (ESTADO[estGen] || "nd"), "aria-hidden": "true" }), el("h3", { clase: "estado-t", texto: v[0] })]),
+        el("div", { clase: "estado-cont", "aria-label": medidos + " de " + nPasos + " partes sanas" }, [el("b", { texto: medidos + "/" + nPasos }), el("small", { texto: "partes sanas" })])]),
+      el("p", { clase: "estado-p", texto: rotos ? "Falla: " + nombresRotos.join(", ") + "." + (d.atencion.length ? " Abajo dice qué hacer." : " Toca el paso para ver el detalle.") : v[1] })]));
 
     // 2 · Pasos de la lectura: un punto por paso; el que falla se abre solo.
     var peor = -1;
     pasos.forEach(function (x, k) { if (GRAVE[x.estado] <= 1 && (peor < 0 || GRAVE[x.estado] < GRAVE[pasos[peor].estado])) peor = k; });
-    var sel = peor;   // el paso que peor está se abre solo; los demás, al tocarlos
+    // El paso que peor está se abre solo, salvo que una alerta debajo ya lo explique (así no se repite); los demás, al tocarlos.
+    var sel = peor >= 0 && d.atencion.some(function (q) { return pasos[peor].paso.claves.indexOf(q.componente) >= 0; }) ? -1 : peor;
     var cadena = el("section", { clase: "cadena", id: "cadena", "aria-label": "Pasos de la lectura" });
     var detalleCadena = el("div", { clase: "paso-detalle", "aria-live": "polite" });
     function pintarCadena() {
@@ -433,7 +434,7 @@
         el("div", { clase: "alerta-l" }, [el("span", { clase: "alerta-ic", "aria-hidden": "true", texto: a.gravedad === "baja" ? "i" : "!" }),
           el("div", { clase: "alerta-tx" }, [el("b", { texto: a.titulo }), el("small", { texto: aclara }),
             el("details", { clase: "alerta-mas" }, [el("summary", { texto: "Dato técnico" }), el("div", { clase: "detalle", texto: a.evidencia })])])]),
-        el("div", { clase: "alerta-acc" }, [el("button", { type: "button", clase: acc ? "" : "si", texto: acc ? "Ver detalle" : dest[1], onclick: function () { ir(dest[0]); } }), acc])]);
+        el("div", { clase: "alerta-acc" }, [el("button", { type: "button", clase: acc || a.gravedad === "baja" ? "" : "si", texto: acc ? "Ver detalle" : dest[1], onclick: function () { ir(dest[0]); } }), acc])]);
     }
     // «Errores sin referencia humana» ya lo dice la tarjeta de arriba. Con alertas altas o medias, «Atención» va justo debajo del estado.
     atn = atn.filter(function (a) { return a.componente !== "revision_humana"; });
@@ -461,10 +462,10 @@
       c.appendChild(el("h2", { texto: "Tu trabajo de hoy" }));
       c.appendChild(el("div", { clase: "meta-hoy", id: "meta-hoy" }, [
         el("div", { clase: "meta-fila" }, [el("b", { clase: "meta-n", texto: hchOk ? String(faltan) : "—" }),
-          el("span", { clase: "meta-tx" }, [el("b", { texto: !hchOk || faltan ? (faltan === 1 && hchOk ? "revisión por hacer" : "revisiones por hacer") : hechas >= META ? "Meta cumplida" : "Todo al día" }), el("small", { texto: !hchOk ? "No se pudo contar las de hoy" : faltan ? "Unos " + min + " min · " + hechas + " hechas" : hechas >= META ? hechas + " hechas hoy" : "No hay más por revisar · " + hechas + " hechas" })]),
+          el("span", { clase: "meta-tx" }, [el("b", { texto: !hchOk || faltan ? (faltan === 1 && hchOk ? "revisión por hacer" : "revisiones por hacer") : hechas >= META ? "Meta cumplida" : "Todo al día" }), el("small", { texto: !hchOk ? "No se pudo contar las de hoy" : faltan ? "Unos " + min + " min · 16 s cada una" : hechas >= META ? hechas + " hechas hoy" : "No hay más por revisar · " + hechas + " hechas" })]),
           (!hchOk || faltan) && primera && totalPend ? el("a", { href: "#revisar", id: "meta-empezar", clase: "meta-ir", texto: "Empezar", onclick: function (ev) { ev.preventDefault(); irA(primera[0], true); } }) : null]),
         el("span", { clase: "meta-barra" }, [barraM]),
-        el("div", { clase: "meta-pie2" }, [el("span", { texto: (hchOk ? hechas : "—") + " de " + META }), hchOk ? el("span", { texto: "Avisos primero" }) : el("button", { type: "button", id: "meta-reintentar", texto: "Reintentar", onclick: function () { pintar(); } })])]));
+        el("div", { clase: "meta-pie2" }, [el("span", { texto: (hchOk ? hechas : "—") + " de " + META }), hchOk ? el("span", { texto: "Verdes primero" }) : el("button", { type: "button", id: "meta-reintentar", texto: "Reintentar", onclick: function () { pintar(); } })])]));
       if (totalPend) c.appendChild(el("h2", { texto: "En este orden" }));
       var COL = { verde: "var(--luz-v)", amarillo: "var(--luz-a)", rojo: "var(--luz-r)", error: "var(--gris)" };
       var NOTA = { verde: "Los que dicen «Aceptar»", amarillo: "Todos los de hoy", rojo: "Hasta 40 al día", error: "Con lo que sobre" };
@@ -472,8 +473,8 @@
         var pt = el("i", { clase: "orden-pt", "aria-hidden": "true" }); pt.style.background = COL[L[0]];
         return el("a", { href: "#revisar", clase: "orden-fila" + (pend[L[0]] ? "" : " vacia"), "data-lin": L[0], onclick: function (ev) { ev.preventDefault(); irA(L[0], false); } }, [
           el("span", { clase: "orden-paso", texto: String(k + 1) }), pt, el("span", { clase: "orden-nm" }, [el("b", { texto: L[3] }), el("small", { texto: NOTA[L[0]] })]),
-          hchOk ? el("span", { clase: "orden-n" }, [el("b", { texto: String(hoyN[L[0]]) }), pend[L[0]] ? el("small", { texto: "de " + pend[L[0]] }) : null]) : el("span", { clase: "orden-n", texto: String(pend[L[0]]) })]); })));
-      if (totalPend) c.appendChild(el("div", { clase: "detalle", texto: hchOk ? "El número grande es cuántos te tocan hoy para llegar a 100; el chico, el total pendiente." : "No se pudo contar lo de hoy: se muestra el total pendiente de cada color." }));
+          hchOk ? el("span", { clase: "orden-n" }, [el("b", { texto: String(hoyN[L[0]]) }), pend[L[0]] ? el("small", { texto: "hoy de " + pend[L[0]] }) : null]) : el("span", { clase: "orden-n", texto: String(pend[L[0]]) })]); })));
+      if (totalPend && !hchOk) c.appendChild(el("div", { clase: "detalle", texto: "No se pudo contar lo de hoy: se muestra el total pendiente de cada color." }));
     } else {
       c.appendChild(el("h2", { texto: "Tu trabajo de hoy" }));
       c.appendChild(el("div", { clase: "vacio fallo", role: "status" }, [el("p", { texto: "No se pudo cargar tu meta de hoy." }), el("button", { type: "button", texto: "Reintentar", onclick: function () { pintar(); } })]));
@@ -491,8 +492,8 @@
         el("span", { clase: "kpi-t" }, [titulo, el("span", { "aria-hidden": "true", texto: "›" })]), el("span", { clase: "kpi-v", texto: valor }), el("span", { clase: "kpi-d", texto: sub }), extra]);
     }
     var cuatro = ["lecturas", "tasa_errores", "calidad_interpretacion"].map(function (k) { return porClave[k]; }).filter(Boolean).map(function (i) {
-      var sub = i.n ? (i.clave === "lecturas" ? "en el periodo" : i.k + " de " + i.n) : i.clave === "lecturas" ? "en el periodo" : "aún sin casos";
-      var extra = SPARK[i.clave] ? spark(SPARK[i.clave]) : i.clave === "calidad_interpretacion" && i.n ? el("span", { clase: "medidor" }, [(function () { var b = el("i"); b.style.width = Math.round(i.k / i.n * 100) + "%"; b.style.background = i.n < 30 ? "var(--gris)" : "var(--verde)"; return b; })()]) : i.clave === "calidad_interpretacion" ? el("span", { clase: "sp-vacio", "aria-hidden": "true" }) : null;
+      var sub = i.n ? (i.clave === "lecturas" ? "en el periodo" : i.k + " de " + i.n + (i.n < 30 && i.clave === "calidad_interpretacion" ? " · pocos casos para opinar" : "")) : i.clave === "lecturas" ? "en el periodo" : "aún sin casos";
+      var extra = SPARK[i.clave] ? spark(SPARK[i.clave]) : i.clave === "calidad_interpretacion" && i.n ? el("span", { clase: "medidor" }, [(function () { var b = el("i"); b.style.width = Math.round(i.k / i.n * 100) + "%"; b.style.background = i.n < 30 ? "var(--gris)" : "var(--verde)"; return b; })()]) : null;
       if (extra && i.clave === "tasa_errores" && Number(i.valor) === 0) extra.setAttribute("class", "spark bueno");
       return kpi(CORTO[i.clave], valorInd(i), sub, extra, DEST[i.clave][0], DEST[i.clave][1]); });
     var kc = await pKc;
@@ -500,13 +501,16 @@
       var gasto = (kc.por_modelo || []).reduce(function (s, x) { return s + Number(x.usd || 0); }, 0);
       cuatro.push(kpi("Gasto en IA", (kc.por_modelo || []).length ? "$" + gasto.toFixed(2) : "—", "USD en el periodo", sv("svg", { viewBox: "0 0 120 30", preserveAspectRatio: "none", class: "spark sp-gasto", "aria-hidden": "true" }, Array.apply(null, Array(9)).map(function (_, k) { return sv("rect", { x: k * 12, y: 22, width: 6, height: 5, rx: 2, class: "fant" }); }).concat([sv("rect", { x: 108, y: 6, width: 12, height: 21, rx: 3, class: "ult" })])), "ajustes"));
     }
-    var corteHoy = null;
-    if (cuatro.length) { c.appendChild(corteHoy = el("h2", { texto: verG ? "Versión " + verG : "Últimos " + dias + " días" })); c.appendChild(el("div", { clase: "kpis", id: "esencial" }, cuatro)); }
+    var comoVa = el("details", { clase: "completo", id: "como-va" }, [el("summary", { texto: "Cómo va · " + (verG ? "versión " + verG : "últimos " + dias + " días") })]);
+    var cuerpoCV = el("div", { clase: "completo-cuerpo" }); comoVa.appendChild(cuerpoCV);
+    var corteHoy = comoVa;
+    if (cuatro.length) cuerpoCV.appendChild(el("div", { clase: "kpis", id: "esencial" }, cuatro));
 
     // 5 · Tendencia
     var h0 = d.historia || [];
-    var hLect = el("h2", { texto: "Lecturas por día" }); c.appendChild(hLect);
-    c.appendChild(el("div", { clase: "caja-v3", id: "tendencia" }, [graficaHoy(h0)]));
+    var hLect = el("h2", { texto: "Lecturas por día" }); cuerpoCV.appendChild(hLect);
+    cuerpoCV.appendChild(el("div", { clase: "caja-v3", id: "tendencia" }, [graficaHoy(h0)]));
+    c.appendChild(comoVa);
 
     // Cada parte del sistema, a un toque (los números y gráficas de calidad viven en Calidad › Resumen).
     var completo = el("details", { clase: "completo", id: "completo" }, [el("summary", { texto: "Todas las partes del sistema" })]);
