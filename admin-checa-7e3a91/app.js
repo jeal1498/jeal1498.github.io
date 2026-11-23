@@ -1756,11 +1756,10 @@
     else c.sort(function (x, y) { var sx = sufFn(x) ? 1 : 0, sy = sufFn(y) ? 1 : 0; if (sx !== sy) return sy - sx; return (tasaFn(y) || 0) - (tasaFn(x) || 0); });
     return c;
   }
-  function tarjetaEq(titulo, sub, x, t, hot, suficiente, alEditar) {
+  function tarjetaEq(titulo, sub, x, t, hot, suficiente) {
     var act = haceCuanto(x.ultima), tono = !suficiente ? "nd" : t > 0.05 ? "mal" : t > 0.025 ? "aviso" : "ok";
     var barra = el("i"); barra.style.width = Math.min(100, (t || 0) / 0.12 * 100) + "%";
     var props = { clase: "eq-fila " + tono + (suficiente ? "" : " chica") + (hot ? " hot" : "") };
-    if (alEditar) { props.role = "button"; props.tabindex = "0"; props.title = "Toca para poner o cambiar el nombre"; props.style = "cursor:pointer"; props.onclick = alEditar; }
     return el("div", props, [
       el("span", { clase: "caso-tx" }, [el("b", { clase: "mono", texto: titulo }),
         el("small", { texto: (sub ? sub + " · " : "") + act[0] + " · " + Number(x.lecturas || 0).toLocaleString("en-US") + " lecturas" }),
@@ -1773,15 +1772,6 @@
     var sk = c.querySelector(".skeleton"); if (sk) sk.remove();
     if (!d) return;
     var q = buscarEq.trim().toLowerCase();
-    async function nombrarConductor(x) {
-      var v = window.prompt("Nombre para el conductor " + x.conductor + " (vacío = quitar):", x.nombre || "");
-      if (v === null) return;
-      try {
-        var rr = await cli.rpc("admin_alias_conductor", { p_codigo: x.conductor, p_nombre: v });
-        if (!rr || rr.error || (rr.data && rr.data.error)) throw new Error("no se guardó");
-        x.nombre = v.trim() || null; pintarEq();
-      } catch (e) { window.alert("No se pudo guardar el nombre. Intenta de nuevo."); }
-    }
     function coincide(x) { return !q || [x.conductor, x.nombre, x.telefono, x.android].some(function (v) { return v !== null && v !== undefined && String(v).toLowerCase().indexOf(q) >= 0; }); }
     var disp = (d.dispositivos || []).filter(coincide), cond = (d.conductores || []).filter(coincide);
     if (q) {
@@ -1818,11 +1808,11 @@
       cuerpo.appendChild(pd);
       // Conductores
       var pc = el("section", { clase: "panel-eq" + (tabEq === "conductores" ? " activo" : ""), id: "panel-conductores", "aria-label": "Conductores" });
-      pc.appendChild(el("div", { clase: "h-fila" }, [el("h2", { texto: "Conductores" }), el("span", { clase: "detalle", texto: "toca uno para ponerle nombre (solo lo ves tú)" })]));
+      pc.appendChild(el("div", { clase: "h-fila" }, [el("h2", { texto: "Conductores" }), el("span", { clase: "detalle", texto: "nombre de su cuenta de Google" })]));
       var sc = cond.filter(sufC), maxC = sc.length ? Math.max.apply(null, sc.map(function (x) { return tC(x) || 0; })) : 0;
       pc.appendChild(el("div", { clase: "equipo-lista" }, ordenarEq(cond, tC, sufC).map(function (x) {
         var hot = sufC(x) && tC(x) === maxC && maxC > 0;
-        return tarjetaEq(x.nombre ? x.nombre : txt(x.conductor), x.nombre ? x.conductor : "toca para poner nombre", x, tC(x), hot, sufC(x), function () { nombrarConductor(x); }); })));
+        return tarjetaEq(x.nombre ? x.nombre : txt(x.conductor), x.nombre ? x.conductor : null, x, tC(x), hot, sufC(x)); })));
       if (!cond.length) pc.appendChild(el("div", { clase: "vacio", texto: "Sin conductores en este periodo." }));
       cuerpo.appendChild(pc);
     }
