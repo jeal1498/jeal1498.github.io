@@ -163,7 +163,7 @@ header #quien { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min
   nav button.sec { display:none; }
   nav .mas { display:flex; }
   nav .mas[data-activo="true"] { color:var(--texto); box-shadow:inset 0 3px 0 var(--texto); }
-  header #quien { display:none; }
+  header #quien, header #tema, header #salir { display:none; }
   header strong { flex:1; }
   #hoja { display:block; position:fixed; inset:0; z-index:30; }
   #hoja .velo { position:absolute; inset:0; background:rgba(12,12,16,.5); }
