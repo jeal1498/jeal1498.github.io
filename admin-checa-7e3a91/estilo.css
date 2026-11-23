@@ -787,8 +787,8 @@ details.completo[open] > summary::after { transform:rotate(90deg); }
 .trio { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px; margin-top:16px; padding-top:14px; border-top:1px solid var(--borde); }
 .trio small { display:block; font-size:12px; color:var(--gris); } .trio b { font:700 17px "JetBrains Mono", ui-monospace, monospace; }
 .sec-v3 { align-items:baseline; } .sec-v3 h2 { margin-bottom:10px; } .sec-v3 .enlace { font-size:13px; font-weight:700; text-decoration:none; }
-.vbar { display:grid; grid-template-columns:56px minmax(0,1fr) 64px; gap:10px; align-items:center; padding:8px 0; }
-.vbar.ancha { grid-template-columns:minmax(0,120px) minmax(0,1fr) 64px; }
+.vbar { display:grid; grid-template-columns:96px minmax(0,1fr) 64px; gap:10px; align-items:center; padding:8px 0; }
+.vbar.ancha { grid-template-columns:96px minmax(0,1fr) 64px; }
 .vbar span { font:700 14px "JetBrains Mono", ui-monospace, monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .vbar.ancha span { font:600 13px "DM Sans", system-ui, sans-serif; }
 .vbar .p { height:10px; border-radius:5px; background:var(--panel); overflow:hidden; }
@@ -1337,3 +1337,8 @@ header .tit { flex:1; margin-left:2px; } header .tit strong { font:800 18px/1.1 
 .rev-cta .empezar-v { margin:0; min-height:64px; padding:10px 20px; text-align:left; justify-content:flex-start; }
 .rev-cta .cta-tx { display:flex; flex-direction:column; gap:1px; } .rev-cta .cta-tx small { font:500 13px "DM Sans", system-ui, sans-serif; opacity:.85; }
 #nota-filtro { margin:6px 4px 0; color:var(--tenue); }
+
+/* Calidad: un solo umbral de color y barras alineadas */
+.aro-v.aviso { stroke:var(--amarillo); } .aro-v.poca { stroke:var(--gris); }
+.vbar span { white-space:normal; overflow:visible; line-height:1.15; }
+.vbar span small { display:block; margin-top:2px; font:500 12px "DM Sans", system-ui, sans-serif; color:var(--gris); }

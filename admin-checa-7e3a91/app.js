@@ -235,9 +235,12 @@
       sv("circle", { cx: u[0], cy: u[1], r: "2.5", fill: "currentColor" })]);
   }
   // Anillo de acierto (0–100 %).
-  function aro(p) {
+  // Meta del plan semanal: lectura completa de 93 % o más. Un solo umbral para el aro y las barras.
+  var META_LECTURA = 0.93;
+  function claseAcierto(q, n) { return n < 30 || q === null ? "poca" : q >= META_LECTURA ? "ok" : "aviso"; }
+  function aro(p, cls) {
     var r = 44, cir = 2 * Math.PI * r, g = [sv("circle", { cx: 56, cy: 56, r: r, fill: "none", class: "aro-f", "stroke-width": "12" })];
-    if (p !== null) g.push(sv("circle", { cx: 56, cy: 56, r: r, fill: "none", class: "aro-v", "stroke-width": "12", "stroke-linecap": "round", "stroke-dasharray": (cir * p).toFixed(1) + " " + cir.toFixed(1), transform: "rotate(-90 56 56)" }));
+    if (p !== null) g.push(sv("circle", { cx: 56, cy: 56, r: r, fill: "none", class: "aro-v" + (cls ? " " + cls : ""), "stroke-width": "12", "stroke-linecap": "round", "stroke-dasharray": (cir * p).toFixed(1) + " " + cir.toFixed(1), transform: "rotate(-90 56 56)" }));
     var t = sv("text", { x: 56, y: 62, "text-anchor": "middle", class: "aro-t" }); t.textContent = p === null ? "—" : (p * 100).toFixed(1).replace(".0", "") + "%"; g.push(t);
     return sv("svg", { width: 112, height: 112, viewBox: "0 0 112 112", class: "aro", role: "img", "aria-label": p === null ? "Sin datos de acierto" : "Acierto " + (p * 100).toFixed(1) + " por ciento" }, g);
   }
@@ -592,19 +595,19 @@
     var te = ind.tasa_errores, lecI = ind.lecturas, p50 = d && d.procesamiento ? d.procesamiento.ms_lectura_p50 : null;
     var teV = te ? (te.valor !== null && te.valor !== undefined ? Number(te.valor) : te.n ? te.k / te.n : null) : null;
     c.appendChild(el("div", { clase: "caja-v3", id: "calidad" }, [
-      el("div", { clase: "aro-caja" }, [aro(pv), el("div", { clase: "aro-tx" }, [
+      el("div", { clase: "aro-caja" }, [aro(pv, claseAcierto(pv, ph ? ph.n : 0)), el("div", { clase: "aro-tx" }, [
         el("b", { texto: pv === null ? "Aún no se puede medir" : "La app acierta " + Math.round(pv * 100) + " de cada 100" }),
-        el("small", { texto: ph && ph.n ? "Comparado con " + ph.n + " avisos revisados por una persona" + (rg ? ". Lo más probable: entre " + rg[0] + " y " + rg[1] + " de cada 100" : "") + (ph.n < 30 ? ". Son pocos casos para opinar." : ".") : "Falta que una persona revise avisos." })])]),
-      el("div", { clase: "trio" }, [["Errores", teV === null ? "—" : pct(teV)], ["Tiempo", p50 ? (p50 / 1000).toFixed(1) + " s" : "—"], ["Lecturas", lecI && lecI.valor !== undefined && lecI.valor !== null ? Number(lecI.valor).toLocaleString("en-US") : "—"]].map(function (x) {
+        el("small", { texto: ph && ph.n ? "Comparado con " + ph.n + " avisos revisados por una persona" + (rg ? ". Lo más probable: entre " + rg[0] + " y " + rg[1] + " de cada 100" : "") + (ph.n < 30 ? ". Son pocos casos para opinar." : ".") + " Meta: 93 de cada 100 o más." : "Falta que una persona revise avisos." })])]),
+      el("div", { clase: "trio" }, [["Fallas al procesar", teV === null ? "—" : pct(teV)], ["Tarda en leer", p50 ? (p50 / 1000).toFixed(1) + " s" : "—"], ["Lecturas", lecI && lecI.valor !== undefined && lecI.valor !== null ? Number(lecI.valor).toLocaleString("en-US") : "—"]].map(function (x) {
         return el("div", {}, [el("small", { texto: x[0] }), el("b", { texto: x[1] })]); }))]));
     // 2 · Por versión
     var vs = dv ? (dv.versiones || []).slice().sort(function (x, y) { return String(y.primera || "").localeCompare(String(x.primera || "")); }).slice(0, 4) : [];
-    if (vs.length) {
+    if (vs.length > 1) {
       c.appendChild(el("div", { clase: "h-fila sec-v3" }, [el("h2", { texto: "Por versión" }), enlace("Comparar ›", "calidad", "versiones")]));
       c.appendChild(el("div", { clase: "caja-v3" }, vs.map(function (v) {
         var q = v.con_referencia ? v.coinciden / v.con_referencia : null, i = el("i"); i.style.width = (q === null ? 0 : q * 100) + "%";
-        return el("div", { clase: "vbar" + (v.con_referencia < 30 ? " poca" : q !== null && q >= 0.9 ? " ok" : " aviso") }, [el("span", { texto: v.version }), el("div", { clase: "p" }, [i]),
-          el("b", { texto: q === null ? "—" : pct(q) })]); }).concat([el("div", { clase: "detalle nota-v", texto: "Acierto contra una persona. En gris, versiones con menos de 30 casos revisados." })])));
+        return el("div", { clase: "vbar " + claseAcierto(q, v.con_referencia) }, [el("span", {}, [v.version, el("small", { texto: "n=" + v.con_referencia })]), el("div", { clase: "p" }, [i]),
+          el("b", { texto: q === null ? "—" : pct(q) })]); }).concat([el("div", { clase: "detalle nota-v", texto: "Acierto contra una persona. Verde: meta de 93 % o más. En gris, versiones con menos de 30 casos revisados." })])));
     }
     // 3 · La IA contra una persona
     var comps = T && T.rev ? compsCal(T) : di ? (di.componentes || []) : [];
@@ -612,14 +615,13 @@
       c.appendChild(el("div", { clase: "h-fila sec-v3" }, [el("h2", { texto: "Quién acierta contra una persona" }), enlace("Detalle ›", "calidad", "ia")]));
       c.appendChild(el("div", { clase: "caja-v3" }, comps.map(function (x) {
         var q = x.n ? x.coinciden / x.n : null, i = el("i"); i.style.width = (q === null ? 0 : q * 100) + "%";
-        return el("div", { clase: "vbar ancha" + (x.n < 30 ? " poca" : " ok") }, [el("span", { texto: ({ lector: "Lector", revision_ia: "IA de revisión", vision: "IA con imagen", texto: "IA de texto" })[x.componente] || legible(x.componente) }), el("div", { clase: "p" }, [i]), el("b", { texto: q === null ? "—" : pct(q) })]); })));
+        return el("div", { clase: "vbar ancha " + claseAcierto(q, x.n) }, [el("span", {}, [({ lector: "Lector", revision_ia: "IA de revisión", vision: "IA con imagen", texto: "IA de texto" })[x.componente] || legible(x.componente), el("small", { texto: "n=" + x.n })]), el("div", { clase: "p" }, [i]), el("b", { texto: q === null ? "—" : pct(q) })]); }).concat([el("div", { clase: "detalle nota-v", texto: "Cada barra se mide sobre sus propios casos: no son los mismos que en el círculo de arriba." })])));
     }
-    var corteRes = null;
-    if (d) { c.appendChild(corteRes = el("h2", { texto: "Lecturas por día" })); c.appendChild(el("div", { clase: "caja-v3" }, [barrasDia(d.historia || [])])); }
     if (!d) return;
     // Todo lo demás, plegado
-    var masN = el("details", { clase: "completo", id: "mas-numeros" }, [el("summary", { texto: "Más números y gráficas" })]);
-    var cuerpoN = el("div", { clase: "completo-cuerpo" }); masN.appendChild(cuerpoN); c.appendChild(masN); dosCols(c, corteRes); c = cuerpoN;
+    var masN = el("details", { clase: "completo", id: "mas-numeros" }, [el("summary", { texto: "Más números · lecturas por día, tiempos y calidad" })]);
+    var cuerpoN = el("div", { clase: "completo-cuerpo" }); masN.appendChild(cuerpoN); c.appendChild(masN); dosCols(c, masN); c = cuerpoN;
+    c.appendChild(el("h2", { texto: "Lecturas por día" })); c.appendChild(el("div", { clase: "caja-v3" }, [barrasDia(d.historia || [])]));
     c.appendChild(el("h2", { texto: "Los números" }));
     c.appendChild(el("div", { clase: "tarjetas", id: "inicio" }, d.indicadores.map(function (i) {
       return tarjeta(i, [i.clave === "calidad_interpretacion" ? enlace("Ver detalle", "ia") : i.clave === "veredictos_pendientes" ? enlace("Ver errores", "errores") :
