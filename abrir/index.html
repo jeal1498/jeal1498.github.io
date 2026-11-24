@@ -64,8 +64,10 @@ p{margin:0;color:var(--gris);font-size:15px}
   var interno=/FBAN|FBAV|Instagram|TikTok|musical_ly|BytedanceWebview|Line\/|Snapchat|Twitter|; wv\)/i.test(ua);
   var app=document.getElementById('app');
   function estado(e){app.className='est-'+e}
+  var CHROME='intent://play.google.com/store/apps/details?id=com.jeal1498.checa#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(GRUPO)+';end';
+  var TIENDA='intent://details?id=com.jeal1498.checa#Intent;scheme=market;package=com.android.vending;S.browser_fallback_url='+encodeURIComponent(GRUPO)+';end';
   function destino(){
-    if(android) return 'intent://play.google.com/store/apps/details?id=com.jeal1498.checa#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(GRUPO)+';end';
+    if(android) return TIENDA;
     if(ios) return 'googlechromes://play.google.com/store/apps/details?id=com.jeal1498.checa';
     return GRUPO;
   }
@@ -73,6 +75,8 @@ p{margin:0;color:var(--gris);font-size:15px}
     estado('amarillo');
     try{window.checaTrack&&window.checaTrack('abrir_chrome',{desde:interno?'interno':'normal'})}catch(e){}
     window.location.href=destino();
+    // Si la app de Play no se abre (navegador de TikTok), sale a Chrome
+    if(android&&interno)setTimeout(function(){if(!document.hidden)window.location.href=CHROME},1500);
   }
   // Si Chrome se abre, esta página pasa a segundo plano.
   document.addEventListener('visibilitychange',function(){if(document.hidden)estado('verde')});
@@ -84,7 +88,7 @@ p{margin:0;color:var(--gris);font-size:15px}
     try{navigator.clipboard.writeText(GRUPO).then(listo,function(){window.prompt('Copia este enlace',GRUPO)})}
     catch(e){window.prompt('Copia este enlace',GRUPO)}
   });
-  if(!interno){ window.location.replace(GRUPO); return; }   // ya está en un navegador normal
+  if(!interno){ window.location.replace(android?TIENDA:GRUPO); return; }   // ya está en un navegador normal
   setTimeout(abrir,900);                                      // en el navegador de una app, intenta salir solo
 })();
 </script>
