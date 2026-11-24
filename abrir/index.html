@@ -46,7 +46,7 @@ p{margin:0;color:var(--gris);font-size:15px}
   <div class="sem">
     <div class="luces" aria-hidden="true"><span class="luz r"></span><span class="luz a"></span><span class="luz v"></span></div>
     <div class="pasos" aria-live="polite">
-      <div class="paso p1"><b>Rojo</b>Este navegador no abre bien Google Play.</div>
+      <div class="paso p1"><b>Rojo</b>Este navegador no abre la app de Google Play.</div>
       <div class="paso p2"><b>Amarillo</b>Abriendo Chrome…</div>
       <div class="paso p3"><b>Verde</b>Chrome abre Checa en Google Play.</div>
     </div>
@@ -88,7 +88,14 @@ p{margin:0;color:var(--gris);font-size:15px}
     try{navigator.clipboard.writeText(GRUPO).then(listo,function(){window.prompt('Copia este enlace',GRUPO)})}
     catch(e){window.prompt('Copia este enlace',GRUPO)}
   });
-  if(!interno){ window.location.replace(android?TIENDA:GRUPO); return; }   // ya está en un navegador normal
+  if(!interno){
+    if(android){ // Chrome no deja abrir otra app sin un toque: se intenta solo y, si no, el botón lo hace
+      document.querySelector('h1').textContent='Abre Checa en Google Play';
+      document.getElementById('abrir').textContent='Abrir Google Play →';
+      estado('verde'); setTimeout(abrir,300); return;
+    }
+    window.location.replace(GRUPO); return;
+  }   // ya está en un navegador normal
   setTimeout(abrir,900);                                      // en el navegador de una app, intenta salir solo
 })();
 </script>
