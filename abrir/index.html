@@ -65,7 +65,8 @@ p{margin:0;color:var(--gris);font-size:15px}
   var app=document.getElementById('app');
   function estado(e){app.className='est-'+e}
   var CHROME='intent://play.google.com/store/apps/details?id=com.jeal1498.checa#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(GRUPO)+';end';
-  var TIENDA='intent://details?id=com.jeal1498.checa#Intent;scheme=market;package=com.android.vending;S.browser_fallback_url='+encodeURIComponent(GRUPO)+';end';
+  var TIENDA='intent://details?id=com.jeal1498.checa#Intent;scheme=market;action=android.intent.action.VIEW;package=com.android.vending;end';
+  var MARKET='market://details?id=com.jeal1498.checa';
   function destino(){
     if(android) return TIENDA;
     if(ios) return 'googlechromes://play.google.com/store/apps/details?id=com.jeal1498.checa';
@@ -76,7 +77,10 @@ p{margin:0;color:var(--gris);font-size:15px}
     try{window.checaTrack&&window.checaTrack('abrir_chrome',{desde:interno?'interno':'normal'})}catch(e){}
     window.location.href=destino();
     // Si la app de Play no se abre (navegador de TikTok), sale a Chrome
-    if(android&&interno)setTimeout(function(){if(!document.hidden)window.location.href=CHROME},1500);
+    if(android&&interno){
+      setTimeout(function(){if(!document.hidden)window.location.href=MARKET},700);
+      setTimeout(function(){if(!document.hidden)window.location.href=CHROME},2200);
+    }
   }
   // Si Chrome se abre, esta página pasa a segundo plano.
   document.addEventListener('visibilitychange',function(){if(document.hidden)estado('verde')});
