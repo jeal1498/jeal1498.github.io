@@ -102,24 +102,6 @@
     calc.addEventListener('input', upd); upd();
   }
 
-  // Versión del APK (si falla, el botón sigue funcionando)
-  var metas = document.querySelectorAll('.dl-meta:not([data-fijo])');
-  if (metas.length && window.fetch) {
-    fetch('descargar/version.json', { cache: 'no-store' })
-      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-      .then(function (v) {
-        var parts = ['Versión ' + v.version];
-        if (v.fecha) {
-          var d = new Date(v.fecha + 'T12:00:00');
-          parts.push(isNaN(d) ? v.fecha : d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }));
-        }
-        if (v.tamano) parts.push(v.tamano);
-        var txt = parts.join(' · ') + ' · Android 8+';
-        metas.forEach(function (m) { m.textContent = txt; });
-      })
-      .catch(function () {});
-  }
-
   // Video: se carga solo al tocar (ahorra datos)
   var vp = document.getElementById('vid-play');
   if (vp) vp.addEventListener('click', function () {

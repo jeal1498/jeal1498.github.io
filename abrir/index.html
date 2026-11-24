@@ -46,27 +46,27 @@ p{margin:0;color:var(--gris);font-size:15px}
   <div class="sem">
     <div class="luces" aria-hidden="true"><span class="luz r"></span><span class="luz a"></span><span class="luz v"></span></div>
     <div class="pasos" aria-live="polite">
-      <div class="paso p1"><b>Rojo</b>Este navegador no te deja unirte al grupo.</div>
+      <div class="paso p1"><b>Rojo</b>Este navegador no abre bien Google Play.</div>
       <div class="paso p2"><b>Amarillo</b>Abriendo Chrome…</div>
-      <div class="paso p3"><b>Verde</b>Chrome abre el grupo de testers.</div>
+      <div class="paso p3"><b>Verde</b>Chrome abre Checa en Google Play.</div>
     </div>
   </div>
   <button class="btn" type="button" id="abrir">Abrir en Chrome →</button>
-  <button class="copiar" type="button" id="copiar">Copiar enlace del grupo</button>
+  <button class="copiar" type="button" id="copiar">Copiar enlace de Google Play</button>
   <p class="nota" id="nota">¿No abrió? Toca <b>⋮</b> y elige <b>«Abrir en el navegador»</b>, o copia el enlace y pégalo en Chrome.</p>
   <div class="franja" aria-hidden="true"></div>
 </main>
 <script>
 (function(){
-  var GRUPO='https://groups.google.com/g/checa-test';
+  var GRUPO='https://play.google.com/store/apps/details?id=com.jeal1498.checa';
   var ua=navigator.userAgent||'';
   var android=/Android/i.test(ua), ios=/iPhone|iPad|iPod/i.test(ua);
   var interno=/FBAN|FBAV|Instagram|TikTok|musical_ly|BytedanceWebview|Line\/|Snapchat|Twitter|; wv\)/i.test(ua);
   var app=document.getElementById('app');
   function estado(e){app.className='est-'+e}
   function destino(){
-    if(android) return 'intent://groups.google.com/g/checa-test#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(GRUPO)+';end';
-    if(ios) return 'googlechromes://groups.google.com/g/checa-test';
+    if(android) return 'intent://play.google.com/store/apps/details?id=com.jeal1498.checa#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(GRUPO)+';end';
+    if(ios) return 'googlechromes://play.google.com/store/apps/details?id=com.jeal1498.checa';
     return GRUPO;
   }
   function abrir(){
