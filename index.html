@@ -235,7 +235,7 @@ input[type=range]{width:100%;accent-color:var(--hueso);height:28px}
 .tc.hl{border-color:var(--hueso)}
 
 /* Casos de uso */
-.cases{display:grid;gap:18px}
+.cases{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
 @media(min-width:960px){.cases{grid-template-columns:repeat(3,1fr)}}
 .case{border:1px solid var(--borde);border-radius:var(--radio-tarjeta);padding:28px;background:var(--tablero);display:flex;flex-direction:column;gap:12px}
 .case .k{font:700 .7rem/1 var(--fuente-datos);letter-spacing:.12em;text-transform:uppercase;color:var(--gris-texto)}
