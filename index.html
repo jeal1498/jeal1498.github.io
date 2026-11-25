@@ -59,7 +59,7 @@ p{margin:0}
 .hero h1{font-size:clamp(1.9rem,8.2vw,3rem)}
 
 /* Composición HyperFrames del hero */
-.capt{position:relative;margin-top:12px;aspect-ratio:660/1376;max-width:330px;margin-inline:auto;cursor:pointer}
+.capt{position:relative;margin-top:12px;margin-bottom:26px;aspect-ratio:660/1376;max-width:330px;margin-inline:auto;cursor:pointer}
 .capt img{position:absolute;inset:0;width:100%;height:auto;opacity:0;transition:opacity .5s;filter:drop-shadow(0 20px 26px rgba(0,0,0,.3))}
 .capt img.on{opacity:1}
 .capt .pts{position:absolute;left:0;right:0;bottom:-18px;display:flex;justify-content:center;gap:8px}
@@ -219,7 +219,7 @@ p{margin:0}
       <div class="pts" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
     </div>
     <p class="pie-prueba">Ofertas reales · 12 km/L · $24/L · Toca para ver otra</p>
-    <a class="play" id="cta1" data-dl="hero" href="abrir/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Probar gratis en Google Play</a>
+    <a class="play" id="cta1" data-dl="hero" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Probar gratis en Google Play</a>
     <div class="chips"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Sin tarjeta</span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Teléfono y tablet</span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Lee sin internet</span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Android 8+</span></div>
     <div class="franja">
       <div><b>~1 s</b><span>para leer la oferta</span></div>
@@ -315,7 +315,7 @@ p{margin:0}
     <h2 id="t10">Tu próxima oferta, con la cuenta hecha.</h2>
     <p class="lead">Instálala desde Google Play en 2 minutos y mírala trabajar en tu siguiente viaje.</p>
     <div class="escena" data-remotion="semaforo" role="img" aria-label="Animación: el semáforo pasa de rojo a ámbar a verde con palomita y aparece Descarga Checa."></div>
-    <a class="play" id="cta2" data-dl="cierre" href="abrir/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Probar gratis en Google Play</a>
+    <a class="play" id="cta2" data-dl="cierre" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Probar gratis en Google Play</a>
     <p class="disp">Sin tarjeta · Android 8 o más</p>
   </section>
 
@@ -326,7 +326,7 @@ p{margin:0}
   </footer>
 </div>
 
-<div class="fijo" id="fijo"><a class="play" data-dl="fijo" href="abrir/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Probar gratis en Google Play</a></div>
+<div class="fijo" id="fijo"><a class="play" data-dl="fijo" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Probar gratis en Google Play</a></div>
 
 <script>
 (function(){
@@ -348,7 +348,23 @@ p{margin:0}
 })();
 </script>
 <script src="escenas.js" defer></script>
-<script>document.querySelectorAll('[data-dl]').forEach(function(a){a.addEventListener('click',function(){if(window.checaTrack)try{window.checaTrack('clic_descargar',{desde:a.getAttribute('data-dl')});}catch(e){}});});</script>
+<script>/* Botones de descarga: en Android abren la app de Google Play; desde el navegador de TikTok (u otra app) prueban market:// y luego Chrome. Antes lo hacía /abrir. */
+(function(){
+var ID='com.jeal1498.checa',PLAY='https://play.google.com/store/apps/details?id='+ID,ua=navigator.userAgent||'';
+var android=/Android/i.test(ua),interno=/FBAN|FBAV|Instagram|TikTok|musical_ly|BytedanceWebview|Line\/|Snapchat|Twitter|; wv\)/i.test(ua);
+var TIENDA='intent://details?id='+ID+'#Intent;scheme=market;action=android.intent.action.VIEW;package=com.android.vending;S.browser_fallback_url='+encodeURIComponent(PLAY)+';end';
+var MARKET='market://details?id='+ID;
+var CHROME='intent://play.google.com/store/apps/details?id='+ID+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(PLAY)+';end';
+function aviso(){if(document.getElementById('no-abrio'))return;var d=document.createElement('div');d.id='no-abrio';d.setAttribute('role','status');
+d.style.cssText='position:fixed;left:16px;right:16px;bottom:96px;z-index:60;background:#0C0C10;color:#F4F4EF;border:1px solid #2A2A33;border-radius:14px;padding:12px 44px 12px 14px;font:500 14px/1.4 DM Sans,system-ui,sans-serif;box-shadow:0 12px 30px -10px #000';
+d.innerHTML='¿No abrió Google Play? Toca <b>⋮</b> arriba y elige <b>«Abrir en el navegador»</b>.<button type="button" aria-label="Cerrar" style="position:absolute;top:6px;right:6px;width:32px;height:32px;border:0;background:none;color:#9A9AA6;font-size:18px">✕</button>';
+d.querySelector('button').onclick=function(){d.remove()};document.body.appendChild(d)}
+document.querySelectorAll('[data-dl]').forEach(function(a){a.href=PLAY;a.addEventListener('click',function(ev){
+try{window.checaTrack&&window.checaTrack('clic_descargar',{desde:a.getAttribute('data-dl')})}catch(e){}
+if(!android)return;ev.preventDefault();location.href=TIENDA;
+if(interno){setTimeout(function(){if(!document.hidden)location.href=MARKET},700);setTimeout(function(){if(!document.hidden)location.href=CHROME},2200);setTimeout(function(){if(!document.hidden)aviso()},3500)}
+})});
+})();</script>
 <script>(function(){var c=document.getElementById('capt');if(!c)return;var im=c.querySelectorAll('img'),pt=c.querySelectorAll('.pts i'),k=0,t;
 function ir(n){im[k].classList.remove('on');pt[k].classList.remove('on');k=(n+im.length)%im.length;im[k].classList.add('on');pt[k].classList.add('on')}
 function auto(){clearInterval(t);if(!matchMedia('(prefers-reduced-motion:reduce)').matches)t=setInterval(function(){ir(k+1)},3500)}
