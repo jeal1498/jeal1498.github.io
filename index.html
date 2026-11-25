@@ -248,7 +248,8 @@ p{margin:0}
 .faq summary,.n3 .faq summary{min-height:46px}
 .escena[data-remotion="semaforo"]{max-width:230px;margin-inline:auto}
 .cierre .escena{margin-top:4px}
-.piefull{margin-top:0;padding-top:20px;padding-bottom:96px;gap:10px}
+.piefull{margin-top:0;padding-top:20px;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));gap:10px}
+.fijo.fuera{transform:translateY(110%)!important}
 .piefull a{min-height:36px}
 .disp{margin-top:8px}
 </style>
@@ -386,7 +387,7 @@ p{margin:0}
 
   <footer class="piefull">
     <div><b style="color:var(--texto)">Checa</b> · Checa cuánto te queda. Para conductores de Uber y DiDi en Android.</div>
-    <nav aria-label="Legal"><a href="privacidad.html">Privacidad</a><a href="terminos.html">Términos</a><a href="eliminar-cuenta.html">Eliminar cuenta</a><a href="https://wa.me/529985214490">Soporte por WhatsApp</a></nav>
+    <nav aria-label="Legal"><a href="privacidad.html">Privacidad</a><a href="terminos.html">Términos</a></nav>
     <p>© 2026 Checa. Proyecto independiente, no afiliado a Uber ni a DiDi; sus nombres son marcas de sus dueños. Los números de esta página son de ejemplo.</p>
   </footer>
 </div>
@@ -436,5 +437,6 @@ function auto(){clearInterval(t);if(!matchMedia('(prefers-reduced-motion:reduce)
 c.addEventListener('click',function(){ir(k+1);auto()});
 function cargar(){im.forEach(function(i){if(i.dataset.src){i.src=i.dataset.src;i.removeAttribute('data-src')}});auto()}
 if(document.readyState==='complete')cargar();else addEventListener('load',cargar)})();</script>
+<script>(function(){var f=document.getElementById('fijo'),p=document.querySelector('.piefull');if(!f||!p||!('IntersectionObserver'in window))return;new IntersectionObserver(function(e){f.classList.toggle('fuera',e[0].isIntersecting)}).observe(p)})();</script>
 </body>
 </html>
