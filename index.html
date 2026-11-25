@@ -59,10 +59,10 @@ p{margin:0}
 .hero h1{font-size:clamp(1.9rem,8.2vw,3rem)}
 
 /* Composición HyperFrames del hero */
-.capt{position:relative;margin-top:12px;aspect-ratio:700/1172;cursor:pointer}
-.capt img{position:absolute;inset:0;width:100%;height:auto;opacity:0;transition:opacity .5s;filter:drop-shadow(0 14px 22px rgba(0,0,0,.25))}
+.capt{position:relative;margin-top:12px;aspect-ratio:660/1376;max-width:330px;margin-inline:auto;cursor:pointer}
+.capt img{position:absolute;inset:0;width:100%;height:auto;opacity:0;transition:opacity .5s;filter:drop-shadow(0 20px 26px rgba(0,0,0,.3))}
 .capt img.on{opacity:1}
-.capt .pts{position:absolute;left:0;right:0;bottom:-4px;display:flex;justify-content:center;gap:8px}
+.capt .pts{position:absolute;left:0;right:0;bottom:-18px;display:flex;justify-content:center;gap:8px}
 .capt .pts i{width:8px;height:8px;border-radius:50%;background:var(--linea,#ccc)}.capt .pts i.on{background:var(--texto2,#555)}
 .pie-prueba{margin-top:8px;font:500 .74rem/1.4 var(--datos);color:var(--texto3);text-align:center}
 
@@ -212,10 +212,10 @@ p{margin:0}
     <h1 id="t1">Antes de aceptar CHECA cuánto te queda.</h1>
     <p class="sub">Lee cada oferta de Uber y DiDi, resta tu gasolina y te dice si conviene.</p>
     <div class="capt" id="capt" aria-roledescription="carrusel">
-      <img src="media/oferta-1.webp" width="700" alt="Oferta de DiDi de 113 pesos con el aviso de Checa: Aceptar, te quedan 93." class="on" fetchpriority="high">
-      <img src="media/oferta-2.webp" width="700" alt="Oferta de DiDi de 38.94 con el aviso de Checa: Considerar, te quedan 32." loading="lazy">
-      <img src="media/oferta-3.webp" width="700" alt="Oferta de DiDi de 51 pesos con el aviso de Checa: Rechazar, te quedan 30." loading="lazy">
-      <img src="media/oferta-4.webp" width="700" alt="Oferta de DiDi de 89.71 con el aviso de Checa: Aceptar, te quedan 79." loading="lazy">
+      <img src="media/oferta-1.webp" width="660" alt="Oferta de DiDi de 113 pesos con el aviso de Checa: Aceptar, te quedan 93." class="on" fetchpriority="high">
+      <img src="media/oferta-2.webp" width="660" alt="Oferta de DiDi de 38.94 con el aviso de Checa: Considerar, te quedan 32." loading="lazy">
+      <img src="media/oferta-3.webp" width="660" alt="Oferta de DiDi de 51 pesos con el aviso de Checa: Rechazar, te quedan 30." loading="lazy">
+      <img src="media/oferta-4.webp" width="660" alt="Oferta de DiDi de 89.71 con el aviso de Checa: Aceptar, te quedan 79." loading="lazy">
       <div class="pts" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
     </div>
     <p class="pie-prueba">Ofertas reales · 12 km/L · $24/L · Toca para ver otra</p>
