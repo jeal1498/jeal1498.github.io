@@ -10,9 +10,9 @@ related_targets: []
 Mode: Persuade. Visitor: conductor de Uber/DiDi con Android que paga su gasolina (auto propio o rentado). Job: entender en segundos que factura mucho pero le queda poco, y que Checa se lo dice antes de aceptar. Action: descargar en Google Play. Proof: pop-up real v10.86 (números de ejemplo), video vsl-oferta.mp4, testimonios reales que Eduardo enviará (huecos marcados). Constraints: marca v2 fija, sin ciudad/país, sin competencia, sin prometer ganancias, cifras de ejemplo rotuladas, precios $119/$589/$1,059, gratis hasta el 31 ene 2027.
 
 ## Direction contract
-THESIS: La página es el tablero del día del conductor: lo que facturó se vacía, fuga por fuga, hasta lo que de verdad le quedó. Rechaza el héroe de titular + teléfono + botones.
-OWN-WORLD: Asfalto como suelo, un medidor horizontal hueso a escala de página que se vacía en tramos rojos rotulados en JetBrains Mono; Bricolage 800 para cifras enormes; verde, amarillo y rojo solo deciden. Pop-ups v10.86 como única pieza de producto.
-STORY: Ve «Facturaste $1,800. Te quedaron $1,150.», reconoce sus fugas (gasolina, recogidas sin pago, desgaste), ve cómo Checa marca cada oferta antes de aceptarla, pierde el miedo (Google Play, solo lee, tú decides), ve el precio contra un viaje malo evitado y descarga.
-FIRST VIEWPORT: Pregunta-titular «Facturaste $1,800. ¿Cuánto te quedó?» arriba; debajo, el medidor a todo el ancho que al cargar se vacía en 3 tramos rojos hasta $1,150; botón «Descargar en Google Play» visible sin scroll en teléfono.
-FORM: «Tanque que se vacía»; seed: none (pinned) — Eduardo eligió «Tanque que se vacía» entre las tres estructuras; mundo fijado por el encargo: «Marca v2 en marca/». Firma: el vaciado del medidor (una sola animación, respeta reduced-motion).
+THESIS: Landing de colega a colega guiada por el copy v2 (APK-CHECA/marketing/web/landing-copy-v2.md): el viaje trampa de $95 que deja $57, demostrado con el pop-up real. Rechaza la escasez falsa y el tono de vendedor.
+OWN-WORLD: Marca v2: asfalto, hueso solo en el cierre, verde/amarillo/rojo solo deciden; Bricolage 800, DM Sans, JetBrains Mono para datos; pop-ups v10.86 como pieza de producto.
+STORY: Se reconoce en el viaje trampa, siente los 3 dolores, ve que se configura una vez, mira la demo de 12 s, pierde miedos en el FAQ y descarga.
+FIRST VIEWPORT: H1 «Ese viaje de $95 te deja $57.», subtítulo, botón verde a todo el ancho con «Gratis hasta el 31 de enero»; debajo el teléfono con la oferta de DiDi y el pop-up rojo encima.
+FORM: estructura obligatoria de 8 secciones del encargo de Eduardo; seed: none (pinned) — «Estructura Obligatoria de la Landing Page (De arriba hacia abajo)»; mundo: «Marca v2 en marca/».
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
