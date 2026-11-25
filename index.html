@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Checa · ¿Te conviene ese viaje?</title>
-<meta name="description" content="Checa lee cada oferta de Uber y DiDi, le resta tu gasolina y te dice en un segundo si te conviene. Descárgala gratis en Google Play.">
+<title>Checa · Antes de aceptar, checa cuánto te queda</title>
+<meta name="description" content="Checa lee cada oferta de Uber y DiDi, descuenta tu gasolina y te dice en voz alta si conviene. Descárgala gratis en Google Play.">
 <link rel="canonical" href="https://jeal1498.github.io/PWA-Checa-Multimedia/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_MX">
 <meta property="og:site_name" content="Checa">
-<meta property="og:title" content="¿Te conviene ese viaje o solo vas a quemar combustible?">
-<meta property="og:description" content="Checa lee cada oferta de Uber y DiDi, le resta tu gasolina y te dice en un segundo si te conviene. Descárgala gratis en Google Play.">
+<meta property="og:title" content="Antes de aceptar, checa cuánto te queda">
+<meta property="og:description" content="Checa lee cada oferta de Uber y DiDi, descuenta tu gasolina y te dice en voz alta si conviene. Descárgala gratis en Google Play.">
 <meta property="og:url" content="https://jeal1498.github.io/PWA-Checa-Multimedia/">
 <meta property="og:image" content="https://jeal1498.github.io/PWA-Checa-Multimedia/og.png">
 <meta property="og:image:width" content="1200">
@@ -98,6 +98,7 @@ p{margin:0}
 .blk{padding-block:30px;border-top:1px solid var(--linea);margin-top:30px}
 .blk h2{font-size:clamp(1.6rem,6.6vw,2.2rem)}
 .blk .lead{margin-top:8px;color:var(--texto2)}
+.blk .lead strong{color:var(--texto)}
 .escena{margin-top:12px}
 .golpes{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:12px}
 .golpes li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;font-size:1.02rem;color:var(--texto2)}
@@ -121,18 +122,115 @@ p{margin:0}
 .fijo.on{transform:none}
 .fijo .play{max-width:560px;margin:0 auto;min-height:54px}
 @media (prefers-reduced-motion:reduce){.fijo{transition:none}}
+
+/* ===== Versión completa: bloques extra con la información de la página anterior ===== */
+.chips{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:.88rem;color:var(--texto2)}
+.chips span{display:inline-flex;align-items:center;gap:5px}
+.chips svg{width:14px;height:14px;stroke:var(--verde-texto);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.hero .sub{margin-top:10px;color:var(--texto2);font-size:1.05rem}
+.hero .tag{display:inline-flex;gap:8px;align-items:center;margin-bottom:10px;font:600 .78rem/1 var(--datos);color:var(--texto3)}
+.hero .tag b{background:var(--aceptar);color:var(--sobre-aceptar);padding:5px 8px;border-radius:999px;letter-spacing:.04em}
+.franja{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin-top:30px;background:var(--linea);border:1px solid var(--linea);border-radius:16px;overflow:hidden}
+.franja div{background:var(--fondo);padding:14px 12px}
+.franja b{display:block;font:800 1.5rem/1 var(--titulos);letter-spacing:-.03em}
+.franja span{font-size:.82rem;color:var(--texto3)}
+.funcs{display:grid;gap:10px;margin-top:16px}
+.func{background:var(--tarjeta);border:1px solid var(--linea);border-radius:18px;padding:16px;display:grid;gap:6px}
+.func .k{font:700 .7rem/1 var(--datos);letter-spacing:.1em;text-transform:uppercase;color:var(--texto3)}
+.func h3{margin:0;font:800 1.2rem/1.15 var(--titulos);letter-spacing:-.03em}
+.func p{color:var(--texto2);font-size:.95rem}
+.func .viz{margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ch{font:700 .8rem/1 var(--datos);padding:8px 10px;border-radius:10px;border:1px solid var(--linea);background:var(--fondo)}
+.ch.ok{border-color:var(--aceptar);color:var(--verde-texto)}.ch.no{border-color:var(--rechazar);color:var(--rojo-texto)}
+.pc{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:#0C0C10;border:2.5px solid var(--c);color:#F4F4EF;white-space:nowrap}
+.pc i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.pc em{font:800 .66rem/1 var(--texto-f);font-style:normal;color:var(--c);letter-spacing:.04em}
+.pc b{font:800 1.2rem/1 var(--titulos)}.pc u{text-decoration:none;font:800 .76rem/1 var(--datos);color:#22C55E}
+.meta{width:100%}
+.meta .bar{height:10px;border-radius:5px;background:var(--fondo);border:1px solid var(--linea);overflow:hidden}.meta .bar i{display:block;height:100%;width:68%;background:var(--aceptar)}
+.meta small{display:flex;justify-content:space-between;margin-top:6px;font:600 .74rem/1 var(--datos);color:var(--texto3)}
+.horas{display:grid;grid-template-columns:repeat(17,1fr);gap:3px;align-items:end;height:48px;width:100%}
+.horas i{background:var(--linea);border-radius:3px}.horas i.top{background:var(--aceptar)}
+/* Demo interactiva */
+.demo{margin-top:16px;display:grid;gap:14px}
+.picks{display:grid;gap:8px}
+.pick{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;text-align:left;padding:12px 14px;border-radius:14px;border:1.5px solid var(--linea);background:var(--tarjeta);color:var(--texto);font:inherit;cursor:pointer;min-height:56px}
+.pick b{font:800 1.3rem/1 var(--titulos)}.pick span{font-size:.82rem;color:var(--texto3)}
+.pick[aria-pressed="true"]{border-color:var(--texto)}
+.sl label{display:grid;gap:6px;font-size:.92rem;color:var(--texto2)}
+.sl label span{display:flex;justify-content:space-between}.sl output{font:700 .9rem/1 var(--datos);color:var(--texto)}
+.sl input{width:100%;accent-color:#22C55E;min-height:32px}
+.sl{display:grid;gap:10px}
+.dpop{border-radius:16px;overflow:hidden;border:2px solid var(--pc);background:#0C0C10;color:#F4F4EF;--pc:#22C55E;transition:border-color .2s}
+.dpop .cu{display:grid;grid-template-columns:42% 1fr}
+.dpop .bl{background:var(--pc);display:grid;place-items:center;align-content:center;padding:12px 6px;color:#06210f;transition:background .2s}
+.dpop .bl small{font:800 .76rem/1 var(--texto-f);letter-spacing:.06em}
+.dpop .bl b{font:800 2.7rem/1.02 var(--titulos);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.dpop .de{padding:10px 12px;display:grid;gap:3px;align-content:center;min-width:0}
+.dpop .m{font:800 1.05rem/1.2 var(--datos);white-space:nowrap}.dpop .ok{color:#22C55E}.dpop .no{color:#ff6b6b}
+.dpop .ap{font:600 .7rem/1.3 var(--datos);color:#A3A3AD}
+.dpop .pl{display:block;text-align:center;padding:6px;border-top:1px solid #EF444466;background:#EF444418;font:800 .8rem/1 var(--datos);color:#ffd0d0}
+.ej{font:500 .72rem/1.3 var(--datos);color:var(--texto3);text-align:center}
+/* Confianza */
+.conf{list-style:none;margin:14px 0 0;padding:0;display:grid}
+.conf li{display:grid;grid-template-columns:28px 1fr;gap:4px 12px;padding:14px 0;border-top:1px solid var(--linea)}
+.conf li:last-child{border-bottom:1px solid var(--linea)}
+.conf svg{grid-row:span 2;width:22px;height:22px;stroke:var(--texto);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-top:2px}
+.conf b{font-weight:700}.conf span{color:var(--texto2);font-size:.95rem}
+/* Precios */
+.planes{margin-top:16px;border:1px solid var(--linea);border-radius:20px;overflow:hidden}
+.plan{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:16px;border-top:1px solid var(--linea)}
+.plan:first-child{border-top:0}
+.plan h3{margin:0;font:800 1.25rem/1.1 var(--titulos);letter-spacing:-.03em}
+.plan .per{font-size:.86rem;color:var(--texto3)}
+.plan .n{grid-row:span 2;text-align:right;font:800 1.8rem/1 var(--titulos);letter-spacing:-.03em}
+.plan .n small{display:block;font:600 .72rem/1.4 var(--datos);letter-spacing:0;color:var(--texto3)}
+.plan ul{grid-column:1/-1;margin:6px 0 0;padding-left:18px;color:var(--texto2);font-size:.9rem}
+.plan.hot{background:var(--tarjeta);box-shadow:inset 0 0 0 2px var(--aceptar)}
+.plan .tg{display:inline-block;margin-left:6px;vertical-align:middle;font:700 .62rem/1 var(--datos);letter-spacing:.06em;background:var(--aceptar);color:var(--sobre-aceptar);padding:4px 7px;border-radius:999px}
+.faq details{border-top:1px solid var(--linea)}.faq details:last-child{border-bottom:1px solid var(--linea)}
+.faq summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:14px;align-items:center;min-height:56px;font-weight:700}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:700 1.3rem/1 var(--datos);color:var(--texto3)}
+.faq details[open] summary::after{content:"−"}
+.faq details p{padding:0 0 14px;color:var(--texto2);font-size:.95rem}
+.faq{margin-top:12px}
+.piefull{padding-block:24px 110px;border-top:1px solid var(--linea);margin-top:24px;display:grid;gap:16px;font-size:.88rem;color:var(--texto3)}
+.piefull nav{display:flex;flex-wrap:wrap;gap:4px 18px}
+.piefull a{color:var(--texto2);min-height:40px;display:inline-flex;align-items:center}
+@media(min-width:700px){.franja{grid-template-columns:repeat(4,1fr)}.funcs{grid-template-columns:1fr 1fr}}
+
+/* Demo: pestañas arriba, aviso, oferta y metas */
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:5px;border-radius:16px;background:var(--tarjeta);border:1px solid var(--linea)}
+.tabs button{min-height:48px;border:0;border-radius:12px;background:transparent;color:var(--texto2);font:800 1.15rem/1 var(--titulos);letter-spacing:-.02em;cursor:pointer}
+.tabs button small{display:block;margin-top:4px;font:600 .66rem/1 var(--datos);letter-spacing:.04em;color:var(--texto3)}
+.tabs button[aria-pressed="true"]{background:var(--texto);color:var(--fondo)}
+.tabs button[aria-pressed="true"] small{color:var(--fondo);opacity:.7}
+.dof{position:relative;background:#000;color:#fff;border-radius:16px;padding:13px 15px 11px;box-shadow:0 10px 24px -14px #000}
+.dof .tipo{display:flex;justify-content:space-between;font:700 .78rem/1 var(--texto-f)}
+.dof .tipo span:last-child{color:#B5B5B5;font-weight:600}
+.dof .monto{display:block;font:700 2rem/1.05 var(--texto-f);letter-spacing:-.02em;margin:7px 0 5px}
+.dof .r{display:flex;gap:9px;align-items:center;font-size:.86rem;color:#E5E5E5;margin-top:3px}
+.dof .r i{width:8px;height:8px;border-radius:50%;background:#fff;flex:none}.dof .r i.d{border-radius:1px}
+.dof .acc{margin-top:10px;min-height:42px;border-radius:10px;background:#fff;color:#000;display:grid;place-items:center;font:700 .92rem/1 var(--texto-f)}
+@keyframes cae9{0%{opacity:0;transform:translateY(-22px) scale(.95)}100%{opacity:1;transform:none}}
+@keyframes sube9{0%{opacity:0;transform:translateY(22px)}100%{opacity:1;transform:none}}
+.dpop.cae{animation:cae9 .45s cubic-bezier(.2,.8,.2,1) both .15s}
+.dof.sube{animation:sube9 .4s cubic-bezier(.2,.8,.2,1) both}
+@media (prefers-reduced-motion:reduce){.dpop.cae,.dof.sube{animation:none}}
 </style>
 </head>
 <body>
 <div class="w">
   <header class="ficha">
     <div class="icono" aria-hidden="true"><span><i></i><i></i><i></i></span></div>
-    <div><b>Checa</b><small>Para los que ruleteamos diario en Uber y DiDi</small></div>
+    <div><b>Checa</b><small>Para conductores de Uber y DiDi</small></div>
   </header>
 
   <section class="hero" aria-labelledby="t1">
-    <h1 id="t1">¿Te conviene ese viaje o solo vas a quemar combustible?</h1>
-
+    <p class="tag"><b>YA EN GOOGLE PLAY</b>Sin tarjeta · Android</p>
+    <h1 id="t1">Antes de aceptar CHECA cuánto te queda.</h1>
+    <p class="sub">Checa lee cada oferta de Uber y DiDi, descuenta tu gasolina y te dice en voz alta si conviene. Tú solo decides.</p>
     <!-- Composición HyperFrames: hero-oferta (GSAP, ~9.5 s en bucle) -->
     <div class="hf" data-composition-id="hero-oferta" data-width="560" data-height="410" data-duration="9.5" role="img" aria-label="Ejemplo: llega una oferta de Uber de 95 pesos y salta el aviso de Checa, Rechazar, te quedan 57 pesos. Luego llega una de 120 y Checa dice Aceptar, te quedan 97. Toca para repetir.">
       <div aria-hidden="true">
@@ -144,64 +242,135 @@ p{margin:0}
         <div class="voz hf-voz-b"><svg viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></svg>«Aceptar»</div>
       </div>
     </div>
-    <p class="pie-prueba">Ejemplo: 12 km/L · $24/L · Toca para repetir</p>
-
-    <a class="play" id="cta1" data-dl="hero" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Descargar gratis en Google Play</a>
-    <div class="sellos">
-      <div><b>1 s</b><span>En leer la oferta</span></div>
-      <div><b>0</b><span>Toques a tu app</span></div>
-      <div><b>$0</b><span>Para empezar a probar</span></div>
+    <p class="pie-prueba">Números de ejemplo · 12 km/L · $24/L · Toca para repetir</p>
+    <a class="play" id="cta1" data-dl="hero" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Probar gratis en Google Play</a>
+    <div class="chips"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Sin tarjeta</span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Teléfono y tablet</span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Lee sin internet</span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Android 8+</span></div>
+    <div class="franja">
+      <div><b>~1 s</b><span>para leer la oferta</span></div>
+      <div><b>3 avisos</b><span>Aceptar, Considerar, Rechazar</span></div>
+      <div><b>0</b><span>toques a tu app</span></div>
+      <div><b>2 apps</b><span>a la vez en pantalla dividida</span></div>
     </div>
   </section>
 
   <section class="blk" aria-labelledby="t2" data-entra>
-    <h2 id="t2">El monto grande engaña</h2>
-    <!-- Escena de Remotion: bruto → neto -->
+    <h2 id="t2">Una oferta de $95 no te deja $95.</h2>
+    <p class="lead">La app te enseña la tarifa. La gasolina y <strong>los kilómetros para llegar por el pasajero los pagas tú</strong>, y nadie te los resta.</p>
     <div class="escena" data-remotion="bruto" role="img" aria-label="Animación: la oferta dice 95 pesos; se van 38 de gasolina de 19 km; te quedan 57, 5 pesos por kilómetro."></div>
-    <ul class="golpes">
-      <li data-entra-hijo><b><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg></b><span>Tienes unos segundos en pleno tráfico para decidir.</span></li>
-      <li data-entra-hijo><b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M4 10h10M14 8l3 3v6a1.5 1.5 0 0 0 3 0V9l-3-3"/></svg></b><span>La app te enseña lo bruto, no lo que te queda tras recoger y quemar combustible.</span></li>
-      <li data-entra-hijo><b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6 6 4-4 8 8M21 11v5h-5"/></svg></b><span>Al final del día ves el tanque abajo y sientes que no rindió.</span></li>
-    </ul>
   </section>
 
-  <section class="blk" aria-labelledby="t3">
-    <h2 id="t3">Así te avisa en plena calle</h2>
-    <!-- Escena de Remotion: el mismo aviso pasa por rojo, amarillo y verde -->
-    <div class="escena" data-remotion="avisa" role="img" aria-label="Animación del aviso de Checa: Rechazar, te quedan 57 por recogida larga; Considerar, te quedan 56 porque paga bien la hora y flojo el kilómetro; Aceptar, te quedan 97 porque cumple tus metas."></div>
-  </section>
-
-  <section class="blk" aria-labelledby="t4" data-entra>
-    <h2 id="t4">Listo en un minuto, sin estorbos</h2>
+  <section class="blk" aria-labelledby="t3" data-entra>
+    <h2 id="t3">Tres pasos. Cero cuentas en la cabeza.</h2>
     <ol class="pasos">
-      <li data-entra-hijo><b>1</b><div><strong>Pon tu auto y tu meta.</strong> Cuántos km te da el litro, a cuánto la gasolina y lo mínimo que buscas por km y por hora.</div></li>
-      <li data-entra-hijo><b>2</b><div><strong>Conéctate como siempre.</strong> Abre Uber o DiDi y trabaja a tu ritmo, incluso en pantalla dividida.</div></li>
-      <li data-entra-hijo><b>3</b><div><strong>Decide en un vistazo.</strong> Cae la oferta y ves rojo, amarillo o verde al instante.</div></li>
+      <li data-entra-hijo><b>1</b><div><strong>Llega la oferta.</strong> Manejas con Uber o DiDi como siempre. No cambias nada de tu forma de trabajar.</div></li>
+      <li data-entra-hijo><b>2</b><div><strong>Checa la lee.</strong> Resta tu gasolina y compara el viaje con tus metas por km y por hora. En un segundo.</div></li>
+      <li data-entra-hijo><b>3</b><div><strong>Tú decides.</strong> Semáforo, voz y vibración. Aceptar o rechazar lo tocas tú, en tu app.</div></li>
     </ol>
   </section>
 
+  <section class="blk" aria-labelledby="t4">
+    <h2 id="t4">Todo lo que necesitas para decidir rápido.</h2>
+    <p class="lead">Cada función tiene un solo trabajo: que sepas cuánto te queda de cada viaje.</p>
+    <div class="funcs" data-entra>
+      <div class="func" data-entra-hijo><span class="k">Netos</span><h3>Lo que te queda, no lo que te pagan</h3><p>La tarifa menos la gasolina de todo el recorrido, recogida incluida.</p><div class="viz"><span class="ch ok">$97 netos</span><span class="ch no">Gasolina −$23</span><span class="ch">11.5 km total</span></div></div>
+      <div class="func" data-entra-hijo><span class="k">Semáforo</span><h3>Te lo dice en voz alta</h3><p>No despegas los ojos del camino: escuchas «Aceptar», «Considerar» o «Rechazar» y sientes la vibración.</p></div>
+      <div class="func" data-entra-hijo><span class="k">Tablet y pantalla dividida</span><h3>Uber y DiDi a la vez, y te marca la mejor</h3><p>Un aviso por app. Cuando llegan dos ofertas juntas, la mejor lleva la etiqueta «Mejor».</p><div class="viz"><span class="pc" style="--c:#FACC15"><i></i><em>CONSIDERAR</em><b>$64</b><u>✓ $211/h</u></span><span class="pc" style="--c:#22C55E"><i></i><em>★ ACEPTAR</em><b>$97</b><u>✓ $327/h</u></span></div></div>
+      <div class="func" data-entra-hijo><span class="k">Filtros</span><h3>Tus reglas</h3><p>Si la recogida o el viaje se pasan, va a rojo.</p><div class="viz"><span class="ch">Por hora $200</span><span class="ch">Por km $10</span><span class="ch">Recogida máx. 3 km</span></div></div>
+      <div class="func" data-entra-hijo><span class="k">Mi día</span><h3>Tu meta, a la vista</h3><p>Viajes aceptados, lo que llevas y la gasolina de la semana.</p><div class="viz meta"><div class="bar"><i></i></div><small><span>$1,360 de $2,000</span><span>8 viajes · 68 %</span></small></div></div>
+      <div class="func" data-entra-hijo><span class="k">Mejores horas</span><h3>Cuándo te conviene salir</h3><p>Con tus propias ofertas de la semana.</p><div class="viz"><div class="horas" aria-hidden="true"><i class="" style="height:20%"></i><i class="" style="height:30%"></i><i class="" style="height:40%"></i><i class="" style="height:60%"></i><i class="" style="height:80%"></i><i class="top" style="height:90%"></i><i class="" style="height:70%"></i><i class="" style="height:50%"></i><i class="" style="height:60%"></i><i class="" style="height:80%"></i><i class="top" style="height:100%"></i><i class="top" style="height:90%"></i><i class="" style="height:70%"></i><i class="" style="height:60%"></i><i class="" style="height:80%"></i><i class="" style="height:50%"></i><i class="" style="height:30%"></i></div></div></div>
+      <div class="func" data-entra-hijo><span class="k">Sin internet</span><h3>Lee aunque no tengas señal</h3><p>La lectura pasa en tu teléfono. Funciona en modo avión.</p></div>
+    </div>
+  </section>
+
   <section class="blk" aria-labelledby="t5">
-    <h2 id="t5">Antes de instalar</h2>
-    <div class="resp">
-      <div><b>¿Me bloquean la cuenta?</b><span>Checa solo lee lo que aparece en tu pantalla, como un asistente. No toca botones ni altera Uber o DiDi.</span></div>
-      <div><b>¿Gasta datos o batería?</b><span>El cálculo corre en tu teléfono, sin depender de internet para leer, y solo trabaja con Uber o DiDi abiertos.</span></div>
-      <div><b>¿Cuánto cuesta?</b><span>Empiezas gratis y sin tarjeta. Si te sirve para cuidar tu ganancia, los planes van desde $119 al mes.</span></div>
+    <h2 id="t5">Elige una oferta y mueve tus metas.</h2>
+    <div class="demo">
+      <div class="tabs" id="picks" role="group" aria-label="Elige una oferta de ejemplo"></div>
+      <div class="dpop" id="dpop" aria-live="polite"></div>
+      <div class="uber dof" id="dof" aria-hidden="true"></div>
+      <div class="sl">
+        <label for="r-h"><span>Meta por hora <output id="o-h"></output></span><input type="range" id="r-h" min="80" max="300" step="10" value="200"></label>
+        <label for="r-km"><span>Meta por km <output id="o-km"></output></span><input type="range" id="r-km" min="4" max="15" step="0.5" value="10"></label>
+        <label for="r-gas"><span>Precio de la gasolina <output id="o-gas"></output></span><input type="range" id="r-gas" min="18" max="30" step="0.5" value="24"></label>
+      </div>
+      <p class="ej">Números de ejemplo · 12 km/l</p>
     </div>
   </section>
 
   <section class="blk" aria-labelledby="t6">
-    <h2 id="t6" class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Descarga Checa</h2>
-    <!-- Escena de Remotion: cierre con el semáforo -->
-    <div class="escena" data-remotion="semaforo" role="img" aria-label="Animación: el semáforo pasa de rojo a ámbar a verde con palomita y aparece Descarga Checa."></div>
-    <a class="play" id="cta2" data-dl="cierre" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Descargar gratis en Google Play</a>
-    <p class="disp">Disponible en Google Play para Android</p>
+    <h2 id="t6">Tu cuenta sigue siendo tuya.</h2>
+    <ul class="conf">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><b>Solo lee, nunca toca</b><span>No acepta, no rechaza y no presiona nada en Uber o DiDi.</span></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="3"/><path d="M11 18h2"/></svg><b>Lee en tu teléfono</b><span>La lectura de cada oferta se hace ahí mismo, sin internet.</span></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg><b>Solo en Uber y DiDi</b><span>Si otra app se queja, pausas el lector con un toque.</span></li>
+    </ul>
   </section>
 
-  <footer class="pie"><a href="privacidad.html">Aviso de privacidad</a><span aria-hidden="true">·</span><a href="https://wa.me/529985214490">Soporte por WhatsApp</a></footer>
+  <section class="blk" aria-labelledby="t7">
+    <h2 id="t7">Así te ayuda en tu día.</h2>
+    <p class="lead">Recogida lejana, la tarifa más alta que no gana y la que sí conviene.</p>
+    <div class="escena" data-remotion="avisa" role="img" aria-label="Animación del aviso de Checa: Rechazar, te quedan 57 por recogida larga; Considerar, te quedan 56 porque paga bien la hora y flojo el kilómetro; Aceptar, te quedan 97 porque cumple tus metas."></div>
+  </section>
+
+  <section class="blk" aria-labelledby="t8">
+    <h2 id="t8">Empiezas gratis. Después, tú eliges.</h2>
+    <p class="lead">Descárgala gratis y sin tarjeta. Cuando quieras seguir, eliges el plan que te convenga.</p>
+    <div class="planes">
+      <div class="plan"><h3>Básico</h3><span class="n">$119<small>$3.97 al día</small></span><span class="per">1 mes</span><ul><li>Netos, $/hora y $/km</li><li>Semáforo con voz y vibración</li><li>Filtros y Mi día</li></ul></div>
+      <div class="plan hot"><h3>Estratega<span class="tg">RECOMENDADO</span></h3><span class="n">$589<small>$3.27 al día</small></span><span class="per">6 meses</span><ul><li>Todo lo del Básico</li><li>Uber y DiDi juntos con «Mejor»</li><li>Mejores horas de la semana</li></ul></div>
+      <div class="plan"><h3>Pro</h3><span class="n">$1,059<small>$2.90 al día</small></span><span class="per">1 año</span><ul><li>Todo lo del Estratega</li><li>Un año sin pensar en pagos</li><li>El menor precio por día</li></ul></div>
+    </div>
+    <p class="disp">Precios en pesos mexicanos.</p>
+  </section>
+
+  <section class="blk" aria-labelledby="t9">
+    <h2 id="t9">Lo que más nos preguntan.</h2>
+    <div class="faq">
+      <details><summary>¿Me pueden bloquear la cuenta?</summary><p>Checa solo lee la pantalla. No toca botones, no acepta viajes por ti y no modifica Uber ni DiDi. Cada plataforma tiene sus propios términos y no podemos hablar por ellas.</p></details>
+      <details><summary>¿Cómo la descargo?</summary><p>Checa ya está en Google Play. Toca «Probar gratis en Google Play» e instálala como cualquier app.</p></details>
+      <details><summary>¿Necesita internet?</summary><p>Para leer las ofertas no. Usa internet para tu cuenta, tu licencia y, si la aceptas, la revisión con imagen.</p></details>
+      <details><summary>¿Funciona en tablet?</summary><p>Sí. Con pantalla dividida ves un aviso por app y la etiqueta «Mejor» marca la mejor oferta (Estratega y Pro).</p></details>
+      <details><summary>¿Cuánto cuesta?</summary><p>Empiezas gratis y sin tarjeta. Los planes van desde $119 al mes. Si no pagas, Checa deja de mostrar el aviso y no se te cobra nada.</p></details>
+      <details><summary>¿Y si no me funciona?</summary><p>Pruébala gratis antes de pagar. Si algo falla, escríbenos por WhatsApp y lo revisamos contigo.</p></details>
+    </div>
+  </section>
+
+  <section class="blk" aria-labelledby="t10">
+    <h2 id="t10">Tu próxima oferta, con la cuenta hecha.</h2>
+    <p class="lead">Instálala desde Google Play en 2 minutos y mírala trabajar en tu siguiente viaje.</p>
+    <div class="escena" data-remotion="semaforo" role="img" aria-label="Animación: el semáforo pasa de rojo a ámbar a verde con palomita y aparece Descarga Checa."></div>
+    <a class="play" id="cta2" data-dl="cierre" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Probar gratis en Google Play</a>
+    <p class="disp">Sin tarjeta · Android 8 o más</p>
+  </section>
+
+  <footer class="piefull">
+    <div><b style="color:var(--texto)">Checa</b> · Checa cuánto te queda. Para conductores de Uber y DiDi en Android.</div>
+    <nav aria-label="Legal"><a href="privacidad.html">Privacidad</a><a href="terminos.html">Términos</a><a href="eliminar-cuenta.html">Eliminar cuenta</a><a href="https://wa.me/529985214490">Soporte por WhatsApp</a></nav>
+    <p>© 2026 Checa. Proyecto independiente, no afiliado a Uber ni a DiDi; sus nombres son marcas de sus dueños. Los números de esta página son de ejemplo.</p>
+  </footer>
 </div>
 
-<div class="fijo" id="fijo"><a class="play" data-dl="fijo" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Descargar gratis en Google Play</a></div>
+<div class="fijo" id="fijo"><a class="play" data-dl="fijo" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Probar gratis en Google Play</a></div>
 
+<script>
+(function(){
+  // Demo: ofertas de ejemplo, km y min totales = recogida + viaje (como la app)
+  var OF=[{f:120,pk:1.5,pm:4,tk:10,tm:18,app:'Uber'},{f:95,pk:2.5,pm:7,tk:13,tm:20,app:'DiDi'},{f:62,pk:4.5,pm:11,tk:6,tm:19,app:'Uber'}];
+  var S={h:200,km:10,gas:24,kml:12,rec:3},cur=0,btns=[];
+  var $=function(n){return '$'+Math.round(n).toLocaleString('es-MX');},d=function(n){return (Math.round(n*10)/10).toFixed(1);};
+  var pk=document.getElementById('picks'),dp=document.getElementById('dpop'),dof=document.getElementById('dof');
+  function oferta(o){var u=o.app==='Uber';dof.innerHTML='<div class="tipo"><span>'+(u?'UberX':'DiDi Express')+'</span><span>'+(u?'Exclusivo':'Nuevo viaje')+'</span></div><span class="monto">$'+o.f.toFixed(2)+'</span><div class="r"><i></i>'+(u?'A ':'')+o.pm+' min ('+d(o.pk)+' km)</div><div class="r"><i class="d"></i>'+(u?'Viaje: ':'')+o.tm+' min ('+d(o.tk)+' km)</div><div class="acc">Aceptar</div>';}
+  function anima(){[dp,dof].forEach(function(e){e.classList.remove('cae','sube');void e.offsetWidth;});dof.classList.add('sube');dp.classList.add('cae');}
+  function pinta(){var o=OF[cur],km=o.pk+o.tk,mn=o.pm+o.tm,pkm=o.f/km,ph=o.f/mn*60,gas=km/S.kml*S.gas,net=o.f-gas,a=pkm>=S.km,b=ph>=S.h,rec=o.pk>S.rec;
+    var c=rec?'r':(a&&b?'v':(a||b?'a':'r'));var col={v:'#22C55E',a:'#FACC15',r:'#EF4444'}[c],txt={v:'#06210f',a:'#1b1500',r:'#1b0000'}[c],lb={v:'ACEPTAR',a:'CONSIDERAR',r:'RECHAZAR'}[c];
+    dp.style.setProperty('--pc',col);
+    dp.innerHTML='<div class="cu"><div class="bl" style="color:'+txt+'"><small>'+lb+'</small><b>'+$(net)+'</b></div><div class="de"><span class="m '+(b?'ok':'no')+'">'+(b?'✓':'✕')+' '+$(ph)+'/h</span><span class="m '+(a?'ok':'no')+'">'+(a?'✓':'✕')+' $'+d(pkm)+'/km</span><span class="ap">'+o.app+' · $'+o.f.toFixed(2)+'</span></div></div>'+(rec?'<span class="pl">Recogida '+d(o.pk)+' km</span>':'');
+    btns.forEach(function(x,i){x.setAttribute('aria-pressed',i===cur?'true':'false');});}
+  OF.forEach(function(o,i){var x=document.createElement('button');x.type='button';x.innerHTML='$'+o.f+'<small>'+o.app.toUpperCase()+'</small>';x.setAttribute('aria-label','Oferta de '+o.app+' de '+o.f+' pesos');x.addEventListener('click',function(){cur=i;oferta(o);pinta();anima();});pk.appendChild(x);btns.push(x);});
+  oferta(OF[cur]);
+  [['r-h','h','o-h',function(v){return '$'+v+'/h';}],['r-km','km','o-km',function(v){return '$'+d(v)+'/km';}],['r-gas','gas','o-gas',function(v){return '$'+d(v)+'/l';}]].forEach(function(q){var el=document.getElementById(q[0]),out=document.getElementById(q[2]);function u(){S[q[1]]=parseFloat(el.value);out.textContent=q[3](S[q[1]]);pinta();}el.addEventListener('input',u);u();});
+})();
+</script>
 <script>(()=>{var eA=Object.create;var fw=Object.defineProperty;var tA=Object.getOwnPropertyDescriptor;var nA=Object.getOwnPropertyNames;var rA=Object.getPrototypeOf,aA=Object.prototype.hasOwnProperty;var Kr=(e,t)=>()=>(t||e((t={exports:{}}).exports,t),t.exports);var iA=(e,t,n,r)=>{if(t&&typeof t=="object"||typeof t=="function")for(let a of nA(t))!aA.call(e,a)&&a!==n&&fw(e,a,{get:()=>t[a],enumerable:!(r=tA(t,a))||r.enumerable});return e};var R=(e,t,n)=>(n=e!=null?eA(rA(e)):{},iA(t||!e||!e.__esModule?fw(n,"default",{value:e,enumerable:!0}):n,e));var MS=Kr(te=>{"use strict";var qg=Symbol.for("react.transitional.element"),PM=Symbol.for("react.portal"),qM=Symbol.for("react.fragment"),UM=Symbol.for("react.strict_mode"),BM=Symbol.for("react.profiler"),HM=Symbol.for("react.consumer"),jM=Symbol.for("react.context"),$M=Symbol.for("react.forward_ref"),YM=Symbol.for("react.suspense"),GM=Symbol.for("react.memo"),ES=Symbol.for("react.lazy"),KM=Symbol.for("react.activity"),bS=Symbol.iterator;function XM(e){return e===null||typeof e!="object"?null:(e=bS&&e[bS]||e["@@iterator"],typeof e=="function"?e:null)}var CS={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},xS=Object.assign,TS={};function $s(e,t,n){this.props=e,this.context=t,this.refs=TS,this.updater=n||CS}$s.prototype.isReactComponent={};$s.prototype.setState=function(e,t){if(typeof e!="object"&&typeof e!="function"&&e!=null)throw Error("takes an object of state variables to update or a function which returns an object of state variables.");this.updater.enqueueSetState(this,e,t,"setState")};$s.prototype.forceUpdate=function(e){this.updater.enqueueForceUpdate(this,e,"forceUpdate")};function RS(){}RS.prototype=$s.prototype;function Ug(e,t,n){this.props=e,this.context=t,this.refs=TS,this.updater=n||CS}var Bg=Ug.prototype=new RS;Bg.constructor=Ug;xS(Bg,$s.prototype);Bg.isPureReactComponent=!0;var wS=Array.isArray;function Pg(){}var Ve={H:null,A:null,T:null,S:null},AS=Object.prototype.hasOwnProperty;function Hg(e,t,n){var r=n.ref;return{$$typeof:qg,type:e,key:t,ref:r!==void 0?r:null,props:n}}function QM(e,t){return Hg(e.type,t,e.props)}function jg(e){return typeof e=="object"&&e!==null&&e.$$typeof===qg}function WM(e){var t={"=":"=0",":":"=2"};return"$"+e.replace(/[=:]/g,function(n){return t[n]})}var SS=/\/+/g;function Vg(e,t){return typeof e=="object"&&e!==null&&e.key!=null?WM(""+e.key):t.toString(36)}function ZM(e){switch(e.status){case"fulfilled":return e.value;case"rejected":throw e.reason;default:switch(typeof e.status=="string"?e.then(Pg,Pg):(e.status="pending",e.then(function(t){e.status==="pending"&&(e.status="fulfilled",e.value=t)},function(t){e.status==="pending"&&(e.status="rejected",e.reason=t)})),e.status){case"fulfilled":return e.value;case"rejected":throw e.reason}}throw e}function js(e,t,n,r,a){var i=typeof e;(i==="undefined"||i==="boolean")&&(e=null);var o=!1;if(e===null)o=!0;else switch(i){case"bigint":case"string":case"number":o=!0;break;case"object":switch(e.$$typeof){case qg:case PM:o=!0;break;case ES:return o=e._init,js(o(e._payload),t,n,r,a)}}if(o)return a=a(e),o=r===""?"."+Vg(e,0):r,wS(a)?(n="",o!=null&&(n=o.replace(SS,"$&/")+"/"),js(a,t,n,"",function(u){return u})):a!=null&&(jg(a)&&(a=QM(a,n+(a.key==null||e&&e.key===a.key?"":(""+a.key).replace(SS,"$&/")+"/")+o)),t.push(a)),1;o=0;var s=r===""?".":r+":";if(wS(e))for(var l=0;l<e.length;l++)r=e[l],i=s+Vg(r,l),o+=js(r,t,n,i,a);else if(l=XM(e),typeof l=="function")for(e=l.call(e),l=0;!(r=e.next()).done;)r=r.value,i=s+Vg(r,l++),o+=js(r,t,n,i,a);else if(i==="object"){if(typeof e.then=="function")return js(ZM(e),t,n,r,a);throw t=String(e),Error("Objects are not valid as a React child (found: "+(t==="[object Object]"?"object with keys {"+Object.keys(e).join(", ")+"}":t)+"). If you meant to render a collection of children, use an array instead.")}return o}function ld(e,t,n){if(e==null)return e;var r=[],a=0;return js(e,r,"","",function(i){return t.call(n,i,a++)}),r}function JM(e){if(e._status===-1){var t=e._result;t=t(),t.then(function(n){(e._status===0||e._status===-1)&&(e._status=1,e._result=n)},function(n){(e._status===0||e._status===-1)&&(e._status=2,e._result=n)}),e._status===-1&&(e._status=0,e._result=t)}if(e._status===1)return e._result.default;throw e._result}var _S=typeof reportError=="function"?reportError:function(e){if(typeof window=="object"&&typeof window.ErrorEvent=="function"){var t=new window.ErrorEvent("error",{bubbles:!0,cancelable:!0,message:typeof e=="object"&&e!==null&&typeof e.message=="string"?String(e.message):String(e),error:e});if(!window.dispatchEvent(t))return}else if(typeof process=="object"&&typeof process.emit=="function"){process.emit("uncaughtException",e);return}console.error(e)},eO={map:ld,forEach:function(e,t,n){ld(e,function(){t.apply(this,arguments)},n)},count:function(e){var t=0;return ld(e,function(){t++}),t},toArray:function(e){return ld(e,function(t){return t})||[]},only:function(e){if(!jg(e))throw Error("React.Children.only expected to receive a single React element child.");return e}};te.Activity=KM;te.Children=eO;te.Component=$s;te.Fragment=qM;te.Profiler=BM;te.PureComponent=Ug;te.StrictMode=UM;te.Suspense=YM;te.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE=Ve;te.__COMPILER_RUNTIME={__proto__:null,c:function(e){return Ve.H.useMemoCache(e)}};te.cache=function(e){return function(){return e.apply(null,arguments)}};te.cacheSignal=function(){return null};te.cloneElement=function(e,t,n){if(e==null)throw Error("The argument must be a React element, but you passed "+e+".");var r=xS({},e.props),a=e.key;if(t!=null)for(i in t.key!==void 0&&(a=""+t.key),t)!AS.call(t,i)||i==="key"||i==="__self"||i==="__source"||i==="ref"&&t.ref===void 0||(r[i]=t[i]);var i=arguments.length-2;if(i===1)r.children=n;else if(1<i){for(var o=Array(i),s=0;s<i;s++)o[s]=arguments[s+2];r.children=o}return Hg(e.type,a,r)};te.createContext=function(e){return e={$$typeof:jM,_currentValue:e,_currentValue2:e,_threadCount:0,Provider:null,Consumer:null},e.Provider=e,e.Consumer={$$typeof:HM,_context:e},e};te.createElement=function(e,t,n){var r,a={},i=null;if(t!=null)for(r in t.key!==void 0&&(i=""+t.key),t)AS.call(t,r)&&r!=="key"&&r!=="__self"&&r!=="__source"&&(a[r]=t[r]);var o=arguments.length-2;if(o===1)a.children=n;else if(1<o){for(var s=Array(o),l=0;l<o;l++)s[l]=arguments[l+2];a.children=s}if(e&&e.defaultProps)for(r in o=e.defaultProps,o)a[r]===void 0&&(a[r]=o[r]);return Hg(e,i,a)};te.createRef=function(){return{current:null}};te.forwardRef=function(e){return{$$typeof:$M,render:e}};te.isValidElement=jg;te.lazy=function(e){return{$$typeof:ES,_payload:{_status:-1,_result:e},_init:JM}};te.memo=function(e,t){return{$$typeof:GM,type:e,compare:t===void 0?null:t}};te.startTransition=function(e){var t=Ve.T,n={};Ve.T=n;try{var r=e(),a=Ve.S;a!==null&&a(n,r),typeof r=="object"&&r!==null&&typeof r.then=="function"&&r.then(Pg,_S)}catch(i){_S(i)}finally{t!==null&&n.types!==null&&(t.types=n.types),Ve.T=t}};te.unstable_useCacheRefresh=function(){return Ve.H.useCacheRefresh()};te.use=function(e){return Ve.H.use(e)};te.useActionState=function(e,t,n){return Ve.H.useActionState(e,t,n)};te.useCallback=function(e,t){return Ve.H.useCallback(e,t)};te.useContext=function(e){return Ve.H.useContext(e)};te.useDebugValue=function(){};te.useDeferredValue=function(e,t){return Ve.H.useDeferredValue(e,t)};te.useEffect=function(e,t){return Ve.H.useEffect(e,t)};te.useEffectEvent=function(e){return Ve.H.useEffectEvent(e)};te.useId=function(){return Ve.H.useId()};te.useImperativeHandle=function(e,t,n){return Ve.H.useImperativeHandle(e,t,n)};te.useInsertionEffect=function(e,t){return Ve.H.useInsertionEffect(e,t)};te.useLayoutEffect=function(e,t){return Ve.H.useLayoutEffect(e,t)};te.useMemo=function(e,t){return Ve.H.useMemo(e,t)};te.useOptimistic=function(e,t){return Ve.H.useOptimistic(e,t)};te.useReducer=function(e,t,n){return Ve.H.useReducer(e,t,n)};te.useRef=function(e){return Ve.H.useRef(e)};te.useState=function(e){return Ve.H.useState(e)};te.useSyncExternalStore=function(e,t,n){return Ve.H.useSyncExternalStore(e,t,n)};te.useTransition=function(){return Ve.H.useTransition()};te.version="19.2.3"});var L=Kr((DI,OS)=>{"use strict";OS.exports=MS()});var qS=Kr(Ke=>{"use strict";function Kg(e,t){var n=e.length;e.push(t);e:for(;0<n;){var r=n-1>>>1,a=e[r];if(0<ud(a,t))e[r]=t,e[n]=a,n=r;else break e}}function ea(e){return e.length===0?null:e[0]}function fd(e){if(e.length===0)return null;var t=e[0],n=e.pop();if(n!==t){e[0]=n;e:for(var r=0,a=e.length,i=a>>>1;r<i;){var o=2*(r+1)-1,s=e[o],l=o+1,u=e[l];if(0>ud(s,n))l<a&&0>ud(u,s)?(e[r]=u,e[l]=n,r=l):(e[r]=s,e[o]=n,r=o);else if(l<a&&0>ud(u,n))e[r]=u,e[l]=n,r=l;else break e}}return t}function ud(e,t){var n=e.sortIndex-t.sortIndex;return n!==0?n:e.id-t.id}Ke.unstable_now=void 0;typeof performance=="object"&&typeof performance.now=="function"?(NS=performance,Ke.unstable_now=function(){return NS.now()}):($g=Date,kS=$g.now(),Ke.unstable_now=function(){return $g.now()-kS});var NS,$g,kS,Pa=[],Ni=[],tO=1,lr=null,Gt=3,Xg=!1,Bu=!1,Hu=!1,Qg=!1,FS=typeof setTimeout=="function"?setTimeout:null,LS=typeof clearTimeout=="function"?clearTimeout:null,DS=typeof setImmediate<"u"?setImmediate:null;function cd(e){for(var t=ea(Ni);t!==null;){if(t.callback===null)fd(Ni);else if(t.startTime<=e)fd(Ni),t.sortIndex=t.expirationTime,Kg(Pa,t);else break;t=ea(Ni)}}function Wg(e){if(Hu=!1,cd(e),!Bu)if(ea(Pa)!==null)Bu=!0,Gs||(Gs=!0,Ys());else{var t=ea(Ni);t!==null&&Zg(Wg,t.startTime-e)}}var Gs=!1,ju=-1,IS=5,VS=-1;function PS(){return Qg?!0:!(Ke.unstable_now()-VS<IS)}function Yg(){if(Qg=!1,Gs){var e=Ke.unstable_now();VS=e;var t=!0;try{e:{Bu=!1,Hu&&(Hu=!1,LS(ju),ju=-1),Xg=!0;var n=Gt;try{t:{for(cd(e),lr=ea(Pa);lr!==null&&!(lr.expirationTime>e&&PS());){var r=lr.callback;if(typeof r=="function"){lr.callback=null,Gt=lr.priorityLevel;var a=r(lr.expirationTime<=e);if(e=Ke.unstable_now(),typeof a=="function"){lr.callback=a,cd(e),t=!0;break t}lr===ea(Pa)&&fd(Pa),cd(e)}else fd(Pa);lr=ea(Pa)}if(lr!==null)t=!0;else{var i=ea(Ni);i!==null&&Zg(Wg,i.startTime-e),t=!1}}break e}finally{lr=null,Gt=n,Xg=!1}t=void 0}}finally{t?Ys():Gs=!1}}}var Ys;typeof DS=="function"?Ys=function(){DS(Yg)}:typeof MessageChannel<"u"?(Gg=new MessageChannel,zS=Gg.port2,Gg.port1.onmessage=Yg,Ys=function(){zS.postMessage(null)}):Ys=function(){FS(Yg,0)};var Gg,zS;function Zg(e,t){ju=FS(function(){e(Ke.unstable_now())},t)}Ke.unstable_IdlePriority=5;Ke.unstable_ImmediatePriority=1;Ke.unstable_LowPriority=4;Ke.unstable_NormalPriority=3;Ke.unstable_Profiling=null;Ke.unstable_UserBlockingPriority=2;Ke.unstable_cancelCallback=function(e){e.callback=null};Ke.unstable_forceFrameRate=function(e){0>e||125<e?console.error("forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported"):IS=0<e?Math.floor(1e3/e):5};Ke.unstable_getCurrentPriorityLevel=function(){return Gt};Ke.unstable_next=function(e){switch(Gt){case 1:case 2:case 3:var t=3;break;default:t=Gt}var n=Gt;Gt=t;try{return e()}finally{Gt=n}};Ke.unstable_requestPaint=function(){Qg=!0};Ke.unstable_runWithPriority=function(e,t){switch(e){case 1:case 2:case 3:case 4:case 5:break;default:e=3}var n=Gt;Gt=e;try{return t()}finally{Gt=n}};Ke.unstable_scheduleCallback=function(e,t,n){var r=Ke.unstable_now();switch(typeof n=="object"&&n!==null?(n=n.delay,n=typeof n=="number"&&0<n?r+n:r):n=r,e){case 1:var a=-1;break;case 2:a=250;break;case 5:a=1073741823;break;case 4:a=1e4;break;default:a=5e3}return a=n+a,e={id:tO++,callback:t,priorityLevel:e,startTime:n,expirationTime:a,sortIndex:-1},n>r?(e.sortIndex=n,Kg(Ni,e),ea(Pa)===null&&e===ea(Ni)&&(Hu?(LS(ju),ju=-1):Hu=!0,Zg(Wg,n-r))):(e.sortIndex=a,Kg(Pa,e),Bu||Xg||(Bu=!0,Gs||(Gs=!0,Ys()))),e};Ke.unstable_shouldYield=PS;Ke.unstable_wrapCallback=function(e){var t=Gt;return function(){var n=Gt;Gt=t;try{return e.apply(this,arguments)}finally{Gt=n}}}});var BS=Kr((FI,US)=>{"use strict";US.exports=qS()});var jS=Kr(sn=>{"use strict";var nO=L();function HS(e){var t="https://react.dev/errors/"+e;if(1<arguments.length){t+="?args[]="+encodeURIComponent(arguments[1]);for(var n=2;n<arguments.length;n++)t+="&args[]="+encodeURIComponent(arguments[n])}return"Minified React error #"+e+"; visit "+t+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}function ki(){}var on={d:{f:ki,r:function(){throw Error(HS(522))},D:ki,C:ki,L:ki,m:ki,X:ki,S:ki,M:ki},p:0,findDOMNode:null},rO=Symbol.for("react.portal");function aO(e,t,n){var r=3<arguments.length&&arguments[3]!==void 0?arguments[3]:null;return{$$typeof:rO,key:r==null?null:""+r,children:e,containerInfo:t,implementation:n}}var $u=nO.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;function dd(e,t){if(e==="font")return"";if(typeof t=="string")return t==="use-credentials"?t:""}sn.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE=on;sn.createPortal=function(e,t){var n=2<arguments.length&&arguments[2]!==void 0?arguments[2]:null;if(!t||t.nodeType!==1&&t.nodeType!==9&&t.nodeType!==11)throw Error(HS(299));return aO(e,t,null,n)};sn.flushSync=function(e){var t=$u.T,n=on.p;try{if($u.T=null,on.p=2,e)return e()}finally{$u.T=t,on.p=n,on.d.f()}};sn.preconnect=function(e,t){typeof e=="string"&&(t?(t=t.crossOrigin,t=typeof t=="string"?t==="use-credentials"?t:"":void 0):t=null,on.d.C(e,t))};sn.prefetchDNS=function(e){typeof e=="string"&&on.d.D(e)};sn.preinit=function(e,t){if(typeof e=="string"&&t&&typeof t.as=="string"){var n=t.as,r=dd(n,t.crossOrigin),a=typeof t.integrity=="string"?t.integrity:void 0,i=typeof t.fetchPriority=="string"?t.fetchPriority:void 0;n==="style"?on.d.S(e,typeof t.precedence=="string"?t.precedence:void 0,{crossOrigin:r,integrity:a,fetchPriority:i}):n==="script"&&on.d.X(e,{crossOrigin:r,integrity:a,fetchPriority:i,nonce:typeof t.nonce=="string"?t.nonce:void 0})}};sn.preinitModule=function(e,t){if(typeof e=="string")if(typeof t=="object"&&t!==null){if(t.as==null||t.as==="script"){var n=dd(t.as,t.crossOrigin);on.d.M(e,{crossOrigin:n,integrity:typeof t.integrity=="string"?t.integrity:void 0,nonce:typeof t.nonce=="string"?t.nonce:void 0})}}else t==null&&on.d.M(e)};sn.preload=function(e,t){if(typeof e=="string"&&typeof t=="object"&&t!==null&&typeof t.as=="string"){var n=t.as,r=dd(n,t.crossOrigin);on.d.L(e,n,{crossOrigin:r,integrity:typeof t.integrity=="string"?t.integrity:void 0,nonce:typeof t.nonce=="string"?t.nonce:void 0,type:typeof t.type=="string"?t.type:void 0,fetchPriority:typeof t.fetchPriority=="string"?t.fetchPriority:void 0,referrerPolicy:typeof t.referrerPolicy=="string"?t.referrerPolicy:void 0,imageSrcSet:typeof t.imageSrcSet=="string"?t.imageSrcSet:void 0,imageSizes:typeof t.imageSizes=="string"?t.imageSizes:void 0,media:typeof t.media=="string"?t.media:void 0})}};sn.preloadModule=function(e,t){if(typeof e=="string")if(t){var n=dd(t.as,t.crossOrigin);on.d.m(e,{as:typeof t.as=="string"&&t.as!=="script"?t.as:void 0,crossOrigin:n,integrity:typeof t.integrity=="string"?t.integrity:void 0})}else on.d.m(e)};sn.requestFormReset=function(e){on.d.r(e)};sn.unstable_batchedUpdates=function(e,t){return e(t)};sn.useFormState=function(e,t,n){return $u.H.useFormState(e,t,n)};sn.useFormStatus=function(){return $u.H.useHostTransitionStatus()};sn.version="19.2.3"});var Jg=Kr((II,YS)=>{"use strict";function $S(){if(!(typeof __REACT_DEVTOOLS_GLOBAL_HOOK__>"u"||typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE!="function"))try{__REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE($S)}catch(e){console.error(e)}}$S(),YS.exports=jS()});var ax=Kr(Im=>{"use strict";var wt=BS(),yE=L(),iO=Jg();function V(e){var t="https://react.dev/errors/"+e;if(1<arguments.length){t+="?args[]="+encodeURIComponent(arguments[1]);for(var n=2;n<arguments.length;n++)t+="&args[]="+encodeURIComponent(arguments[n])}return"Minified React error #"+e+"; visit "+t+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}function bE(e){return!(!e||e.nodeType!==1&&e.nodeType!==9&&e.nodeType!==11)}function Nc(e){var t=e,n=e;if(e.alternate)for(;t.return;)t=t.return;else{e=t;do t=e,t.flags&4098&&(n=t.return),e=t.return;while(e)}return t.tag===3?n:null}function wE(e){if(e.tag===13){var t=e.memoizedState;if(t===null&&(e=e.alternate,e!==null&&(t=e.memoizedState)),t!==null)return t.dehydrated}return null}function SE(e){if(e.tag===31){var t=e.memoizedState;if(t===null&&(e=e.alternate,e!==null&&(t=e.memoizedState)),t!==null)return t.dehydrated}return null}function GS(e){if(Nc(e)!==e)throw Error(V(188))}function oO(e){var t=e.alternate;if(!t){if(t=Nc(e),t===null)throw Error(V(188));return t!==e?null:e}for(var n=e,r=t;;){var a=n.return;if(a===null)break;var i=a.alternate;if(i===null){if(r=a.return,r!==null){n=r;continue}break}if(a.child===i.child){for(i=a.child;i;){if(i===n)return GS(a),e;if(i===r)return GS(a),t;i=i.sibling}throw Error(V(188))}if(n.return!==r.return)n=a,r=i;else{for(var o=!1,s=a.child;s;){if(s===n){o=!0,n=a,r=i;break}if(s===r){o=!0,r=a,n=i;break}s=s.sibling}if(!o){for(s=i.child;s;){if(s===n){o=!0,n=i,r=a;break}if(s===r){o=!0,r=i,n=a;break}s=s.sibling}if(!o)throw Error(V(189))}}if(n.alternate!==r)throw Error(V(190))}if(n.tag!==3)throw Error(V(188));return n.stateNode.current===n?e:t}function _E(e){var t=e.tag;if(t===5||t===26||t===27||t===6)return e;for(e=e.child;e!==null;){if(t=_E(e),t!==null)return t;e=e.sibling}return null}var Ue=Object.assign,sO=Symbol.for("react.element"),md=Symbol.for("react.transitional.element"),Ju=Symbol.for("react.portal"),Js=Symbol.for("react.fragment"),EE=Symbol.for("react.strict_mode"),Dv=Symbol.for("react.profiler"),CE=Symbol.for("react.consumer"),Ga=Symbol.for("react.context"),Ay=Symbol.for("react.forward_ref"),zv=Symbol.for("react.suspense"),Fv=Symbol.for("react.suspense_list"),My=Symbol.for("react.memo"),Di=Symbol.for("react.lazy");Symbol.for("react.scope");var Lv=Symbol.for("react.activity");Symbol.for("react.legacy_hidden");Symbol.for("react.tracing_marker");var lO=Symbol.for("react.memo_cache_sentinel");Symbol.for("react.view_transition");var KS=Symbol.iterator;function Yu(e){return e===null||typeof e!="object"?null:(e=KS&&e[KS]||e["@@iterator"],typeof e=="function"?e:null)}var uO=Symbol.for("react.client.reference");function Iv(e){if(e==null)return null;if(typeof e=="function")return e.$$typeof===uO?null:e.displayName||e.name||null;if(typeof e=="string")return e;switch(e){case Js:return"Fragment";case Dv:return"Profiler";case EE:return"StrictMode";case zv:return"Suspense";case Fv:return"SuspenseList";case Lv:return"Activity"}if(typeof e=="object")switch(e.$$typeof){case Ju:return"Portal";case Ga:return e.displayName||"Context";case CE:return(e._context.displayName||"Context")+".Consumer";case Ay:var t=e.render;return e=e.displayName,e||(e=t.displayName||t.name||"",e=e!==""?"ForwardRef("+e+")":"ForwardRef"),e;case My:return t=e.displayName||null,t!==null?t:Iv(e.type)||"Memo";case Di:t=e._payload,e=e._init;try{return Iv(e(t))}catch{}}return null}var ec=Array.isArray,ee=yE.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,Ee=iO.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,Ko={pending:!1,data:null,method:null,action:null},Vv=[],el=-1;function ia(e){return{current:e}}function At(e){0>el||(e.current=Vv[el],Vv[el]=null,el--)}function Le(e,t){el++,Vv[el]=e.current,e.current=t}var aa=ia(null),vc=ia(null),ji=ia(null),Yd=ia(null);function Gd(e,t){switch(Le(ji,t),Le(vc,e),Le(aa,null),t.nodeType){case 9:case 11:e=(e=t.documentElement)&&(e=e.namespaceURI)?tE(e):0;break;default:if(e=t.tagName,t=t.namespaceURI)t=tE(t),e=jC(t,e);else switch(e){case"svg":e=1;break;case"math":e=2;break;default:e=0}}At(aa),Le(aa,e)}function yl(){At(aa),At(vc),At(ji)}function Pv(e){e.memoizedState!==null&&Le(Yd,e);var t=aa.current,n=jC(t,e.type);t!==n&&(Le(vc,e),Le(aa,n))}function Kd(e){vc.current===e&&(At(aa),At(vc)),Yd.current===e&&(At(Yd),Ac._currentValue=Ko)}var ev,XS;function jo(e){if(ev===void 0)try{throw Error()}catch(n){var t=n.stack.trim().match(/\n( *(at )?)/);ev=t&&t[1]||"",XS=-1<n.stack.indexOf(`
     at`)?" (<anonymous>)":-1<n.stack.indexOf("@")?"@unknown:0:0":""}return`
 `+ev+e+XS}var tv=!1;function nv(e,t){if(!e||tv)return"";tv=!0;var n=Error.prepareStackTrace;Error.prepareStackTrace=void 0;try{var r={DetermineComponentFrameRoot:function(){try{if(t){var d=function(){throw Error()};if(Object.defineProperty(d.prototype,"props",{set:function(){throw Error()}}),typeof Reflect=="object"&&Reflect.construct){try{Reflect.construct(d,[])}catch(m){var f=m}Reflect.construct(e,[],d)}else{try{d.call()}catch(m){f=m}e.call(d.prototype)}}else{try{throw Error()}catch(m){f=m}(d=e())&&typeof d.catch=="function"&&d.catch(function(){})}}catch(m){if(m&&f&&typeof m.stack=="string")return[m.stack,f.stack]}return[null,null]}};r.DetermineComponentFrameRoot.displayName="DetermineComponentFrameRoot";var a=Object.getOwnPropertyDescriptor(r.DetermineComponentFrameRoot,"name");a&&a.configurable&&Object.defineProperty(r.DetermineComponentFrameRoot,"name",{value:"DetermineComponentFrameRoot"});var i=r.DetermineComponentFrameRoot(),o=i[0],s=i[1];if(o&&s){var l=o.split(`
