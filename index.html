@@ -99,7 +99,7 @@ section[id]{scroll-margin-top:72px}
 .offer .row i{width:7px;height:7px;border-radius:50%;background:var(--gris-texto);flex:none}
 .offer .row i.f{border-radius:2px;background:var(--hueso)}
 .offer .acc{margin-top:12px;height:40px;border-radius:12px;background:#33333D}
-.phone .pop{position:absolute;left:10px;right:10px;top:42px;z-index:3}
+.phone .pop{position:absolute;left:10px;top:42px;z-index:3;height:auto;width:384px;zoom:.67;background:var(--asfalto);border:2px solid var(--c);border-radius:16px;display:block;flex-direction:initial;transition:opacity .35s var(--curva),transform .35s var(--curva)}
 .pop{height:226px;border-radius:24px;border:2px solid #2A2A33;overflow:hidden;background:var(--tablero);display:flex;flex-direction:column;box-shadow:0 18px 40px rgba(0,0,0,.6);transition:opacity .35s var(--curva),transform .35s var(--curva)}
 .pop.out{opacity:0;transform:translateY(-10px) scale(.98)}
 .pop-band{padding:9px 0;text-align:center;font:800 1.15rem/1.2 var(--fuente-titulos);letter-spacing:.08em;color:var(--texto-sobre-aceptar);background:var(--aceptar)}
@@ -247,6 +247,35 @@ input[type=range]{width:100%;accent-color:var(--hueso);height:28px}
 .case .out{margin-top:12px;font:700 .8rem/1.4 var(--fuente-datos);color:var(--hueso)}
 .case .out span{color:var(--gris-texto);font-weight:500}
 
+
+/* Pop-up v10.86: completo (bloque de color, $/h y $/km con ✓/✕, "Leyó mal", app y barra) y compacto */
+.p9{--c:var(--aceptar);--t:#06210f;width:384px;background:var(--asfalto);border-radius:16px;position:relative;overflow:hidden;box-shadow:0 8px 22px #0006;border:2px solid var(--c);text-align:left;zoom:var(--z,1)}
+.p9.a{--c:var(--considerar);--t:#1b1500}.p9.r{--c:var(--rechazar);--t:#1b0000}
+.p9 .cu{display:grid;grid-template-columns:156px 1fr}
+.p9 .bl{background:var(--c);color:var(--t);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:12px 6px}
+.p9 .bl small{font:800 14px var(--fuente-texto);letter-spacing:.06em}
+.p9 .bl b{font:800 54px/1.02 var(--fuente-titulos);letter-spacing:-.03em}
+.p9 .de{padding:10px 12px 8px 10px;display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0}
+.p9 .f{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+.p9 .m{font:800 22px/1.25 var(--fuente-datos);white-space:nowrap}.p9 .m.ok{color:var(--aceptar)}.p9 .m.no{color:#ff6b6b}
+.p9 .f u{text-decoration:none;font:700 13px var(--fuente-datos);color:var(--hueso);opacity:.92;white-space:nowrap}
+.p9 .x{position:absolute;right:9px;top:6px;color:var(--gris-texto);font-size:16px}
+.p9 .pls{display:flex;gap:8px;padding:7px 10px;border-top:1px solid #EF444466;background:#EF444418;flex-wrap:wrap;justify-content:center}
+.p9 .pl{flex:1 1 0;text-align:center;border-radius:999px;background:#EF444433;border:1.5px solid #EF4444;color:#ffd0d0;font:800 14px var(--fuente-datos);padding:4px 11px;white-space:nowrap}
+.p9 .me{display:flex;justify-content:space-between;align-items:center;padding:4px 10px 5px;font-size:11px;color:#8a8a94;border-top:1px solid #ffffff12}
+.p9 .ly{border:1px solid #ffffff22;border-radius:999px;padding:1px 8px;color:#b9b9c2}
+.p9 .br{height:5px;background:#ffffff1a}.p9 .br i{display:block;height:100%;background:var(--c)}
+.pc{--c:var(--aceptar);width:340px;background:var(--asfalto);border:3px solid var(--c);border-radius:999px;display:flex;align-items:center;justify-content:center;gap:9px;padding:8px 14px;box-shadow:0 8px 22px #0006;position:relative;overflow:hidden;white-space:nowrap;zoom:var(--z,1)}
+.pc.a{--c:var(--considerar)}.pc.r{--c:var(--rechazar)}
+.pc i.pt{width:13px;height:13px;border-radius:50%;background:var(--c)}
+.pc .c{font:800 12px var(--fuente-texto);color:var(--c);letter-spacing:.04em}
+.pc .n{font:800 28px var(--fuente-titulos)}.pc .h{font:800 16px var(--fuente-datos);color:var(--aceptar)}
+.pc .br{position:absolute;left:0;right:0;bottom:0;height:4px}.pc .br i{display:block;height:100%;background:var(--c)}
+.demo>div{min-width:0}
+#demo-pop{zoom:.85;height:auto;width:384px;max-width:none;display:block;flex-direction:initial;border:2px solid var(--c);background:var(--asfalto);border-radius:16px}
+@media(min-width:900px){#demo-pop{zoom:1}}
+.stack9{display:grid;gap:10px;justify-items:center}
+
 /* Precios */
 .plans{display:grid;gap:18px;align-items:stretch}
 @media(min-width:960px){.plans{grid-template-columns:repeat(3,1fr)}}
@@ -268,13 +297,6 @@ input[type=range]{width:100%;accent-color:var(--hueso);height:28px}
 .free p{color:var(--gris-texto);max-width:46em;font-size:.95rem}
 .free strong{color:var(--hueso)}
 
-/* Comunidad */
-.beta{display:grid;gap:28px;align-items:center;border:1px solid var(--borde);border-radius:36px;padding:36px;background:linear-gradient(135deg,#121218,#0F0F14)}
-@media(min-width:900px){.beta{grid-template-columns:1.3fr 1fr;padding:56px}}
-.beta ol{margin:0;padding:0;list-style:none;display:grid;gap:14px;counter-reset:b}
-.beta li{display:flex;gap:14px;align-items:flex-start;counter-increment:b}
-.beta li::before{content:counter(b);flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--borde2);font:700 .85rem var(--fuente-datos)}
-.beta li span{color:var(--gris-texto);display:block;font-size:.92rem}
 
 /* Preguntas */
 .faq{max-width:820px;margin:0 auto;display:grid;gap:12px}
@@ -339,7 +361,7 @@ footer{border-top:1px solid var(--borde);padding:56px 0 36px;color:var(--gris-te
 <section class="hero">
   <div class="wrap">
     <div>
-      <span class="tag"><b>Beta</b> Gratis hasta el 31 de enero · sin tarjeta</span>
+      <span class="tag"><b>Ya en Google Play</b> Gratis hasta el 31 de enero · sin tarjeta</span>
       <h1>Checa cuánto <span class="g">te queda</span> antes de aceptar.</h1>
       <p class="sub">Checa lee cada oferta de Uber y DiDi, descuenta tu gasolina y te dice en voz alta si conviene. Tú solo decides.</p>
       <div class="ctas">
@@ -459,10 +481,7 @@ footer{border-top:1px solid var(--borde);padding:56px 0 36px;color:var(--gris-te
         <span class="k">Tablet y pantalla dividida</span>
         <h3>Uber y DiDi a la vez, y te marca la mejor</h3>
         <p>Un aviso por app. Cuando llegan dos ofertas juntas, la mejor lleva la etiqueta «Mejor».</p>
-        <div class="viz duo">
-          <div class="mp y"><div class="bd">CONSIDERAR</div><div class="bb"><b>$64</b><span>$211/h · $6.1/km</span></div></div>
-          <div class="mp best"><div class="bd">ACEPTAR</div><div class="bb"><b>$97</b><span>$327/h · $10.4/km</span><br><span class="star">★ Mejor</span></div></div>
-        </div>
+        <div class="viz stack9"><div class="pc a" style="--z:.8"><i class="pt"></i><span class="c">CONSIDERAR</span><span class="n">$64</span><span class="h">✓ $211/h</span><div class="br"><i style="width:62%"></i></div></div><div class="pc " style="--z:.8"><i class="pt"></i><span class="c">★ ACEPTAR</span><span class="n">$97</span><span class="h">✓ $327/h</span><div class="br"><i style="width:88%"></i></div></div></div>
       </div>
       <div class="box b2 rv">
         <span class="k">Filtros</span>
@@ -543,22 +562,19 @@ footer{border-top:1px solid var(--borde);padding:56px 0 36px;color:var(--gris-te
         <span class="k">Recogida lejana</span>
         <h3>Te mandan lejos por el pasajero</h3>
         <p>La tarifa se ve bien, pero son 4.5 km solo para llegar. Si pasa tu recogida máxima, Checa lo manda a rojo y te dice por qué.</p>
-        <div class="viz"><div class="mp r"><div class="bd">RECHAZAR</div><div class="bb"><b>$49</b><span>Viaje $70 · Gasolina −$21</span><br><span class="why">Recogida 4.5 km</span></div></div></div>
+        <div class="viz"><div class="p9 r" style="--z:0.82"><span class="x">✕</span><div class="cu"><div class="bl"><small>RECHAZAR</small><b>$49</b></div><div class="de"><div class="f"><span class="m ok">✓ $200/h</span><u>21 min</u></div><div class="f"><span class="m no">✕ $6.7/km</span><u>10.5 km</u></div></div></div><div class="pls"><span class="pl">📍 Recogida 4.5 km</span></div><div class="me"><span class="ly">⚠ Leyó mal</span><span>Uber · $70.00</span></div><div class="br"><i style="width:48%"></i></div></div></div>
       </div>
       <div class="case rv">
         <span class="k">Tablet con las dos apps</span>
         <h3>La tarifa más alta no siempre gana</h3>
         <p>Llegan dos ofertas juntas. La de $88 es más larga; la de $76 te deja más y en menos tiempo. Checa marca la mejor.</p>
-        <div class="viz duo">
-          <div class="mp y"><div class="bd">CONSIDERAR</div><div class="bb"><b>$56</b><span>Viaje $88 · $182/h</span></div></div>
-          <div class="mp best"><div class="bd">ACEPTAR</div><div class="bb"><b>$60</b><span>Viaje $76 · $253/h</span><br><span class="star">★ Mejor</span></div></div>
-        </div>
+        <div class="viz stack9"><div class="p9 a" style="--z:0.82"><span class="x">✕</span><div class="cu"><div class="bl"><small>CONSIDERAR</small><b>$56</b></div><div class="de"><div class="f"><span class="m ok">✓ $182/h</span><u>29 min</u></div><div class="f"><span class="m no">✕ $5.5/km</span><u>16.0 km</u></div></div></div><div class="me"><span class="ly">⚠ Leyó mal</span><span>Uber · $88.00</span></div><div class="br"><i style="width:62%"></i></div></div><div class="p9 " style="--z:0.82"><span class="x">✕</span><div class="cu"><div class="bl"><small>★ ACEPTAR</small><b>$60</b></div><div class="de"><div class="f"><span class="m ok">✓ $253/h</span><u>18 min</u></div><div class="f"><span class="m ok">✓ $9.5/km</span><u>8.0 km</u></div></div></div><div class="me"><span class="ly">⚠ Leyó mal</span><span>DiDi · $76.00</span></div><div class="br"><i style="width:88%"></i></div></div></div>
       </div>
       <div class="case rv">
         <span class="k">Hora pico</span>
         <h3>Llega una con ⚡ 1.6x</h3>
         <p>Con la tarifa dinámica, Checa te confirma en un segundo que sí vale la pena, sin hacer la cuenta en la cabeza.</p>
-        <div class="viz"><div class="mp"><div class="bd">ACEPTAR</div><div class="bb"><b>$119</b><span>Viaje $145 · Gasolina −$26</span></div></div><p class="out">$348/h · $11/km <span>· 13.2 km total</span></p></div>
+        <div class="viz"><div class="p9 " style="--z:0.82"><span class="x">✕</span><div class="cu"><div class="bl"><small>ACEPTAR</small><b>$119</b></div><div class="de"><div class="f"><span class="m ok">✓ $348/h</span><u>25 min</u></div><div class="f"><span class="m ok">✓ $11.0/km</span><u>13.2 km</u></div></div></div><div class="me"><span class="ly">⚠ Leyó mal</span><span>DiDi · $145.00</span></div><div class="br"><i style="width:88%"></i></div></div></div>
       </div>
     </div>
     <p class="note">Números de ejemplo · 12 km/l, $24/l, metas $150/h y $8/km, recogida máx. 3 km</p>
@@ -670,7 +686,7 @@ footer{border-top:1px solid var(--borde);padding:56px 0 36px;color:var(--gris-te
 (function(){
   'use strict';
   // Ofertas de ejemplo. km y min totales = recogida + viaje (igual que la app).
-  var OF=[{f:120,pk:1.5,pm:4,tk:10,tm:18},{f:95,pk:2.5,pm:7,tk:13,tm:20},{f:62,pk:4.5,pm:11,tk:6,tm:19}];
+  var OF=[{f:120,pk:1.5,pm:4,tk:10,tm:18,app:'Uber'},{f:95,pk:2.5,pm:7,tk:13,tm:20,app:'DiDi'},{f:62,pk:4.5,pm:11,tk:6,tm:19,app:'Uber'}];
   var LB={g:'ACEPTAR',y:'CONSIDERAR',r:'RECHAZAR'}, VOZ={g:'«Aceptar»',y:'«Considerar»',r:'«Rechazar»'};
   var S={km:8,h:150,gas:24,kml:12};
   function $(n){return '$'+Math.round(n).toLocaleString('es-MX');}
@@ -678,9 +694,13 @@ footer{border-top:1px solid var(--borde);padding:56px 0 36px;color:var(--gris-te
   function ev(o){var km=o.pk+o.tk,mn=o.pm+o.tm,pk=o.f/km,ph=o.f/mn*60,gas=km/S.kml*S.gas,a=pk>=S.km,b=ph>=S.h;
     return{km:km,pk:pk,ph:ph,gas:gas,net:o.f-gas,a:a,b:b,c:a&&b?'g':(a||b?'y':'r')};}
   function draw(el,o){var r=ev(o);el.setAttribute('data-c',r.c);
-    el.innerHTML='<div class="pop-band">'+LB[r.c]+'</div><div class="pop-body"><div class="pop-lbl">Te quedan</div><div class="pop-net">'+$(r.net)+'</div>'+
-    '<div class="pop-sub">Viaje '+$(o.f)+' · Gasolina −'+$(r.gas)+'</div><div class="chips"><div class="chip '+(r.b?'ok':'no')+'">'+$(r.ph)+'/h</div>'+
-    '<div class="chip '+(r.a?'ok':'no')+'">$'+d(r.pk)+'/km</div><div class="chip">'+d(r.km)+' km total</div></div></div>';
+    var cl=r.c==='g'?'':(r.c==='y'?'a':'r'),rec=o.pk>3;
+    el.className='pop p9 '+cl;
+    el.innerHTML='<span class="x">✕</span><div class="cu"><div class="bl"><small>'+LB[r.c]+'</small><b>'+$(r.net)+'</b></div>'+
+    '<div class="de"><div class="f"><span class="m '+(r.b?'ok':'no')+'">'+(r.b?'✓':'✕')+' '+$(r.ph)+'/h</span><u>'+Math.round(o.pm+o.tm)+' min</u></div>'+
+    '<div class="f"><span class="m '+(r.a?'ok':'no')+'">'+(r.a?'✓':'✕')+' $'+d(r.pk)+'/km</span><u>'+d(r.km)+' km</u></div></div></div>'+
+    (rec?'<div class="pls"><span class="pl">📍 Recogida '+d(o.pk)+' km</span></div>':'')+
+    '<div class="me"><span class="ly">⚠ Leyó mal</span><span>'+(o.app||'Uber')+' · $'+o.f.toFixed(2)+'</span></div><div class="br"><i style="width:'+(r.c==='g'?88:r.c==='y'?62:35)+'%"></i></div>';
     el.setAttribute('aria-label','Checa dice '+LB[r.c]+': te quedan '+$(r.net)+' netos (números de ejemplo)');return r;}
   function offer(el,o){el.innerHTML='<div class="t"><span>Nuevo viaje</span><span>⚡ 1.2x</span></div><b>'+$(o.f)+'</b>'+
     '<div class="row"><i></i>Recogida · '+o.pm+' min ('+d(o.pk)+' km)</div><div class="row"><i class="f"></i>Viaje · '+o.tm+' min ('+d(o.tk)+' km)</div><div class="acc"></div>';}
