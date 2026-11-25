@@ -73,7 +73,6 @@ p{margin:0}
 /* 1. Hero con la demo en el teléfono */
 .hero{padding:28px 0 44px}
 .hero h1{font-size:clamp(2.7rem,11vw,5.2rem);max-width:11ch}
-.hero h1 s{color:var(--texto3);text-decoration-thickness:.08em}
 .hero h1 em{font-style:normal;color:var(--verde-texto)}
 .hero .sub{margin-top:14px;max-width:32ch;font-size:clamp(1.1rem,2.4vw,1.25rem);color:var(--texto2)}
 
@@ -172,6 +171,26 @@ p{margin:0}
   .cierre .cta{max-width:420px}
   .fijo{display:none}
 }
+
+/* Animaciones (solo se activan con JS y sin «reducir movimiento») */
+.hero h1 .tach{position:relative;color:var(--texto3);white-space:nowrap}
+.hero h1 .tach::after{content:"";position:absolute;left:-2%;right:-2%;top:54%;height:.08em;background:currentColor;transform-origin:left;transition:transform .45s var(--ease)}
+.hero h1.ini .tach::after{transform:scaleX(0)}
+.hero h1 em{font-variant-numeric:tabular-nums}
+@keyframes cae{0%{translate:0 -18px;opacity:0}45%{translate:0 3px;opacity:1}70%{translate:0 -1px}100%{translate:0 0;opacity:1}}
+@keyframes caeVibra{0%{translate:0 -18px;opacity:0}35%{translate:0 3px;opacity:1}48%{translate:0 0}56%{translate:-6px 0}64%{translate:6px 0}72%{translate:-4px 0}80%{translate:3px 0}100%{translate:0 0;opacity:1}}
+@keyframes tiempo{from{width:var(--w0)}to{width:0}}
+.tel .p9.anim{animation:cae .5s var(--ease) both}
+.tel .p9.r.anim{animation:caeVibra .8s var(--ease) both}
+.tel .p9.anim .br i{animation:tiempo 8s linear both}
+.golpes.pre li{opacity:0;translate:0 14px;transition:opacity .5s var(--ease),translate .5s var(--ease)}
+.golpes.pre.on li{opacity:1;translate:0 0}
+.golpes.pre.on li:nth-child(2){transition-delay:.15s}.golpes.pre.on li:nth-child(3){transition-delay:.3s}
+.semaf.pre i{opacity:.18;scale:.92;transition:opacity .3s var(--ease),scale .3s var(--ease)}
+.semaf.pre.on i{opacity:1;scale:1}
+.semaf.pre.on i:nth-child(2){transition-delay:.4s}.semaf.pre.on i:nth-child(3){transition-delay:.8s}
+@keyframes pulso{0%{box-shadow:0 0 0 0 rgba(34,197,94,.45)}70%,100%{box-shadow:0 0 0 14px rgba(34,197,94,0)}}
+.hero .play.late{animation:pulso 3.5s ease-out 1.6s infinite}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
@@ -190,7 +209,7 @@ p{margin:0}
 <section class="hero" aria-labelledby="t1">
   <div class="w">
     <div>
-      <h1 id="t1">Ese viaje de <s>$95</s> te deja <em>$57</em>.</h1>
+      <h1 id="t1" aria-label="Ese viaje de 95 pesos te deja 57.">Ese viaje de <span class="tach" aria-hidden="true">$95</span> te deja <em id="neto" aria-hidden="true">$57</em>.</h1>
       <p class="sub">Checa le resta tu gasolina a cada oferta y te dice si conviene.</p>
       <div class="cta">
         <a class="play" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa" data-dl="propuesta_hero"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Saca la cuenta gratis</a>
@@ -284,6 +303,24 @@ p{margin:0}
 (function(){
   'use strict';
   var quieto=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // 1. Título: se tacha el $95 y el neto baja de 95 a 57
+  var h1=document.getElementById('t1'),neto=document.getElementById('neto');
+  if(!quieto){
+    h1.classList.add('ini');neto.textContent='$95';
+    setTimeout(function(){h1.classList.remove('ini');
+      var t0=null;function paso(t){if(!t0)t0=t;var k=Math.min(1,(t-t0)/900),e=1-Math.pow(1-k,3);neto.textContent='$'+Math.round(95-38*e);if(k<1)requestAnimationFrame(paso);}
+      setTimeout(function(){requestAnimationFrame(paso);},350);
+    },500);
+    document.querySelector('.hero .play').classList.add('late');
+  }
+  // 3 y 4. Semáforo y dolores al llegar a ellos
+  if(!quieto&&'IntersectionObserver' in window){
+    document.querySelectorAll('.golpes,.semaf').forEach(function(el){
+      el.classList.add('pre');
+      var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){el.classList.add('on');io.disconnect();}},{threshold:.35});
+      io.observe(el);
+    });
+  }
   // Demo de 12 s en el teléfono: oferta trampa vs. oferta buena (números de ejemplo)
   var POP={
     r:'<div class="p9 r"><span class="x">✕</span><div class="cu"><div class="bl"><small>RECHAZAR</small><b>$57</b></div><div class="de"><div class="f"><span class="m no">✕ $190/h</span><u>30 min</u></div><div class="f"><span class="m no" data-z>✕ $5.0/km</span><u>19.0 km</u></div></div></div><div class="pls"><span class="pl" data-z>Recogida 4.5 km</span></div><div class="me"><span class="ly">⚠ Leyó mal</span><span>DiDi · $95.00</span></div><div class="br"><i style="width:40%"></i></div></div>',
@@ -292,12 +329,13 @@ p{margin:0}
     d:'<span class="ap">DiDi · nuevo viaje</span><b>$95.00</b><div class="r"><i></i><span data-r>5 min (4.5 km)</span></div><div class="r"><i class="d"></i>25 min (14.5 km)</div>',
     u:'<span class="ap">Uber · nuevo viaje</span><b>$120.00</b><div class="r"><i></i>A 4 min (1.5 km)</div><div class="r"><i class="d"></i>Viaje: 18 min (10.0 km)</div>'};
   var dp=document.getElementById('d-pop'),dof=document.getElementById('d-of'),ds=document.getElementById('d-sub'),btn=document.getElementById('d-btn');
+  function ponPop(html){dp.innerHTML=html;var p=dp.firstChild;if(!p||quieto)return;var i=p.querySelector('.br i');if(i)i.style.setProperty('--w0',i.style.width);p.classList.add('anim');}
   var PASOS=[
     [0,function(){dp.innerHTML='';dof.innerHTML=OF.d;ds.textContent='$95. Se ve bien.';}],
     [2000,function(){var r=dof.querySelector('[data-r]');if(r)r.classList.add('zoom');ds.textContent='¿Y la gasolina? ¿Y la recogida?';}],
-    [4000,function(){dp.innerHTML=POP.r;ds.textContent='Checa: te quedan $57.';}],
+    [4000,function(){ponPop(POP.r);ds.textContent='Checa: te quedan $57.';}],
     [6000,function(){dp.querySelectorAll('[data-z]').forEach(function(e){e.classList.add('zoom');});ds.textContent='19 km por $57. Viaje trampa.';}],
-    [9000,function(){dof.innerHTML=OF.u;dp.innerHTML=POP.v;ds.textContent='Esta sí. En un segundo.';}]
+    [9000,function(){dof.innerHTML=OF.u;ponPop(POP.v);ds.textContent='Esta sí. En un segundo.';}]
   ];
   var timers=[],loop=null,corre=false;
   function ciclo(){timers.forEach(clearTimeout);timers=PASOS.map(function(p){return setTimeout(p[1],p[0]);});}
