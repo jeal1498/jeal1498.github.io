@@ -1,0 +1,2 @@
+# Jekyll ignora las carpetas con punto; .well-known debe publicarse (assetlinks de Clientela).
+include: [".well-known"]

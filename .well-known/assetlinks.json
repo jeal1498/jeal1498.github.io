@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.jeal1498.clientela",
+    "sha256_cert_fingerprints": ["99:0E:9C:CE:F6:E8:65:7E:A9:56:C3:4C:84:42:2F:C7:64:ED:10:D7:4E:03:31:3B:B5:A3:F1:C7:46:20:CF:29"]
+  }
+}]
