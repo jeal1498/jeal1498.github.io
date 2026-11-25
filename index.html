@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Checa · Antes de aceptar, checa cuánto te queda</title>
-<meta name="description" content="Checa lee cada oferta de Uber y DiDi, descuenta tu gasolina y te dice en voz alta si conviene. Descárgala gratis en Google Play.">
+<meta name="description" content="Checa lee cada oferta de Uber y DiDi, resta tu combustible y te dice si conviene. Descárgala gratis en Google Play.">
 <link rel="canonical" href="https://jeal1498.github.io/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_MX">
 <meta property="og:site_name" content="Checa">
 <meta property="og:title" content="Antes de aceptar, checa cuánto te queda">
-<meta property="og:description" content="Checa lee cada oferta de Uber y DiDi, descuenta tu gasolina y te dice en voz alta si conviene. Descárgala gratis en Google Play.">
+<meta property="og:description" content="Checa lee cada oferta de Uber y DiDi, resta tu combustible y te dice si conviene. Descárgala gratis en Google Play.">
 <meta property="og:url" content="https://jeal1498.github.io/">
 <meta property="og:image" content="https://jeal1498.github.io/og.png">
 <meta property="og:image:width" content="1200">
@@ -198,6 +198,35 @@ p{margin:0}
 .dpop.cae{animation:cae9 .45s cubic-bezier(.2,.8,.2,1) both .15s}
 .dof.sube{animation:sube9 .4s cubic-bezier(.2,.8,.2,1) both}
 @media (prefers-reduced-motion:reduce){.dpop.cae,.dof.sube{animation:none}}
+
+/* ===== Jerarquía de 3 niveles (25 nov 2026) =====
+   N1 núcleo de conversión: más aire y títulos grandes. N2 argumentos: peso medio. N3 detalles: compacto. */
+.n1{padding-block:44px}
+.blk.n1 h2{font-size:clamp(1.9rem,8vw,2.6rem)}
+.n2 h2{font-size:clamp(1.55rem,6.4vw,2.1rem)}
+.blk.n3{padding-block:24px;margin-top:20px}
+.blk.n3 h2{font-size:clamp(1.3rem,5.4vw,1.6rem);letter-spacing:-.03em}
+.n3 .lead{font-size:.95rem}
+.kicker{font:700 .72rem/1 var(--datos);letter-spacing:.12em;text-transform:uppercase;color:var(--texto3);margin-bottom:10px}
+.panel{background:var(--tarjeta);border:1px solid var(--linea);border-radius:24px;padding-inline:16px;margin-inline:-6px}
+.panel .tabs{background:var(--fondo)}
+.sl input{accent-color:var(--texto)}
+.hero .franja{margin-top:22px}
+.cuenta{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:6px;margin-top:16px;text-align:center}
+.cuenta div{background:var(--tarjeta);border:1px solid var(--linea);border-radius:14px;padding:10px 4px}
+.cuenta span{display:block;font:600 .68rem/1.2 var(--datos);color:var(--texto3)}
+.cuenta b{display:block;margin-top:4px;font:800 1.5rem/1 var(--titulos);letter-spacing:-.03em}
+.cuenta .no b{color:var(--rojo-texto)}.cuenta .si{border-color:var(--aceptar)}.cuenta .si b{color:var(--verde-texto)}
+.cuenta i{font:800 1.2rem/1 var(--datos);font-style:normal;color:var(--texto3)}
+.n2 .ej{margin-top:8px}
+.mini{list-style:none;margin:12px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mini li{background:var(--tarjeta);border:1px solid var(--linea);border-radius:14px;padding:10px 12px;font-size:.86rem;line-height:1.35;color:var(--texto2)}
+.mini b{display:block;margin-bottom:3px;font:800 .98rem/1.1 var(--titulos);letter-spacing:-.02em;color:var(--texto)}
+.mini .ancho{grid-column:1/-1}
+.n3 .faq summary{min-height:50px;font-size:.96rem}
+.n3 .faq details p{font-size:.9rem}
+.cierre{text-align:center}.cierre .lead{max-width:34ch;margin-inline:auto}
+@media(min-width:700px){.mini{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
@@ -207,10 +236,10 @@ p{margin:0}
     <div><b>Checa</b></div>
   </header>
 
-  <section class="hero" aria-labelledby="t1">
-    <p class="tag"><b>YA EN GOOGLE PLAY</b>Sin tarjeta · Android</p>
+  <section class="hero n1" aria-labelledby="t1">
+    <p class="tag"><b>YA EN GOOGLE PLAY</b>Sin tarjeta · Android 8+</p>
     <h1 id="t1">Antes de aceptar CHECA cuánto te queda.</h1>
-    <p class="sub">Lee cada oferta de Uber y DiDi, resta tu gasolina y te dice si conviene.</p>
+    <p class="sub">Lee cada oferta de Uber y DiDi, resta tu combustible y te dice si conviene.</p>
     <div class="capt" id="capt" aria-roledescription="carrusel">
       <img src="media/oferta-1.webp" width="660" alt="Oferta de DiDi de 113 pesos con el aviso de Checa: Aceptar, te quedan 93." class="on" fetchpriority="high">
       <img data-src="media/oferta-2.webp" width="660" alt="Oferta de DiDi de 38.94 con el aviso de Checa: Considerar, te quedan 32.">
@@ -220,7 +249,6 @@ p{margin:0}
     </div>
     <p class="pie-prueba">Ofertas reales · 12 km/L · $24/L · Toca para ver otra</p>
     <a class="play" id="cta1" data-dl="hero" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Probar gratis en Google Play</a>
-    <div class="chips"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Sin tarjeta</span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Teléfono y tablet</span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Lee sin internet</span><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Android 8+</span></div>
     <div class="franja">
       <div><b>~1 s</b><span>para leer la oferta</span></div>
       <div><b>3 avisos</b><span>Aceptar, Considerar, Rechazar</span></div>
@@ -229,36 +257,19 @@ p{margin:0}
     </div>
   </section>
 
-  <section class="blk" aria-labelledby="t2" data-entra>
+  <!-- Nivel 2 -->
+  <section class="blk n2" aria-labelledby="t2" data-entra>
     <h2 id="t2">Una oferta de $95 no te deja $95.</h2>
-    <p class="lead">La app te enseña la tarifa. La gasolina y <strong>los kilómetros para llegar por el pasajero los pagas tú</strong>, y nadie te los resta.</p>
-    <div class="escena" data-remotion="bruto" role="img" aria-label="Animación: la oferta dice 95 pesos; se van 38 de gasolina de 19 km; te quedan 57, 5 pesos por kilómetro."></div>
-  </section>
-
-  <section class="blk" aria-labelledby="t3" data-entra>
-    <h2 id="t3">Tres pasos. Cero cuentas en la cabeza.</h2>
-    <ol class="pasos">
-      <li data-entra-hijo><b>1</b><div><strong>Llega la oferta.</strong> Manejas con Uber o DiDi como siempre. No cambias nada de tu forma de trabajar.</div></li>
-      <li data-entra-hijo><b>2</b><div><strong>Checa la lee.</strong> Resta tu gasolina y compara el viaje con tus metas por km y por hora. En un segundo.</div></li>
-      <li data-entra-hijo><b>3</b><div><strong>Tú decides.</strong> Semáforo, voz y vibración. Aceptar o rechazar lo tocas tú, en tu app.</div></li>
-    </ol>
-  </section>
-
-  <section class="blk" aria-labelledby="t4">
-    <h2 id="t4">Todo lo que necesitas para decidir rápido.</h2>
-    <p class="lead">Cada función tiene un solo trabajo: que sepas cuánto te queda de cada viaje.</p>
-    <div class="funcs" data-entra>
-      <div class="func" data-entra-hijo><span class="k">Netos</span><h3>Lo que te queda, no lo que te pagan</h3><p>La tarifa menos la gasolina de todo el recorrido, recogida incluida.</p><div class="viz"><span class="ch ok">$97 netos</span><span class="ch no">Gasolina −$23</span><span class="ch">11.5 km total</span></div></div>
-      <div class="func" data-entra-hijo><span class="k">Semáforo</span><h3>Te lo dice en voz alta</h3><p>No despegas los ojos del camino: escuchas «Aceptar», «Considerar» o «Rechazar» y sientes la vibración.</p></div>
-      <div class="func" data-entra-hijo><span class="k">Tablet y pantalla dividida</span><h3>Uber y DiDi a la vez, y te marca la mejor</h3><p>Un aviso por app. Cuando llegan dos ofertas juntas, la mejor lleva la etiqueta «Mejor».</p><div class="viz"><span class="pc" style="--c:#FACC15"><i></i><em>CONSIDERAR</em><b>$64</b><u>✓ $211/h</u></span><span class="pc" style="--c:#22C55E"><i></i><em>★ ACEPTAR</em><b>$97</b><u>✓ $327/h</u></span></div></div>
-      <div class="func" data-entra-hijo><span class="k">Filtros</span><h3>Tus reglas</h3><p>Si la recogida o el viaje se pasan, va a rojo.</p><div class="viz"><span class="ch">Por hora $200</span><span class="ch">Por km $10</span><span class="ch">Recogida máx. 3 km</span></div></div>
-      <div class="func" data-entra-hijo><span class="k">Mi día</span><h3>Tu meta, a la vista</h3><p>Viajes aceptados, lo que llevas y la gasolina de la semana.</p><div class="viz meta"><div class="bar"><i></i></div><small><span>$1,360 de $2,000</span><span>8 viajes · 68 %</span></small></div></div>
-      <div class="func" data-entra-hijo><span class="k">Mejores horas</span><h3>Cuándo te conviene salir</h3><p>Con tus propias ofertas de la semana.</p><div class="viz"><div class="horas" aria-hidden="true"><i class="" style="height:20%"></i><i class="" style="height:30%"></i><i class="" style="height:40%"></i><i class="" style="height:60%"></i><i class="" style="height:80%"></i><i class="top" style="height:90%"></i><i class="" style="height:70%"></i><i class="" style="height:50%"></i><i class="" style="height:60%"></i><i class="" style="height:80%"></i><i class="top" style="height:100%"></i><i class="top" style="height:90%"></i><i class="" style="height:70%"></i><i class="" style="height:60%"></i><i class="" style="height:80%"></i><i class="" style="height:50%"></i><i class="" style="height:30%"></i></div></div></div>
-      <div class="func" data-entra-hijo><span class="k">Sin internet</span><h3>Lee aunque no tengas señal</h3><p>La lectura pasa en tu teléfono. Funciona en modo avión.</p></div>
+    <p class="lead">La app te enseña la tarifa. El combustible y <strong>los kilómetros para llegar por el pasajero los pagas tú</strong>, y nadie te los resta.</p>
+    <div class="cuenta" aria-label="95 pesos de tarifa menos 38 de combustible: te quedan unos 57">
+      <div><span>La app dice</span><b>$95</b></div><i aria-hidden="true">−</i><div class="no"><span>Combustible</span><b>$38</b></div><i aria-hidden="true">=</i><div class="si"><span>Te queda</span><b>~$57</b></div>
     </div>
+    <p class="ej">19 km con recogida · $5.0/km · 12 km/L · $24/L</p>
   </section>
 
-  <section class="blk" aria-labelledby="t5">
+  <!-- Nivel 1 -->
+  <section class="blk n1 panel" aria-labelledby="t5">
+    <p class="kicker">Pruébalo aquí</p>
     <h2 id="t5">Elige una oferta y mueve tus metas.</h2>
     <div class="demo">
       <div class="tabs" id="picks" role="group" aria-label="Elige una oferta de ejemplo"></div>
@@ -267,13 +278,24 @@ p{margin:0}
       <div class="sl">
         <label for="r-h"><span>Meta por hora <output id="o-h"></output></span><input type="range" id="r-h" min="80" max="300" step="10" value="200"></label>
         <label for="r-km"><span>Meta por km <output id="o-km"></output></span><input type="range" id="r-km" min="4" max="15" step="0.5" value="10"></label>
-        <label for="r-gas"><span>Precio de la gasolina <output id="o-gas"></output></span><input type="range" id="r-gas" min="18" max="30" step="0.5" value="24"></label>
+        <label for="r-gas"><span>Precio del combustible <output id="o-gas"></output></span><input type="range" id="r-gas" min="18" max="30" step="0.5" value="24"></label>
       </div>
-      <p class="ej">Números de ejemplo · 12 km/l</p>
+      <p class="ej">Números de ejemplo · 12 km/L · Mueve las barras como si fueran tus metas</p>
     </div>
+    <a class="play" data-dl="simulador" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Probar gratis en Google Play</a>
+    <p class="disp">Así se ve en tu teléfono con cada oferta real.</p>
   </section>
 
-  <section class="blk" aria-labelledby="t6">
+  <section class="blk n2" aria-labelledby="t3" data-entra>
+    <h2 id="t3">Tres pasos. Cero cuentas en la cabeza.</h2>
+    <ol class="pasos">
+      <li data-entra-hijo><b>1</b><div><strong>Llega la oferta.</strong> Manejas con Uber o DiDi como siempre. No cambias nada de tu forma de trabajar.</div></li>
+      <li data-entra-hijo><b>2</b><div><strong>Checa la lee.</strong> Resta tu combustible y compara el viaje con tus metas por km y por hora. En un segundo.</div></li>
+      <li data-entra-hijo><b>3</b><div><strong>Tú decides.</strong> Semáforo, voz y vibración. Aceptar o rechazar lo tocas tú, en tu app.</div></li>
+    </ol>
+  </section>
+
+  <section class="blk n2" aria-labelledby="t6">
     <h2 id="t6">Tu cuenta sigue siendo tuya.</h2>
     <ul class="conf">
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><b>Solo lee, nunca toca</b><span>No acepta, no rechaza y no presiona nada en Uber o DiDi.</span></li>
@@ -282,13 +304,29 @@ p{margin:0}
     </ul>
   </section>
 
-  <section class="blk" aria-labelledby="t7">
+  <!-- Nivel 3 -->
+  <section class="blk n3" aria-labelledby="t4">
+    <h2 id="t4">Todo lo que necesitas para decidir rápido.</h2>
+    <ul class="mini">
+      <li><b>Netos</b>Lo que te queda, recogida incluida.</li>
+      <li><b>Semáforo</b>Te lo dice en voz y con vibración.</li>
+      <li><b>Tablet</b>Uber y DiDi a la vez; la mejor lleva «Mejor».</li>
+      <li><b>Filtros</b>Recogida o viaje muy largos: va a rojo.</li>
+      <li><b>Mi día</b>Tu meta, tus viajes y tu combustible.</li>
+      <li><b>Mejores horas</b>Cuándo te conviene salir, con tus ofertas.</li>
+      <li class="ancho"><b>Sin internet</b>La lectura pasa en tu teléfono; funciona en modo avión.</li>
+    </ul>
+  </section>
+
+  <section class="blk n3" aria-labelledby="t7">
     <h2 id="t7">Así te ayuda en tu día.</h2>
-    <p class="lead">Recogida lejana, la tarifa más alta que no gana y la que sí conviene.</p>
+    <p class="lead">Recogida lejana en rojo, la tarifa más alta que no gana y la que sí conviene.</p>
     <div class="escena" data-remotion="avisa" role="img" aria-label="Animación del aviso de Checa: Rechazar, te quedan 57 por recogida larga; Considerar, te quedan 56 porque paga bien la hora y flojo el kilómetro; Aceptar, te quedan 97 porque cumple tus metas."></div>
   </section>
 
-  <section class="blk" aria-labelledby="t8">
+  <!-- Nivel 1 -->
+  <section class="blk n1" aria-labelledby="t8">
+    <p class="kicker">Planes</p>
     <h2 id="t8">Empiezas gratis. Después, tú eliges.</h2>
     <p class="lead">Descárgala gratis y sin tarjeta. Cuando quieras seguir, eliges el plan que te convenga.</p>
     <div class="planes">
@@ -296,10 +334,12 @@ p{margin:0}
       <div class="plan hot"><h3>Estratega<span class="tg">RECOMENDADO</span></h3><span class="n">$589<small>$3.27 al día</small></span><span class="per">6 meses</span><ul><li>Todo lo del Básico</li><li>Uber y DiDi juntos con «Mejor»</li><li>Mejores horas de la semana</li></ul></div>
       <div class="plan"><h3>Pro</h3><span class="n">$1,059<small>$2.90 al día</small></span><span class="per">1 año</span><ul><li>Todo lo del Estratega</li><li>Un año sin pensar en pagos</li><li>El menor precio por día</li></ul></div>
     </div>
-    <p class="disp">Precios en pesos mexicanos.</p>
+    <a class="play" data-dl="planes" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Probar gratis en Google Play</a>
+    <p class="disp">Primero gratis y sin tarjeta · Precios en pesos mexicanos</p>
   </section>
 
-  <section class="blk" aria-labelledby="t9">
+  <!-- Nivel 3 -->
+  <section class="blk n3" aria-labelledby="t9">
     <h2 id="t9">Lo que más nos preguntan.</h2>
     <div class="faq">
       <details><summary>¿Me pueden bloquear la cuenta?</summary><p>Checa solo lee la pantalla. No toca botones, no acepta viajes por ti y no modifica Uber ni DiDi. Cada plataforma tiene sus propios términos y no podemos hablar por ellas.</p></details>
@@ -311,7 +351,8 @@ p{margin:0}
     </div>
   </section>
 
-  <section class="blk" aria-labelledby="t10">
+  <!-- Nivel 1 -->
+  <section class="blk n1 cierre" aria-labelledby="t10">
     <h2 id="t10">Tu próxima oferta, con la cuenta hecha.</h2>
     <p class="lead">Instálala desde Google Play en 2 minutos y mírala trabajar en tu siguiente viaje.</p>
     <div class="escena" data-remotion="semaforo" role="img" aria-label="Animación: el semáforo pasa de rojo a ámbar a verde con palomita y aparece Descarga Checa."></div>
