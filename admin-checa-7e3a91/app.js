@@ -1254,14 +1254,16 @@
       soltar(); estado.actual = estado.items.shift() || null;
       if (!estado.actual) { await cargarCola(); estado.actual = estado.items.shift() || null; }
       await cargarImagen();
-      pintarRev();
+      pintarRev(); autoIA();
     }
+    // Verifica con la IA sola al abrir cada captura (cada lectura queda registrada en verificaciones_ia para el costo).
+    function autoIA() { if (esRevisor && estado.actual && estado.blob && !estado.sug && !estado.pidiendo) pedirIA(); }
     // Saltar sin calificar: › pasa al siguiente de la cola, ‹ vuelve al anterior que viste.
     async function saltar(d) {
       if (estado.ocupado || !estado.actual) return;
       if (d > 0) { if (!estado.items.length) return; soltar(); estado.hist.push(estado.actual); estado.actual = estado.items.shift(); }
       else { if (!estado.hist.length) return; soltar(); estado.items.unshift(estado.actual); estado.actual = estado.hist.pop(); }
-      await cargarImagen(); pintarRev();
+      await cargarImagen(); pintarRev(); autoIA();
     }
     async function guardar(args, borrarUltima) {
       if (estado.ocupado || !estado.actual) return; estado.ocupado = true; pintarRev();
