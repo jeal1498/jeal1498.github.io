@@ -1342,3 +1342,5 @@ header .tit { flex:1; margin-left:2px; } header .tit strong { font:800 18px/1.1 
 .aro-v.aviso { stroke:var(--amarillo); } .aro-v.poca { stroke:var(--gris); }
 .vbar span { white-space:normal; overflow:visible; line-height:1.15; }
 .vbar span small { display:block; margin-top:2px; font:500 12px "DM Sans", system-ui, sans-serif; color:var(--gris); }
+/* Revisar ofertas: solo OCR y CHECK (sin columna IA) */
+.vtc2 .vq-cab.qg2, .vtc2 .vq-fila.qg2 { grid-template-columns:repeat(2, minmax(0, 1fr)); }
