@@ -976,8 +976,9 @@
   function numUni(k, v) { var t = fmtV(k, v), m = /^(.+) (km|min)$/.exec(t); return m ? [m[1], m[2]] : [t, ""]; }
   function celdaV(k, v, cls) { var n = numUni(k, v), at = { clase: "vq-v" + (cls ? " " + cls : "") }; return n[1] ? el("span", at, [el("b", { clase: "nn", texto: n[0] }), el("small", { texto: n[1] })]) : el("span", at, [el("b", { clase: "nn", texto: n[0] })]); }
   function textoV(t, cls) { return el("span", { clase: "vq-v t" + (cls ? " " + cls : "") }, [el("b", { texto: t })]); }
-  function valoresCard(campos) {
+  function valoresCard(campos, sinIA) {
     var nulo = function (v) { return v === null || v === undefined; };
+    if (sinIA) campos = campos.map(function (c) { return Object.assign({}, c, { i: undefined, iaNo: false }); });   // solo OCR y CHECK
     var igual = function (k, a, b) { return !nulo(a) && !nulo(b) && Math.abs(Number(a) - Number(b)) <= TOL_V[k]; };
     var filas = campos.map(function (c) {
       var hayIA = !c.iaNo && !nulo(c.i), hayC = !nulo(c.c) || !!c.cTxt, numC = !nulo(c.c);
@@ -987,7 +988,7 @@
       return { c: c, hayIA: hayIA, hayC: hayC, numC: numC, eqOI: eqOI, oOk: oOk, iOk: iOk, todos: todos, dif: !todos && (c.iaNo || (hayIA && !eqOI) || (hayC && !(oOk && (iOk || !hayIA)))) };
     });
     var orden = filas;   // orden fijo: Tarifa · Distancia · Tiempo
-    var cab = el("div", { clase: "vq-cab qg3" }, ["OCR", "IA", "CHECK"].map(function (r, i) { return el("span", { clase: "vq-h" + (i === 1 ? " m" : i === 2 ? " r" : ""), texto: r }); }));
+    var cab = el("div", { clase: "vq-cab " + (sinIA ? "qg2" : "qg3") }, (sinIA ? ["OCR", "CHECK"] : ["OCR", "IA", "CHECK"]).map(function (r, i) { return el("span", { clase: "vq-h" + (!sinIA && i === 1 ? " m" : r === "CHECK" ? " r" : ""), texto: r }); }));
     var bloques = orden.map(function (f) {
       var c = f.c, cuerpo;
       var sinC = !f.hayC;
@@ -997,7 +998,7 @@
         var cO = f.hayC ? (f.oOk ? "g" : "rr") : (f.dif ? "ne" : ""), cI = f.hayC ? (f.iOk ? "g" : "rr") : (f.dif ? "ne" : "");
         var iaCel = c.iaNo ? textoV("no era oferta", cI) : f.hayIA ? celdaV(c.k, c.i, cI) : textoV("—", "nd");
         var chCel = f.numC ? celdaV(c.k, c.c, "g") : c.cTxt ? textoV(c.cTxt, "g") : textoV("—", "nd");
-        cuerpo = el("div", { clase: "vq-fila qg3" }, [celdaV(c.k, c.o, cO), iaCel, chCel]);
+        cuerpo = el("div", { clase: "vq-fila " + (sinIA ? "qg2" : "qg3") }, sinIA ? [celdaV(c.k, c.o, cO), chCel] : [celdaV(c.k, c.o, cO), iaCel, chCel]);
       }
       return el("div", { clase: "vq-b", "data-metrica": c.k }, [titulo, cuerpo]);
     });
@@ -1347,7 +1348,7 @@
         var chk = rs === "correcta" ? m[2] : rs === "valores_mal" ? it[m[1]] : scVig ? SC[m[1]] : undefined;
         return { nom: m[0], k: m[1], o: m[2], i: hayI ? m[3] : undefined, c: chk, iaNo: iaNoOf, cTxt: rs === "falso_positivo" ? "no era oferta" : scTxt };
       });
-      var tablaV = valoresCard(campos);
+      var tablaV = valoresCard(campos, true);
       var off = !esRevisor || estado.ocupado, S = estado.sug, colSug = el("div", { clase: "ficha-colsug" });
       // Lo sugerido sale de la lectura sobre la imagen si ya se verificó; si no, de la lectura guardada de la IA.
       var vigS = S ? S.estado === "vigente" : hayI && !iaNoOf, SV = S || (hayI ? I : null);
